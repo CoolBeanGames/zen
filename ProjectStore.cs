@@ -16,6 +16,11 @@ public sealed class ProjectStore
         PropertyNameCaseInsensitive = true,
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
+    private static readonly string[] TagColors =
+    [
+        "#6557B8", "#2F7A68", "#9A6334", "#386D9A", "#8A4F78",
+        "#57742F", "#815B32", "#3F6F77", "#704F9B", "#8C553E"
+    ];
 
     public string RootDirectory { get; }
     public string DataPath => Path.Combine(RootDirectory, DataFileName);
@@ -32,6 +37,7 @@ public sealed class ProjectStore
             : CreateDocument();
         Normalize(document);
         HydrateFiles(document);
+        HydrateTags(document);
         Save(document);
         return document;
     }
@@ -39,6 +45,8 @@ public sealed class ProjectStore
     public void Save(ProjectDocument document)
     {
         Normalize(document);
+        HydrateFiles(document);
+        HydrateTags(document);
         var temporaryPath = DataPath + ".tmp";
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(document, JsonOptions));
         File.Move(temporaryPath, DataPath, true);
@@ -90,6 +98,7 @@ public sealed class ProjectStore
     public static void Normalize(ProjectDocument document)
     {
         document.Branches ??= [];
+        document.TagCatalog ??= [];
         var main = EnsureSystemColumn(document, "main", "main", false);
         main.Branch = "main";
         var uncategorized = EnsureSystemColumn(document, "uncategorized", "Uncategorized", false);
@@ -109,6 +118,21 @@ public sealed class ProjectStore
                 card.Files ??= [];
                 card.Requirements ??= [];
                 card.Flags ??= new CardFlags();
+                var normalizedTags = card.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag))
+                    .Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                card.Tags.Clear();
+                foreach (var tag in normalizedTags) card.Tags.Add(tag);
+                foreach (var tag in card.Tags)
+                {
+                    if (document.TagCatalog.Any(item => item.Name.Equals(tag, StringComparison.OrdinalIgnoreCase))) continue;
+                    document.TagCatalog.Add(new ProjectTag
+                    {
+                        Name = tag,
+                        Color = tag.Equals("bug", StringComparison.OrdinalIgnoreCase)
+                            ? "#7A2632"
+                            : TagColors[Random.Shared.Next(TagColors.Length)]
+                    });
+                }
                 if (card.Index <= 0 || !usedIndexes.Add(card.Index))
                 {
                     card.Index = Math.Max(document.NextCardIndex, maximumIndex + 1);
@@ -136,6 +160,20 @@ public sealed class ProjectStore
                 continue;
             file.AbsolutePath = absolutePath;
             file.IsImage = IsImageExtension(Path.GetExtension(file.Name));
+        }
+    }
+
+    private static void HydrateTags(ProjectDocument document)
+    {
+        var catalog = document.TagCatalog.ToDictionary(tag => tag.Name, StringComparer.OrdinalIgnoreCase);
+        foreach (var card in document.Branches.SelectMany(branch => branch.Tasks))
+        {
+            card.TagViews.Clear();
+            foreach (var tag in card.Tags)
+            {
+                var definition = catalog[tag];
+                card.TagViews.Add(new TagChip { Name = tag, Color = definition.Color });
+            }
         }
     }
 

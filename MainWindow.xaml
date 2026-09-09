@@ -157,14 +157,14 @@
                                                         </Border.Style>
                                                         <StackPanel>
                                                             <Grid Margin="0,0,0,10">
-                                                                <ItemsControl ItemsSource="{Binding Tags}" MaxWidth="210" HorizontalAlignment="Left">
+                                                                <ItemsControl ItemsSource="{Binding TagViews}" MaxWidth="210" HorizontalAlignment="Left">
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <Border Background="#292642" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
-                                                                                <TextBlock Text="{Binding}" Foreground="#B9B0FF" FontSize="9" FontWeight="SemiBold"/>
+                                                                            <Border Background="{Binding Color}" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="9" FontWeight="SemiBold"/>
                                                                             </Border>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
@@ -185,6 +185,24 @@
                                                                     </TextBlock>
                                                                 </StackPanel>
                                                             </Grid>
+                                                            <WrapPanel Margin="0,-2,0,7">
+                                                                <Border Background="#273A31" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                    <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Flags.Commit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                    <TextBlock Text="COMMIT" Foreground="#83D6A9" FontSize="9" FontWeight="Bold"/>
+                                                                </Border>
+                                                                <Border Background="#263749" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                    <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Flags.Build}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                    <TextBlock Text="BUILD" Foreground="#86BCEB" FontSize="9" FontWeight="Bold"/>
+                                                                </Border>
+                                                                <Border Background="#463822" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                    <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Flags.Release}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                    <TextBlock Text="RELEASE" Foreground="#F0C574" FontSize="9" FontWeight="Bold"/>
+                                                                </Border>
+                                                                <Border Background="#3D2946" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                    <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Flags.Merge}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                    <TextBlock Text="MERGE" Foreground="#DCA2EB" FontSize="9" FontWeight="Bold"/>
+                                                                </Border>
+                                                            </WrapPanel>
                                                             <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="20"/>
                                                             <TextBlock Text="{Binding Task}" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" LineHeight="18" Margin="0,7,0,0" MaxHeight="72" TextTrimming="CharacterEllipsis">
                                                                 <TextBlock.Style>
@@ -324,7 +342,10 @@
                     <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
                     <TextBox x:Name="EditTitleInput" Style="{StaticResource Field}"/>
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
-                    <TextBox x:Name="EditTagsInput" Style="{StaticResource Field}" ToolTip="Separate tags with commas"/>
+                    <TextBox x:Name="EditTagsInput" Style="{StaticResource Field}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"
+                             TextChanged="EditTagsInput_TextChanged" PreviewKeyDown="EditTagsInput_PreviewKeyDown"/>
+                    <ListBox x:Name="TagSuggestions" Visibility="Collapsed" MaxHeight="100" Background="#20252F" BorderThickness="0"
+                             Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="TagSuggestions_MouseLeftButtonUp"/>
                     <TextBlock Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <TextBox x:Name="EditTaskInput" Style="{StaticResource Field}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
 

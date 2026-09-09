@@ -14,6 +14,7 @@ public sealed class ProjectDocument
     public string ProjectId { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get; set; } = "Untitled project";
     public int NextCardIndex { get; set; } = 1;
+    public ObservableCollection<ProjectTag> TagCatalog { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 
     // One-way migration support for project files created by the earlier schema.
@@ -68,6 +69,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public string Title { get => _title; set => SetField(ref _title, value); }
     public string Task { get => _task; set => SetField(ref _task, value); }
     public ObservableCollection<string> Tags { get; set; } = [];
+    [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
     public ObservableCollection<TaskRequirement> Requirements { get; set; } = [];
     public CardFlags Flags { get; set; } = new();
@@ -86,6 +88,18 @@ public sealed class TaskCard : INotifyPropertyChanged
         UpdatedAt = DateTimeOffset.UtcNow;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+}
+
+public sealed class ProjectTag
+{
+    public string Name { get; set; } = string.Empty;
+    public string Color { get; set; } = "#5B6070";
+}
+
+public sealed class TagChip
+{
+    public string Name { get; set; } = string.Empty;
+    public string Color { get; set; } = "#5B6070";
 }
 
 public sealed class TaskRequirement : INotifyPropertyChanged

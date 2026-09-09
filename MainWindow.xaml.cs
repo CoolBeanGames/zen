@@ -672,6 +672,67 @@ public partial class MainWindow : Window
         }
     }
 
+    private void EditTagsInput_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (TagSuggestions is null) return;
+        var text = EditTagsInput.Text;
+        var comma = text.LastIndexOf(',');
+        var token = text[(comma + 1)..].Trim();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            TagSuggestions.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        var alreadyUsed = text[..Math.Max(0, comma + 1)].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var knownTags = _document?.TagCatalog.Select(tag => tag.Name)
+            ?? Columns.SelectMany(column => column.Tasks).SelectMany(card => card.Tags);
+        var matches = knownTags.Distinct(StringComparer.OrdinalIgnoreCase)
+            .Where(tag => tag.StartsWith(token, StringComparison.OrdinalIgnoreCase) &&
+                          !tag.Equals(token, StringComparison.OrdinalIgnoreCase) &&
+                          !alreadyUsed.Contains(tag, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(tag => tag).Take(6).ToList();
+        TagSuggestions.ItemsSource = matches;
+        TagSuggestions.SelectedIndex = matches.Count > 0 ? 0 : -1;
+        TagSuggestions.Visibility = matches.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void EditTagsInput_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Tab && TagSuggestions.Visibility == Visibility.Visible &&
+            TagSuggestions.SelectedItem is string suggestion)
+        {
+            AcceptTagSuggestion(suggestion);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Down && TagSuggestions.Visibility == Visibility.Visible && TagSuggestions.Items.Count > 0)
+        {
+            TagSuggestions.SelectedIndex = Math.Min(TagSuggestions.Items.Count - 1, TagSuggestions.SelectedIndex + 1);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Up && TagSuggestions.Visibility == Visibility.Visible && TagSuggestions.Items.Count > 0)
+        {
+            TagSuggestions.SelectedIndex = Math.Max(0, TagSuggestions.SelectedIndex - 1);
+            e.Handled = true;
+        }
+    }
+
+    private void TagSuggestions_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (TagSuggestions.SelectedItem is string suggestion) AcceptTagSuggestion(suggestion);
+    }
+
+    private void AcceptTagSuggestion(string suggestion)
+    {
+        var text = EditTagsInput.Text;
+        var comma = text.LastIndexOf(',');
+        var prefix = comma >= 0 ? text[..(comma + 1)] + " " : string.Empty;
+        EditTagsInput.Text = prefix + suggestion + ", ";
+        EditTagsInput.CaretIndex = EditTagsInput.Text.Length;
+        TagSuggestions.Visibility = Visibility.Collapsed;
+        EditTagsInput.Focus();
+    }
+
     private void CancelCardEdit_Click(object sender, RoutedEventArgs e) =>
         CardEditorPopup.IsOpen = false;
 
@@ -681,6 +742,7 @@ public partial class MainWindow : Window
         EditValidationText.Visibility = Visibility.Collapsed;
         EditorBackdrop.Visibility = Visibility.Collapsed;
         RootLayout.Effect = null;
+        TagSuggestions.Visibility = Visibility.Collapsed;
     }
 
     private void EditorBackdrop_MouseDown(object sender, MouseButtonEventArgs e) =>
