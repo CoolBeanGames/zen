@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 52,
+  "nextCardIndex": 53,
   "tagCatalog": [
     {
       "name": "bug",
@@ -67,6 +67,10 @@
     {
       "name": "menus",
       "color": "#704F9B"
+    },
+    {
+      "name": "release",
+      "color": "#57742F"
     }
   ],
   "branches": [
@@ -118,6 +122,45 @@
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:34:29.2483747+00:00",
           "updatedAt": "2026-09-09T14:34:29.2483775+00:00"
+        },
+        {
+          "id": "f2fdd5b48baa49799e23682b92b0635e",
+          "index": 52,
+          "kind": "task",
+          "title": "merge to main and publish Zen 0.2.1",
+          "task": "Verify version_1_branch, merge it safely into main, commit the merged task state, build the Windows release artifact, push main, and publish GitHub release v0.2.1.",
+          "tags": [
+            "release"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "7e62cdd326a9453c9a99c965e9b90c39",
+              "text": "merge version_1_branch into main",
+              "isDone": false
+            },
+            {
+              "id": "8b828a9fa5b24b9f8f7759f78924788f",
+              "text": "commit and push the merged main branch",
+              "isDone": false
+            },
+            {
+              "id": "64caf9cdc9004a029d1d4d6f70e99400",
+              "text": "build and publish GitHub release v0.2.1",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": true
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T19:02:52.4424755+00:00",
+          "updatedAt": "2026-09-09T19:02:52.4424755+00:00"
         }
       ]
     },
