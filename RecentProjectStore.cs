@@ -52,4 +52,23 @@ public sealed class RecentProjectStore
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(projects.Take(20), JsonOptions));
         File.Move(temporaryPath, _dataPath, true);
     }
+
+    public string Remove(string path)
+    {
+        var fullPath = Path.GetFullPath(path);
+        var backupPath = SettingsStore.BackupProjectData(fullPath);
+        var promptPath = Path.Combine(fullPath, ProjectStore.PromptFileName);
+        if (File.Exists(promptPath)) File.Delete(promptPath);
+        SaveList(Load().Where(project => !project.Path.Equals(fullPath, StringComparison.OrdinalIgnoreCase)));
+        return backupPath;
+    }
+
+    private void SaveList(IEnumerable<RecentProject> projects)
+    {
+        var directory = Path.GetDirectoryName(_dataPath)!;
+        Directory.CreateDirectory(directory);
+        var temporaryPath = _dataPath + ".tmp";
+        File.WriteAllText(temporaryPath, JsonSerializer.Serialize(projects.Take(20), JsonOptions));
+        File.Move(temporaryPath, _dataPath, true);
+    }
 }

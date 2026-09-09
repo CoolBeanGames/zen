@@ -10,7 +10,7 @@ dotnet run
 
 ## Current behavior
 
-- Permanent `main`, `Uncategorized`, and `Archived` columns
+- Permanent `main` and `Archived` columns
 - Create identical columns for branches or personal categories
 - Choose any folder to create or open a Zen project
 - Persist the board atomically in `zen.tasks.json`
@@ -18,11 +18,13 @@ dotnet run
 - Give every normal board column a unique, Git-safe branch name; system collections use `branch: null`
 - Copy the embedded agent guide to `prompt.txt` and store attachments under `files/`
 - Automatically reload external JSON changes and normalize completed cards into `Archived`
-- Add task cards with prompts, multiple tags, files, requirements, and Git action flags
+- Add task, note, break, and priority-bug cards from one compact menu
+- Track optional start dates, due dates, and priority on task cards
 - Drag cards between columns with a raised, pointer-following card preview
 - Single-click a card to toggle its compact tag-and-title view
 - Double-click a card to edit its title, task prompt, tags, attachments, requirements, and action flags inline
-- Right-click a card to lock or unlock it; locked cards cannot be dragged
+- Use card and branch context menus to create, edit, move, lock, flag, archive, or launch agent work
+- Configure the global prompt, reload frequency, known projects, and backups from Settings
 - Every card has a stable GUID and a unique board index such as `#001`
 - Archive custom columns and retain their cards in `Archived`
 - Horizontal mouse-wheel navigation and explicit left/right controls

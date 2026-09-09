@@ -44,6 +44,7 @@ public partial class MainWindow : Window
     private ProjectDocument? _document;
     private ProjectStore? _store;
     private readonly RecentProjectStore _recentProjects = new();
+    private readonly SettingsStore _settingsStore = new();
     private FileSystemWatcher? _projectWatcher;
     private DateTime _ignoreFileEventsUntil;
     private CardKind _newCardKind = CardKind.Task;
@@ -74,7 +75,7 @@ public partial class MainWindow : Window
         _projectReloadTimer.Tick += ProjectReloadTimer_Tick;
         _periodicReloadTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromSeconds(60)
+            Interval = TimeSpan.FromSeconds(_settingsStore.Load().ReloadSeconds)
         };
         _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
         SeedBoard();
@@ -96,14 +97,6 @@ public partial class MainWindow : Window
             {
                 new TaskCard { Index = 1, Title = "Shape the project workspace", Task = "Establish the board shell and interaction model.", Tags = ["foundation"] },
                 new TaskCard { Index = 2, Title = "Define the first data model", Task = "Decide how branches, tasks, and personal categories persist.", Tags = ["next"] }
-            }
-        });
-        Columns.Add(new BoardColumn
-        {
-            Id = "uncategorized", Title = "Uncategorized", Branch = null, IsPermanent = true,
-            Tasks =
-            {
-                new TaskCard { Index = 3, Title = "Capture quick ideas here", Task = "Sort them when you know where they belong.", Tags = ["inbox"] }
             }
         });
         Columns.Add(new BoardColumn
@@ -217,7 +210,7 @@ public partial class MainWindow : Window
     private void ProjectReloadTimer_Tick(object? sender, EventArgs e)
     {
         _projectReloadTimer.Stop();
-        if (_store is null || _activeDrag is not null || CardEditorPopup.IsOpen)
+        if (_store is null || _activeDrag is not null || CardEditorPopup.IsOpen || ModalScrim.Visibility == Visibility.Visible)
         {
             _projectReloadTimer.Start();
             return;
@@ -255,6 +248,13 @@ public partial class MainWindow : Window
     {
         _projectReloadTimer.Stop();
         ProjectReloadTimer_Tick(sender, EventArgs.Empty);
+    }
+
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new SettingsWindow(_recentProjects) { Owner = this };
+        if (window.ShowDialog() == true)
+            _periodicReloadTimer.Interval = TimeSpan.FromSeconds(window.Settings.ReloadSeconds);
     }
 
     private void LaunchProject_Click(object sender, RoutedEventArgs e)
@@ -325,6 +325,13 @@ public partial class MainWindow : Window
         if (sender is not MenuItem { Tag: NewCardRequest request }) return;
         _taskTarget = request.Column;
         _newCardKind = request.Kind;
+        if (request.Kind == CardKind.Break)
+        {
+            request.Column.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = CardKind.Break });
+            SaveProject();
+            _taskTarget = null;
+            return;
+        }
         OpenModal(ModalMode.Task, request.Bug);
     }
 
@@ -742,11 +749,14 @@ public partial class MainWindow : Window
     private void OpenCardEditor(TaskCard card, Border anchor)
     {
         EndCardDragIfActive();
+        if (card.IsBreak) return;
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
         EditTagsInput.Text = string.Join(", ", card.Tags);
         EditTaskInput.Text = card.Task;
+        EditPromptLabel.Text = card.IsNote ? "NOTE" : "TASK PROMPT";
+        EditAdvancedFields.Visibility = card.IsNote ? Visibility.Collapsed : Visibility.Visible;
         _editingRequirements.Clear();
         foreach (var requirement in card.Requirements)
             _editingRequirements.Add(new TaskRequirement { Id = requirement.Id, Text = requirement.Text, IsDone = requirement.IsDone });
@@ -760,6 +770,9 @@ public partial class MainWindow : Window
         EditBuildFlag.IsChecked = card.Flags.Build;
         EditReleaseFlag.IsChecked = card.Flags.Release;
         EditMergeFlag.IsChecked = card.Flags.Merge;
+        EditStartedDate.SelectedDate = card.StartedDate;
+        EditDueDate.SelectedDate = card.DueDate;
+        EditPriority.SelectedIndex = card.Priority.HasValue ? (int)card.Priority.Value + 1 : 0;
         EditValidationText.Visibility = Visibility.Collapsed;
         RootLayout.Effect = new BlurEffect
         {
@@ -796,16 +809,22 @@ public partial class MainWindow : Window
 
         _editingCard.Title = title;
         _editingCard.Task = EditTaskInput.Text.Trim();
-        _editingCard.Tags.Clear();
-        foreach (var tag in EditTagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase))
-            _editingCard.Tags.Add(tag);
-        _editingCard.Requirements.Clear();
-        foreach (var requirement in _editingRequirements)
-            _editingCard.Requirements.Add(new TaskRequirement { Id = requirement.Id, Text = requirement.Text, IsDone = requirement.IsDone });
-        _editingCard.Flags.Commit = EditCommitFlag.IsChecked == true;
-        _editingCard.Flags.Build = EditBuildFlag.IsChecked == true;
-        _editingCard.Flags.Release = EditReleaseFlag.IsChecked == true;
-        _editingCard.Flags.Merge = EditMergeFlag.IsChecked == true;
+        if (!_editingCard.IsNote)
+        {
+            _editingCard.Tags.Clear();
+            foreach (var tag in EditTagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase))
+                _editingCard.Tags.Add(tag);
+            _editingCard.Requirements.Clear();
+            foreach (var requirement in _editingRequirements)
+                _editingCard.Requirements.Add(new TaskRequirement { Id = requirement.Id, Text = requirement.Text, IsDone = requirement.IsDone });
+            _editingCard.Flags.Commit = EditCommitFlag.IsChecked == true;
+            _editingCard.Flags.Build = EditBuildFlag.IsChecked == true;
+            _editingCard.Flags.Release = EditReleaseFlag.IsChecked == true;
+            _editingCard.Flags.Merge = EditMergeFlag.IsChecked == true;
+            _editingCard.StartedDate = EditStartedDate.SelectedDate;
+            _editingCard.DueDate = EditDueDate.SelectedDate;
+            _editingCard.Priority = EditPriority.SelectedIndex > 0 ? (CardPriority?)(EditPriority.SelectedIndex - 1) : null;
+        }
 
         if (_store is not null)
         {

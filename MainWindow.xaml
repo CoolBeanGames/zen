@@ -52,6 +52,7 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button x:Name="ReloadButton" Style="{StaticResource IconButton}" ToolTip="Reload task data" FontSize="17" Content="↻" Click="ReloadProject_Click" IsEnabled="False"/>
+                    <Button Style="{StaticResource IconButton}" ToolTip="Settings" FontSize="17" Content="⚙" Click="Settings_Click"/>
                     <Button Style="{StaticResource IconButton}" ToolTip="Search" FontSize="18" Content="⌕"/>
                     <Border Width="1" Height="24" Background="{StaticResource BorderBrush}" Margin="6,0,12,0"/>
                     <Border Width="32" Height="32" Background="#2F3650" CornerRadius="16">
@@ -128,7 +129,13 @@
                                 <Button Tag="{Binding}" Click="ToggleColumnCollapse_Click" Content="{Binding CollapseGlyph}" ToolTip="Collapse or expand column" Padding="10,7"
                                         Background="{StaticResource ColumnBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="5,0,0,0"/>
                                 </StackPanel>
-                            <Border Grid.Row="1" Width="326" Background="{StaticResource ColumnBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="13">
+                            <Border Grid.Row="1" Width="326" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="13" VerticalAlignment="Top">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="{StaticResource ColumnBrush}"/>
+                                        <Style.Triggers><DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Height" Value="68"/></DataTrigger></Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="68"/>
@@ -201,11 +208,25 @@
                                                                     <DataTrigger Binding="{Binding IsLocked}" Value="True">
                                                                         <Setter Property="BorderBrush" Value="#D69B45"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsNote}" Value="True">
+                                                                        <Setter Property="Background" Value="#202B35"/>
+                                                                        <Setter Property="BorderBrush" Value="#3C6475"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsBreak}" Value="True">
+                                                                        <Setter Property="Background" Value="#282331"/>
+                                                                        <Setter Property="BorderBrush" Value="#8B7CFF"/>
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
                                                         <StackPanel>
+                                                            <TextBlock Text="—  BREAK · AGENTS STOP HERE  —" HorizontalAlignment="Center" Foreground="#B8AEFF" FontSize="11" FontWeight="Bold">
+                                                                <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                                            </TextBlock>
+                                                            <StackPanel>
+                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                                             <Grid Margin="0,0,0,10">
+                                                                <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
                                                                 <ItemsControl ItemsSource="{Binding TagViews}" MaxWidth="210" HorizontalAlignment="Left">
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
@@ -235,6 +256,7 @@
                                                                 </StackPanel>
                                                             </Grid>
                                                             <WrapPanel Margin="0,-2,0,7">
+                                                                <WrapPanel.Style><Style TargetType="WrapPanel"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></WrapPanel.Style>
                                                                 <Border Background="#3B334A" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
                                                                     <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding KindLabel}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
                                                                     <TextBlock Text="{Binding KindLabel}" Foreground="#CFC5FF" FontSize="9" FontWeight="Bold"/>
@@ -256,7 +278,13 @@
                                                                     <TextBlock Text="MERGE" Foreground="#DCA2EB" FontSize="9" FontWeight="Bold"/>
                                                                 </Border>
                                                             </WrapPanel>
-                                                            <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="20"/>
+                                                            <Grid>
+                                                                <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="20" Margin="0,0,72,0"/>
+                                                                <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#413750" CornerRadius="4" Padding="6,2">
+                                                                    <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasPriority}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                    <TextBlock Text="{Binding PriorityLabel}" Foreground="#E0D7FF" FontSize="9" FontWeight="Bold"/>
+                                                                </Border>
+                                                            </Grid>
                                                             <TextBlock Text="{Binding Task}" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" LineHeight="18" Margin="0,7,0,0" MaxHeight="72" TextTrimming="CharacterEllipsis">
                                                                 <TextBlock.Style>
                                                                     <Style TargetType="TextBlock">
@@ -268,6 +296,11 @@
                                                                     </Style>
                                                                 </TextBlock.Style>
                                                             </TextBlock>
+                                                            <StackPanel Margin="0,8,0,0">
+                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                                                <TextBlock Text="{Binding StartedDate, StringFormat='Started · {0:MMM d, yyyy}'}" Foreground="{StaticResource MutedBrush}" FontSize="10"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding HasStartedDate}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+                                                                <TextBlock Text="{Binding DueDate, StringFormat='Due · {0:MMM d, yyyy}'}" Foreground="#E6B46B" FontSize="10"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding HasDueDate}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+                                                            </StackPanel>
                                                             <ItemsControl ItemsSource="{Binding Files}" Margin="0,10,0,0">
                                                                 <ItemsControl.Style>
                                                                     <Style TargetType="ItemsControl">
@@ -275,6 +308,7 @@
                                                                             <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
                                                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                                             </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </ItemsControl.Style>
@@ -320,6 +354,7 @@
                                                                             <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
                                                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                                             </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </Grid.Style>
@@ -333,6 +368,7 @@
                                                                     <TextBlock Text="{Binding Files.Count}" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
                                                                 </StackPanel>
                                                             </Grid>
+                                                            </StackPanel>
                                                         </StackPanel>
                                                     </Border>
                                                 </DataTemplate>
@@ -378,7 +414,9 @@
                 <Border.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="28" ShadowDepth="8" Opacity="0.7"/>
                 </Border.Effect>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="0,0,6,0">
                     <Grid Margin="0,0,0,17">
                         <StackPanel>
@@ -389,14 +427,14 @@
                     </Grid>
                     <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
                     <TextBox x:Name="EditTitleInput" Style="{StaticResource Field}"/>
+                    <TextBlock x:Name="EditPromptLabel" Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
+                    <TextBox x:Name="EditTaskInput" Style="{StaticResource Field}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                    <StackPanel x:Name="EditAdvancedFields">
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <TextBox x:Name="EditTagsInput" Style="{StaticResource Field}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"
                              TextChanged="EditTagsInput_TextChanged" PreviewKeyDown="EditTagsInput_PreviewKeyDown"/>
                     <ListBox x:Name="TagSuggestions" Visibility="Collapsed" MaxHeight="100" Background="#20252F" BorderThickness="0"
                              Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="TagSuggestions_MouseLeftButtonUp"/>
-                    <TextBlock Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
-                    <TextBox x:Name="EditTaskInput" Style="{StaticResource Field}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
-
                     <TextBlock Text="REQUIREMENTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <ItemsControl x:Name="EditRequirementsList">
                         <ItemsControl.ItemTemplate>
@@ -430,6 +468,14 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
+                    <TextBlock Text="SCHEDULE &amp; PRIORITY" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,16,0,7"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,8,0"><TextBlock Text="STARTED" Foreground="{StaticResource MutedBrush}" FontSize="9" Margin="0,0,0,4"/><DatePicker x:Name="EditStartedDate"/></StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,8,0"><TextBlock Text="DUE" Foreground="{StaticResource MutedBrush}" FontSize="9" Margin="0,0,0,4"/><DatePicker x:Name="EditDueDate"/></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Text="PRIORITY" Foreground="{StaticResource MutedBrush}" FontSize="9" Margin="0,0,0,4"/><ComboBox x:Name="EditPriority"><ComboBoxItem Content="None"/><ComboBoxItem Content="Low"/><ComboBoxItem Content="Normal"/><ComboBoxItem Content="High"/><ComboBoxItem Content="Critical"/></ComboBox></StackPanel>
+                    </Grid>
+
                     <TextBlock Text="ACTIONS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,7"/>
                     <WrapPanel>
                         <CheckBox x:Name="EditCommitFlag" Content="Commit" Foreground="{StaticResource TextBrush}" Margin="0,0,18,8"/>
@@ -437,13 +483,19 @@
                         <CheckBox x:Name="EditReleaseFlag" Content="Release" Foreground="{StaticResource TextBrush}" Margin="0,0,18,8"/>
                         <CheckBox x:Name="EditMergeFlag" Content="Merge" Foreground="{StaticResource TextBrush}" Margin="0,0,0,8"/>
                     </WrapPanel>
-                    <TextBlock x:Name="EditValidationText" Text="A title is required." Foreground="#FF7F91" FontSize="11" Margin="0,8,0,0" Visibility="Collapsed"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
-                        <Button Style="{StaticResource IconButton}" Content="Cancel" Click="CancelCardEdit_Click" Margin="0,0,8,0"/>
-                        <Button Style="{StaticResource PrimaryButton}" Content="Apply" Click="ApplyCardEdit_Click"/>
                     </StackPanel>
                 </StackPanel>
                 </ScrollViewer>
+                <Border Grid.Row="1" Background="#171B23" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
+                    <StackPanel>
+                    <TextBlock x:Name="EditValidationText" Text="A title is required." Foreground="#FF7F91" FontSize="11" Margin="0,0,0,8" Visibility="Collapsed"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource IconButton}" Content="Cancel" Click="CancelCardEdit_Click" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource PrimaryButton}" Content="Apply" Click="ApplyCardEdit_Click"/>
+                    </StackPanel>
+                    </StackPanel>
+                </Border>
+                </Grid>
             </Border>
         </primitives:Popup>
 

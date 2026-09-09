@@ -78,10 +78,16 @@ public sealed class ProjectStore
     {
         var destination = Path.Combine(RootDirectory, PromptFileName);
         if (File.Exists(destination)) return;
+        var configuredPrompt = new SettingsStore().Load().GlobalPrompt;
+        File.WriteAllText(destination, string.IsNullOrWhiteSpace(configuredPrompt) ? ReadEmbeddedPrompt() : configuredPrompt);
+    }
+
+    public static string ReadEmbeddedPrompt()
+    {
         using var source = typeof(ProjectStore).Assembly.GetManifestResourceStream("Zen.prompt.txt")
             ?? throw new FileNotFoundException("The embedded agent prompt is missing.");
-        using var target = File.Create(destination);
-        source.CopyTo(target);
+        using var reader = new StreamReader(source);
+        return reader.ReadToEnd();
     }
 
     private ProjectDocument CreateDocument() => new()
@@ -90,7 +96,6 @@ public sealed class ProjectStore
         Branches =
         [
             new BoardColumn { Id = "main", Title = "main", Branch = "main", IsPermanent = true },
-            new BoardColumn { Id = "uncategorized", Title = "Uncategorized", Branch = null, IsPermanent = true },
             new BoardColumn { Id = "archive", Title = "Archived", Branch = null, IsArchive = true, IsPermanent = true }
         ]
     };
@@ -109,10 +114,14 @@ public sealed class ProjectStore
             bugDefinition.Color = "#7A2632";
         var main = EnsureSystemColumn(document, "main", "main", false);
         main.Branch = "main";
-        var uncategorized = EnsureSystemColumn(document, "uncategorized", "Uncategorized", false);
-        uncategorized.Branch = null;
         var archive = EnsureSystemColumn(document, "archive", "Archived", true);
         archive.Branch = null;
+        var uncategorized = document.Branches.FirstOrDefault(column => column.Id.Equals("uncategorized", StringComparison.OrdinalIgnoreCase));
+        if (uncategorized is not null)
+        {
+            foreach (var card in uncategorized.Tasks.ToList()) main.Tasks.Add(card);
+            document.Branches.Remove(uncategorized);
+        }
         var usedIndexes = new HashSet<int>();
         var processedCardIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var maximumIndex = 0;
@@ -130,6 +139,28 @@ public sealed class ProjectStore
                 card.Files ??= [];
                 card.Requirements ??= [];
                 card.Flags ??= new CardFlags();
+                if (card.Kind == CardKind.Note)
+                {
+                    card.Tags.Clear();
+                    card.Files.Clear();
+                    card.Requirements.Clear();
+                    card.Flags = new CardFlags();
+                    card.DueDate = null;
+                    card.StartedDate = null;
+                    card.Priority = null;
+                }
+                else if (card.Kind == CardKind.Break)
+                {
+                    card.Title = string.Empty;
+                    card.Task = string.Empty;
+                    card.Tags.Clear();
+                    card.Files.Clear();
+                    card.Requirements.Clear();
+                    card.Flags = new CardFlags();
+                    card.DueDate = null;
+                    card.StartedDate = null;
+                    card.Priority = null;
+                }
                 var normalizedTags = card.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag))
                     .Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 card.Tags.Clear();
