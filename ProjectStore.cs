@@ -99,6 +99,14 @@ public sealed class ProjectStore
     {
         document.Branches ??= [];
         document.TagCatalog ??= [];
+        var duplicateTags = document.TagCatalog.GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
+            .SelectMany(group => group.Skip(1)).ToList();
+        foreach (var duplicate in duplicateTags) document.TagCatalog.Remove(duplicate);
+        var bugDefinition = document.TagCatalog.FirstOrDefault(tag => tag.Name.Equals("bug", StringComparison.OrdinalIgnoreCase));
+        if (bugDefinition is null)
+            document.TagCatalog.Add(new ProjectTag { Name = "bug", Color = "#7A2632" });
+        else
+            bugDefinition.Color = "#7A2632";
         var main = EnsureSystemColumn(document, "main", "main", false);
         main.Branch = "main";
         var uncategorized = EnsureSystemColumn(document, "uncategorized", "Uncategorized", false);
@@ -146,6 +154,12 @@ public sealed class ProjectStore
                 }
                 else if (column == archive) card.IsDone = true;
             }
+            var orderedTasks = column.Tasks.OrderByDescending(card => card.Tags.Contains("bug", StringComparer.OrdinalIgnoreCase)).ToList();
+            if (!orderedTasks.SequenceEqual(column.Tasks))
+            {
+                column.Tasks.Clear();
+                foreach (var card in orderedTasks) column.Tasks.Add(card);
+            }
         }
         document.NextCardIndex = Math.Max(document.NextCardIndex, maximumIndex + 1);
     }
@@ -168,6 +182,7 @@ public sealed class ProjectStore
         var catalog = document.TagCatalog.ToDictionary(tag => tag.Name, StringComparer.OrdinalIgnoreCase);
         foreach (var card in document.Branches.SelectMany(branch => branch.Tasks))
         {
+            card.IsBug = card.Tags.Contains("bug", StringComparer.OrdinalIgnoreCase);
             card.TagViews.Clear();
             foreach (var tag in card.Tags)
             {

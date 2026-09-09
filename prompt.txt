@@ -21,6 +21,13 @@ LOCKS AND ELIGIBILITY
 - Ignore tasks where `isDone` is true and tasks contained by `Archived`.
 - Work only on the task or branch the user directed you to. Ask when the requested target is ambiguous.
 
+BUG PRIORITY
+- A task tagged `bug` is a priority defect. Process eligible bug tasks before ordinary tasks in the same directed scope, while still respecting locks and explicit user direction.
+- Zen displays bug cards in dark red and automatically promotes them to the top of their branch.
+- If you discover a distinct bug while doing other work, do not silently expand the current task. Add a new task to the appropriate branch in `zen.tasks.json`.
+- A newly reported bug task must have a new immutable GUID `id`, the current unique `nextCardIndex`, a clear title, a reproducible task description, the `bug` tag, an empty `files` list unless evidence is attached, concrete requirements, appropriate action flags, `isDone: false`, and `isLocked: false`.
+- Increment project `nextCardIndex` after assigning the bug task's index. Insert the bug task before non-bug tasks in that branch and preserve all concurrent data.
+
 ENTERING A GIT-BACKED BRANCH
 Before changing project files for a task whose containing entry has a non-null `branch`:
 1. Inspect the repository and working tree. Preserve unrelated user changes.

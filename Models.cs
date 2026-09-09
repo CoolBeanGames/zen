@@ -64,6 +64,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     private bool _isDone;
     private bool _isCollapsed;
     private bool _isLocked;
+    private bool _isBug;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public int Index { get; set; }
     public string Title { get => _title; set => SetField(ref _title, value); }
@@ -76,6 +77,17 @@ public sealed class TaskCard : INotifyPropertyChanged
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
     public bool IsLocked { get => _isLocked; set => SetField(ref _isLocked, value); }
     public bool IsCollapsed { get => _isCollapsed; set => SetField(ref _isCollapsed, value); }
+    [JsonIgnore]
+    public bool IsBug
+    {
+        get => _isBug;
+        internal set
+        {
+            if (_isBug == value) return;
+            _isBug = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsBug)));
+        }
+    }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string IndexLabel => $"#{Index:000}";

@@ -142,14 +142,19 @@
                                     <ItemsControl Grid.Row="1" ItemsSource="{Binding Tasks}" Margin="11,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type local:TaskCard}">
-                                                    <Border Background="{StaticResource CardBrush}" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,9"
+                                                    <Border BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,9"
                                                             Cursor="Hand" PreviewMouseLeftButtonDown="TaskCard_PreviewMouseLeftButtonDown"
                                                             PreviewMouseLeftButtonUp="TaskCard_PreviewMouseLeftButtonUp"
                                                             PreviewMouseRightButtonUp="TaskCard_PreviewMouseRightButtonUp">
                                                         <Border.Style>
                                                             <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                                                                 <Setter Property="BorderBrush" Value="#2A303D"/>
                                                                 <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsBug}" Value="True">
+                                                                        <Setter Property="Background" Value="#35171B"/>
+                                                                        <Setter Property="BorderBrush" Value="#8D303B"/>
+                                                                    </DataTrigger>
                                                                     <DataTrigger Binding="{Binding IsLocked}" Value="True">
                                                                         <Setter Property="BorderBrush" Value="#D69B45"/>
                                                                     </DataTrigger>
