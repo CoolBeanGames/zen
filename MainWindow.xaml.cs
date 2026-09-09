@@ -629,15 +629,15 @@ public partial class MainWindow : Window
             var drag = _activeDrag;
             var pointer = e.GetPosition(RootLayout);
             var target = FindColumnAt(pointer);
-            var beforeCard = FindCardAt(pointer);
+            var cardDrop = FindCardDropAt(pointer);
             EndCardDrag();
             if (target is not null && drag.Source.Tasks.Remove(drag.Task))
             {
                 drag.Task.IsDone = target.Value.Column.Kind == ColumnKind.Archive;
-                var insertionIndex = beforeCard == drag.Task
+                var insertionIndex = cardDrop?.Card == drag.Task
                     ? Math.Min(drag.SourceIndex, target.Value.Column.Tasks.Count)
-                    : beforeCard is null ? target.Value.Column.Tasks.Count : target.Value.Column.Tasks.IndexOf(beforeCard);
-                target.Value.Column.Tasks.Insert(Math.Max(0, insertionIndex), drag.Task);
+                    : cardDrop is null ? target.Value.Column.Tasks.Count : target.Value.Column.Tasks.IndexOf(cardDrop.Value.Card) + (cardDrop.Value.After ? 1 : 0);
+                target.Value.Column.Tasks.Insert(Math.Clamp(insertionIndex, 0, target.Value.Column.Tasks.Count), drag.Task);
                 SaveProject();
             }
             e.Handled = true;
@@ -689,12 +689,13 @@ public partial class MainWindow : Window
         return null;
     }
 
-    private TaskCard? FindCardAt(Point point)
+    private (TaskCard Card, bool After)? FindCardDropAt(Point point)
     {
         var element = RootLayout.InputHitTest(point) as DependencyObject;
         while (element is not null)
         {
-            if (element is FrameworkElement { DataContext: TaskCard card }) return card;
+            if (element is Border { DataContext: TaskCard card } border)
+                return (card, point.Y > border.TranslatePoint(new Point(0, border.ActualHeight / 2), RootLayout).Y);
             element = VisualTreeHelper.GetParent(element);
         }
         return null;
