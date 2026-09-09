@@ -448,6 +448,8 @@
                              TextChanged="EditTagsInput_TextChanged" PreviewKeyDown="EditTagsInput_PreviewKeyDown"/>
                     <ListBox x:Name="TagSuggestions" Visibility="Collapsed" MaxHeight="100" Background="#20252F" BorderThickness="0"
                              Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="TagSuggestions_MouseLeftButtonUp"/>
+                    <TextBlock Text="INFO" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
+                    <CheckBox x:Name="EditBugFlag" Content="Bug — priority defect" Foreground="{StaticResource TextBrush}"/>
                     <TextBlock Text="REQUIREMENTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <ItemsControl x:Name="EditRequirementsList">
                         <ItemsControl.ItemTemplate>

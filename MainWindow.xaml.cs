@@ -753,7 +753,8 @@ public partial class MainWindow : Window
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
-        EditTagsInput.Text = string.Join(", ", card.Tags);
+        EditTagsInput.Text = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase)));
+        EditBugFlag.IsChecked = card.IsBug;
         EditTaskInput.Text = card.Task;
         EditPromptLabel.Text = card.IsNote ? "NOTE" : "TASK PROMPT";
         EditAdvancedFields.Visibility = card.IsNote ? Visibility.Collapsed : Visibility.Visible;
@@ -812,7 +813,9 @@ public partial class MainWindow : Window
         if (!_editingCard.IsNote)
         {
             _editingCard.Tags.Clear();
-            foreach (var tag in EditTagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase))
+            if (EditBugFlag.IsChecked == true) _editingCard.Tags.Add("bug");
+            foreach (var tag in EditTagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                         .Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase))
                 _editingCard.Tags.Add(tag);
             _editingCard.Requirements.Clear();
             foreach (var requirement in _editingRequirements)
