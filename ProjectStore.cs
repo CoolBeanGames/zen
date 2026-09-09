@@ -114,6 +114,7 @@ public sealed class ProjectStore
         var archive = EnsureSystemColumn(document, "archive", "Archived", true);
         archive.Branch = null;
         var usedIndexes = new HashSet<int>();
+        var processedCardIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var maximumIndex = 0;
         foreach (var column in document.Branches.ToList())
         {
@@ -122,6 +123,9 @@ public sealed class ProjectStore
                 column.Branch = CreateBranchName(column.Title, column.Id);
             foreach (var card in column.Tasks.ToList())
             {
+                // Completed cards moved into Archive during this pass are encountered
+                // again when Archive is visited. Process each immutable identity once.
+                if (!processedCardIds.Add(card.Id)) continue;
                 card.Tags ??= [];
                 card.Files ??= [];
                 card.Requirements ??= [];

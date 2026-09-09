@@ -101,12 +101,33 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:BoardColumn}">
-                            <Border Width="326" Margin="0,0,14,0" Background="{StaticResource ColumnBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="13">
+                            <Grid Width="326" Margin="0,0,14,0">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <Button Grid.Row="0" Tag="{Binding}" Click="AddTask_Click" HorizontalAlignment="Left" Margin="12,0,0,-1" Padding="12,7" Panel.ZIndex="2"
+                                        Background="{StaticResource ColumnBrush}" Foreground="{StaticResource MutedBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Tab" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Padding="{TemplateBinding Padding}" CornerRadius="9,9,0,0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="＋" Foreground="{TemplateBinding Foreground}" FontSize="15" Margin="0,-2,6,0"/>
+                                                    <TextBlock Text="Add task" Foreground="{TemplateBinding Foreground}" FontSize="11" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Tab" Property="Background" Value="#242A36"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            <Border Grid.Row="1" Width="326" Background="{StaticResource ColumnBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="13">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="68"/>
                                         <RowDefinition Height="*"/>
-                                        <RowDefinition Height="53"/>
                                     </Grid.RowDefinitions>
 
                                     <Grid Margin="17,0,12,0">
@@ -126,6 +147,18 @@
                                                 <TextBlock Text="{Binding KindLabel}" FontSize="9" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </StackPanel>
+                                        <Button Grid.Column="1" Content="Clear" Tag="{Binding}" Click="ClearArchive_Click" ToolTip="Clear archived cards" Padding="8,5">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsArchive}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                         <Button Grid.Column="1" Content="•••" Tag="{Binding}" Click="ColumnMenu_Click" ToolTip="Column actions">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
@@ -292,14 +325,9 @@
                                             </ItemsControl.ItemTemplate>
                                     </ItemsControl>
 
-                                    <Button Grid.Row="2" Style="{StaticResource IconButton}" Tag="{Binding}" Click="AddTask_Click" HorizontalContentAlignment="Left" Margin="8,4" Padding="11,8">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="＋" Foreground="{StaticResource MutedBrush}" FontSize="16" Margin="0,-2,7,0"/>
-                                            <TextBlock Text="Add task" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
-                                        </StackPanel>
-                                    </Button>
                                 </Grid>
                             </Border>
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -360,9 +388,10 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,5">
-                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                    <CheckBox IsChecked="{Binding IsDone, Mode=TwoWay}" Content="{Binding Text}" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
-                                    <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveRequirement_Click" Padding="6,2" MinHeight="24"/>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox IsChecked="{Binding IsDone, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox Grid.Column="1" Style="{StaticResource Field}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="8,5"/>
+                                    <Button Grid.Column="2" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveRequirement_Click" Padding="6,2" MinHeight="24"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

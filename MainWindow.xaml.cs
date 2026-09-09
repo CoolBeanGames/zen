@@ -859,6 +859,17 @@ public partial class MainWindow : Window
         SaveProject();
     }
 
+    private void ClearArchive_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: BoardColumn { IsArchive: true } archive } || archive.Tasks.Count == 0) return;
+        var result = MessageBox.Show(this,
+            $"Remove all {archive.Tasks.Count} archived card(s)? Attached files will remain in the project files folder.",
+            "Clear archive", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (result != MessageBoxResult.Yes) return;
+        archive.Tasks.Clear();
+        SaveProject();
+    }
+
     private void BoardScroller_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))

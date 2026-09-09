@@ -1,6 +1,6 @@
 ZEN PROJECT TASK SYSTEM — AGENT INSTRUCTIONS
 
-This folder is managed by Zen. `zen.tasks.json` is the canonical shared task database. Read this guide and then reread the complete database before selecting, executing, moving, or updating a task.
+This folder is managed by Zen. `zen.tasks.json` is the canonical shared task database. Read this guide and then reread the complete database before selecting, executing, moving, or updating a task. Unless the user explicitly asks only to inspect or explain, an instruction to read this guide also means to process the eligible queue branch by branch until completion or a real blocker.
 
 PROJECT LAYOUT
 - `zen.tasks.json`: project, branch, and task state.
