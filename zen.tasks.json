@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 38,
+  "nextCardIndex": 52,
   "tagCatalog": [
     {
       "name": "bug",
@@ -35,6 +35,38 @@
     {
       "name": "input",
       "color": "#704F9B"
+    },
+    {
+      "name": "note",
+      "color": "#8C553E"
+    },
+    {
+      "name": "ui",
+      "color": "#386D9A"
+    },
+    {
+      "name": "theme",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "break",
+      "color": "#386D9A"
+    },
+    {
+      "name": "data",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "branches",
+      "color": "#9A6334"
+    },
+    {
+      "name": "instructions",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "menus",
+      "color": "#704F9B"
     }
   ],
   "branches": [
@@ -43,6 +75,7 @@
       "name": "main",
       "branch": "main",
       "isArchive": false,
+      "isCollapsed": false,
       "isSystem": true,
       "tasks": []
     },
@@ -51,6 +84,7 @@
       "name": "Uncategorized",
       "branch": null,
       "isArchive": false,
+      "isCollapsed": false,
       "isSystem": true,
       "tasks": []
     },
@@ -59,11 +93,156 @@
       "name": "version_1_branch",
       "branch": "version_1_branch",
       "isArchive": false,
+      "isCollapsed": false,
       "isSystem": false,
       "tasks": [
         {
+          "id": "9a3dbfe2c17d44d79ad9b952b26cfb46",
+          "index": 40,
+          "kind": "note",
+          "title": "this is a test note",
+          "task": "",
+          "tags": [
+            "note"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:34:29.2483747+00:00",
+          "updatedAt": "2026-09-09T14:34:29.2483775+00:00"
+        },
+        {
+          "id": "ff1336b99b42424f9e17a4ff68eaf587",
+          "index": 48,
+          "kind": "task",
+          "title": "update instructions",
+          "task": "add instructions for new changes, and add design notes",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "cb87b2548ce44b4f913cef2bac4c6dec",
+              "text": "update the instructions to include the new stuff",
+              "isDone": true
+            },
+            {
+              "id": "5581d51bbab7432e92b25f69af0c443e",
+              "text": "add a design section so apps made will look similar to this one",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:41:20.8968286+00:00",
+          "updatedAt": "2026-09-09T14:42:13.610325+00:00"
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "name": "Archived",
+      "branch": null,
+      "isArchive": true,
+      "isCollapsed": false,
+      "isSystem": true,
+      "tasks": [
+        {
+          "id": "04f9ee3903a846ab997eb93ac64c77b8",
+          "index": 27,
+          "kind": "task",
+          "title": "Preserve card indexes during archive normalization",
+          "task": "Fix normalization so a completed card moved into Archived is not processed a second time and assigned a new index.",
+          "tags": [
+            "bug"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "77a099ab4784473d879da5bd7252cebf",
+              "text": "Each card identity is normalized only once per pass",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:05:03.5856565+00:00",
+          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
+        },
+        {
+          "id": "44c8656d2d904274a91ffe8f5b3d40b3",
+          "index": 43,
+          "kind": "task",
+          "title": "occasional fail to add task",
+          "task": "sometimes when i add a task (and im assuming other things) nothing happens when i click add, it simply silently fails.",
+          "tags": [
+            "bug",
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:35:02.5029216+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "ce32f812c96f4afab4959176c43d4482",
+          "index": 25,
+          "kind": "task",
+          "title": "move add task button",
+          "task": "move the button to the top, have it above the column like a folder tab",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:01:52.7713852+00:00",
+          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
+        },
+        {
           "id": "a84e20f4f1464db1b01d3af5b87dd7b3",
           "index": 28,
+          "kind": "task",
           "title": "open last opened project on load",
           "task": "when you open the project make it so it auto opens the last project you worked on",
           "tags": [
@@ -81,11 +260,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:22.5420964+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "602b2ac778884cd99316f3e511000aa4",
           "index": 31,
+          "kind": "task",
           "title": "change add task",
           "task": "change \u0022add task\u0022 to add, when you click it it opens a sub menu offering 4 types",
           "tags": [
@@ -119,11 +299,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:09:58.6690451+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "538cd81e57c34723ba3c497e9f739dae",
           "index": 32,
+          "kind": "task",
           "title": "drag to reorder",
           "task": "allow dragging to reorder inside of a branch",
           "tags": [
@@ -141,11 +322,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:11:16.3379834+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "6a100109f40f4e788a5b95162b88c136",
           "index": 29,
+          "kind": "task",
           "title": "right click card menu",
           "task": "create a right click menu that comes up when you right click a card",
           "tags": [
@@ -199,11 +381,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:31.1493332+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "4bb54ea5300c4921b10c4b9dfa8a424b",
           "index": 30,
+          "kind": "task",
           "title": "right click branch menu",
           "task": "similar to tasks add a right click menu when you click empty space on a branch",
           "tags": [
@@ -221,11 +404,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:37.5925903+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "008f03b20fbc48c39e72656bfc4d2c78",
           "index": 33,
+          "kind": "task",
           "title": "add collapse",
           "task": "add a collapse button near the add button that collapses a entire column",
           "tags": [
@@ -243,11 +427,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:12:08.4797455+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "804184e0a0e74bb0aabbe3d72bc7af8a",
           "index": 34,
+          "kind": "task",
           "title": "reorder branches",
           "task": "make it so we can reorder branches by dragging",
           "tags": [
@@ -265,11 +450,12 @@
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T09:12:47.9766117+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "59f636d9d6c24588bc8037a864c1cd6c",
           "index": 36,
+          "kind": "task",
           "title": "update prompt",
           "task": "update prompt.txt with new instructions we added today",
           "tags": [
@@ -293,11 +479,12 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:13:42.0540381+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
         },
         {
           "id": "1366f340dc2b4e80b2d0472f621174b1",
           "index": 37,
+          "kind": "task",
           "title": "add launch agents button",
           "task": "add the ability to launch a cli agentic agent to right click menus, in all cases direct the agent to read prompt and launch them in dangerous or yolo mode. support codex and claude\r\nmenu should be\r\nlaunch\r\n--codex\r\n--claude\r\n\r\nso a submenu within the submenu",
           "tags": [
@@ -331,30 +518,125 @@
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T09:14:23.6302878+00:00",
-          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
-        }
-      ]
-    },
-    {
-      "id": "archive",
-      "name": "Archived",
-      "branch": null,
-      "isArchive": true,
-      "isSystem": true,
-      "tasks": [
+          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
+        },
         {
-          "id": "04f9ee3903a846ab997eb93ac64c77b8",
-          "index": 27,
-          "title": "Preserve card indexes during archive normalization",
-          "task": "Fix normalization so a completed card moved into Archived is not processed a second time and assigned a new index.",
+          "id": "12e320db82b741f890245cb45e9f3605",
+          "index": 38,
+          "kind": "task",
+          "title": "pop up contrast",
+          "task": "the right click pop up list is unreadable",
           "tags": [
-            "bug"
+            "ui",
+            "theme"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:33:55.2092574+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "4c14a7d8df62447ba42ed5a1f5e99346",
+          "index": 42,
+          "kind": "task",
+          "title": "changes to notes",
+          "task": "notes dont need as much data here are some changes to their card",
+          "tags": [
+            "task"
           ],
           "files": [],
           "requirements": [
             {
-              "id": "77a099ab4784473d879da5bd7252cebf",
-              "text": "Each card identity is normalized only once per pass",
+              "id": "28cb31f690a84bf89df3c79261fbe208",
+              "text": "notes should literally just have the task prompt and a title. we dont need files, actions, or requirements",
+              "isDone": true
+            },
+            {
+              "id": "b4e09277e9164354aef5d27054599ff3",
+              "text": "change the background of the card so they stand out",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:34:50.2776338+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "83579a7610244acc862abb77338ad00b",
+          "index": 46,
+          "kind": "task",
+          "title": "break adjustments",
+          "task": "breaks dont need as much data here are some changes to their card",
+          "tags": [
+            "ui",
+            "data"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "f83a2ed696624604b2d09788f45571de",
+              "text": "breaks literally just need the info that its a break. nothing else,",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:38:53.6233253+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "11daa27b310c4037b4ef2ee4b01f00df",
+          "index": 49,
+          "kind": "task",
+          "title": "new data fields",
+          "task": "these arent really as much for the AI but add the data fields below",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "8aed155876744877b115e05ab02d080c",
+              "text": "date due (with calendar date picker)",
+              "isDone": true
+            },
+            {
+              "id": "ad9646d4c65a41b8b02aa8174b8328e2",
+              "text": "date started (with calendar date picker)",
+              "isDone": true
+            },
+            {
+              "id": "d8e9d4afdc8e45fe9dcb1f4b849714e5",
+              "text": "priority (shows on collapsed card)",
+              "isDone": true
+            },
+            {
+              "id": "1808bdb14bd84079b157540dedefbb68",
+              "text": "these fields are only visible if they are used",
               "isDone": true
             }
           ],
@@ -366,31 +648,128 @@
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:05:03.5856565+00:00",
-          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:42:24.1628704+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
         },
         {
-          "id": "ce32f812c96f4afab4959176c43d4482",
-          "index": 25,
-          "title": "move add task button",
-          "task": "move the button to the top, have it above the column like a folder tab",
+          "id": "5301868f61024f329a8bb31cc33f4ead",
+          "index": 50,
+          "kind": "task",
+          "title": "in dialogs make apply and cancel always visible",
+          "task": "currently if you scroll away or the window size increases they can get hidden, make then universally visible",
           "tags": [
-            "task"
+            "ui"
           ],
           "files": [],
-          "requirements": [],
+          "requirements": [
+            {
+              "id": "d4f40019b117455a9db4c26a461db6cb",
+              "text": "apply, cancel, or similar buttons are always visible",
+              "isDone": true
+            }
+          ],
           "flags": {
-            "commit": true,
+            "commit": false,
             "build": false,
             "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:01:52.7713852+00:00",
-          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:44:35.4812521+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "b65eebddfc80405484b7023bac139aeb",
+          "index": 51,
+          "kind": "task",
+          "title": "add settings menu",
+          "task": "add a settings menu for configuring info",
+          "tags": [
+            "menus"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "33447f86d21241a09bca848ec3866226",
+              "text": "can edit global prompt with an inline text editor",
+              "isDone": true
+            },
+            {
+              "id": "1aff929a6ae24685ac04a08f4bfa69f6",
+              "text": "can set the reload frequency",
+              "isDone": true
+            },
+            {
+              "id": "36cab61f0cbb4cc99ed1b74d40815a94",
+              "text": "and see a list of projects and remove one (doing so deletes prompt.txt and tasks gets copied to local directory in case its later restored)",
+              "isDone": true
+            },
+            {
+              "id": "442574f435074f4ebe426696cc6cc6ab",
+              "text": "and see version number",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:45:00.8631759+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "ead8199bfd9c4fd5bddf68780c6812dc",
+          "index": 47,
+          "kind": "task",
+          "title": "change uncategorized",
+          "task": "get rid of uncategorized all together, we dont need it",
+          "tags": [
+            "branches"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:40:30.4625126+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "64590ba0fa60477387a9469f65cb245b",
+          "index": 39,
+          "kind": "task",
+          "title": "change collapse behavior",
+          "task": "when collapsing a whole branch make it so the entire branch collapses, not just the cards in it. I want the area of the branch itself to collapse down.",
+          "tags": [
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:34:06.3202028+00:00",
+          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
         }
       ]
     }
