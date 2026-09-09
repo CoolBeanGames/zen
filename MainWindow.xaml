@@ -10,6 +10,19 @@
         Deactivated="Window_Deactivated">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <ContextMenu x:Key="EditorTextMenu" x:Shared="False">
+            <MenuItem Header="Undo" Command="ApplicationCommands.Undo"/>
+            <MenuItem Header="Redo" Command="ApplicationCommands.Redo"/>
+            <Separator/>
+            <MenuItem Header="Cut" Command="ApplicationCommands.Cut"/>
+            <MenuItem Header="Copy" Command="ApplicationCommands.Copy"/>
+            <MenuItem Header="Paste" Command="ApplicationCommands.Paste"/>
+            <Separator/>
+            <MenuItem Header="Select all" Command="ApplicationCommands.SelectAll"/>
+        </ContextMenu>
+        <Style x:Key="EditorField" TargetType="TextBox" BasedOn="{StaticResource Field}">
+            <Setter Property="ContextMenu" Value="{StaticResource EditorTextMenu}"/>
+        </Style>
         <Style x:Key="TinyPill" TargetType="Border">
             <Setter Property="Background" Value="#242A35"/>
             <Setter Property="CornerRadius" Value="5"/>
@@ -426,12 +439,12 @@
                         <Button Style="{StaticResource IconButton}" Content="×" HorizontalAlignment="Right" Click="CancelCardEdit_Click" FontSize="19" Padding="6,1"/>
                     </Grid>
                     <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
-                    <TextBox x:Name="EditTitleInput" Style="{StaticResource Field}"/>
+                    <TextBox x:Name="EditTitleInput" Style="{StaticResource EditorField}"/>
                     <TextBlock x:Name="EditPromptLabel" Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
-                    <TextBox x:Name="EditTaskInput" Style="{StaticResource Field}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                    <TextBox x:Name="EditTaskInput" Style="{StaticResource EditorField}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
                     <StackPanel x:Name="EditAdvancedFields">
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
-                    <TextBox x:Name="EditTagsInput" Style="{StaticResource Field}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"
+                    <TextBox x:Name="EditTagsInput" Style="{StaticResource EditorField}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"
                              TextChanged="EditTagsInput_TextChanged" PreviewKeyDown="EditTagsInput_PreviewKeyDown"/>
                     <ListBox x:Name="TagSuggestions" Visibility="Collapsed" MaxHeight="100" Background="#20252F" BorderThickness="0"
                              Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="TagSuggestions_MouseLeftButtonUp"/>
@@ -442,7 +455,7 @@
                                 <Grid Margin="0,0,0,5">
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                     <CheckBox IsChecked="{Binding IsDone, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <TextBox Grid.Column="1" Style="{StaticResource Field}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="8,5"/>
+                                    <TextBox Grid.Column="1" Style="{StaticResource EditorField}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="8,5"/>
                                     <Button Grid.Column="2" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveRequirement_Click" Padding="6,2" MinHeight="24"/>
                                 </Grid>
                             </DataTemplate>
@@ -450,7 +463,7 @@
                     </ItemsControl>
                     <Grid>
                         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                        <TextBox x:Name="NewRequirementInput" Style="{StaticResource Field}" KeyDown="NewRequirementInput_KeyDown"/>
+                        <TextBox x:Name="NewRequirementInput" Style="{StaticResource EditorField}" KeyDown="NewRequirementInput_KeyDown"/>
                         <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="Add" Click="AddRequirement_Click" Margin="7,0,0,0"/>
                     </Grid>
 
