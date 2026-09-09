@@ -30,6 +30,7 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _edgeScrollTimer;
     private readonly DispatcherTimer _cardClickTimer;
     private readonly DispatcherTimer _projectReloadTimer;
+    private readonly DispatcherTimer _periodicReloadTimer;
     private Vector _edgeScrollVelocity;
     private Point _lastDragPointer;
     private TaskCard? _pendingClickCard;
@@ -66,6 +67,11 @@ public partial class MainWindow : Window
             Interval = TimeSpan.FromMilliseconds(450)
         };
         _projectReloadTimer.Tick += ProjectReloadTimer_Tick;
+        _periodicReloadTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromSeconds(60)
+        };
+        _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
         SeedBoard();
     }
 
@@ -136,6 +142,8 @@ public partial class MainWindow : Window
             ApplyDocument(document);
             StartProjectWatcher();
             _recentProjects.Remember(store.RootDirectory, document.Name);
+            ReloadButton.IsEnabled = true;
+            _periodicReloadTimer.Start();
         }
         catch (Exception exception)
         {
@@ -222,6 +230,18 @@ public partial class MainWindow : Window
         {
             MessageBox.Show(this, exception.Message, "Invalid task data", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+    }
+
+    private void PeriodicReloadTimer_Tick(object? sender, EventArgs e)
+    {
+        _projectReloadTimer.Stop();
+        _projectReloadTimer.Start();
+    }
+
+    private void ReloadProject_Click(object sender, RoutedEventArgs e)
+    {
+        _projectReloadTimer.Stop();
+        ProjectReloadTimer_Tick(sender, EventArgs.Empty);
     }
 
     private void NewColumn_Click(object sender, RoutedEventArgs e) => OpenModal(ModalMode.Column);
