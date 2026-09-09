@@ -118,40 +118,6 @@
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:34:29.2483747+00:00",
           "updatedAt": "2026-09-09T14:34:29.2483775+00:00"
-        },
-        {
-          "id": "ff1336b99b42424f9e17a4ff68eaf587",
-          "index": 48,
-          "kind": "task",
-          "title": "update instructions",
-          "task": "add instructions for new changes, and add design notes",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "cb87b2548ce44b4f913cef2bac4c6dec",
-              "text": "update the instructions to include the new stuff",
-              "isDone": true
-            },
-            {
-              "id": "5581d51bbab7432e92b25f69af0c443e",
-              "text": "add a design section so apps made will look similar to this one",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:41:20.8968286+00:00",
-          "updatedAt": "2026-09-09T14:42:13.610325+00:00"
         }
       ]
     },
@@ -770,6 +736,40 @@
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:34:06.3202028+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "ff1336b99b42424f9e17a4ff68eaf587",
+          "index": 48,
+          "kind": "task",
+          "title": "update instructions",
+          "task": "add instructions for new changes, and add design notes",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "cb87b2548ce44b4f913cef2bac4c6dec",
+              "text": "update the instructions to include the new stuff",
+              "isDone": true
+            },
+            {
+              "id": "5581d51bbab7432e92b25f69af0c443e",
+              "text": "add a design section so apps made will look similar to this one",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T14:41:20.8968286+00:00",
+          "updatedAt": "2026-09-09T15:30:46.7005735+00:00"
         }
       ]
     }
