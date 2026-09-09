@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Microsoft.Win32;
@@ -45,6 +46,10 @@ public partial class MainWindow : Window
     private readonly RecentProjectStore _recentProjects = new();
     private FileSystemWatcher? _projectWatcher;
     private DateTime _ignoreFileEventsUntil;
+    private CardKind _newCardKind = CardKind.Task;
+    private BoardColumn? _pressedColumn;
+    private Point _columnDragStart;
+    private bool _isColumnDragging;
 
     public ObservableCollection<BoardColumn> Columns { get; } = [];
 
@@ -73,6 +78,13 @@ public partial class MainWindow : Window
         };
         _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
         SeedBoard();
+        Loaded += (_, _) => OpenLastProject();
+    }
+
+    private void OpenLastProject()
+    {
+        var lastProject = _recentProjects.Load().FirstOrDefault();
+        if (lastProject is not null) OpenProjectFolder(lastProject.Path);
     }
 
     private void SeedBoard()
@@ -143,6 +155,7 @@ public partial class MainWindow : Window
             StartProjectWatcher();
             _recentProjects.Remember(store.RootDirectory, document.Name);
             ReloadButton.IsEnabled = true;
+            LaunchProjectButton.IsEnabled = true;
             _periodicReloadTimer.Start();
         }
         catch (Exception exception)
@@ -244,15 +257,75 @@ public partial class MainWindow : Window
         ProjectReloadTimer_Tick(sender, EventArgs.Empty);
     }
 
+    private void LaunchProject_Click(object sender, RoutedEventArgs e)
+    {
+        var menu = new ContextMenu { PlacementTarget = LaunchProjectButton, Placement = PlacementMode.Bottom };
+        menu.Items.Add(CreateLaunchMenu("Process all eligible tasks in zen.tasks.json branch by branch."));
+        menu.IsOpen = true;
+    }
+
+    private MenuItem CreateLaunchMenu(string scopeInstruction)
+    {
+        var launch = new MenuItem { Header = "Launch" };
+        AddMenuItem(launch, "Codex", (_, _) => LaunchAgent("codex", scopeInstruction));
+        AddMenuItem(launch, "Claude", (_, _) => LaunchAgent("claude", scopeInstruction));
+        return launch;
+    }
+
+    private void LaunchAgent(string agent, string scopeInstruction)
+    {
+        if (_store is null) return;
+        var instruction = $"Read prompt.txt, then {scopeInstruction}";
+        var command = agent == "codex"
+            ? $"codex --dangerously-bypass-approvals-and-sandbox \"{instruction.Replace("\"", "\\\"")}\""
+            : $"claude --dangerously-skip-permissions \"{instruction.Replace("\"", "\\\"")}\"";
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/k {command}",
+                WorkingDirectory = _store.RootDirectory,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, $"Could not launch {agent}: {exception.Message}", "Agent launch failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private void NewColumn_Click(object sender, RoutedEventArgs e) => OpenModal(ModalMode.Column);
 
     private void AddTask_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { Tag: BoardColumn column })
-        {
-            _taskTarget = column;
-            OpenModal(ModalMode.Task);
-        }
+            ShowAddMenu((Button)sender, column);
+    }
+
+    private void ShowAddMenu(FrameworkElement anchor, BoardColumn column)
+    {
+        var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.Bottom };
+        AddCardTypeItem(menu, "Task", CardKind.Task, column);
+        AddCardTypeItem(menu, "Note — information only", CardKind.Note, column);
+        AddCardTypeItem(menu, "Break — stop agents here", CardKind.Break, column);
+        AddCardTypeItem(menu, "Bug — priority task", CardKind.Task, column, true);
+        menu.IsOpen = true;
+    }
+
+    private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false)
+    {
+        var item = new MenuItem { Header = header, Tag = new NewCardRequest(column, kind, bug) };
+        item.Click += NewCardType_Click;
+        menu.Items.Add(item);
+    }
+
+    private void NewCardType_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem { Tag: NewCardRequest request }) return;
+        _taskTarget = request.Column;
+        _newCardKind = request.Kind;
+        OpenModal(ModalMode.Task, request.Bug);
     }
 
     private void TaskCard_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -297,9 +370,66 @@ public partial class MainWindow : Window
         if (sender is not Border { DataContext: TaskCard card }) return;
         _cardClickTimer.Stop();
         _pendingClickCard = null;
-        card.IsLocked = !card.IsLocked;
-        SaveProject();
+        ShowCardMenu((Border)sender, card);
         e.Handled = true;
+    }
+
+    private void ShowCardMenu(Border anchor, TaskCard card)
+    {
+        var column = Columns.First(c => c.Tasks.Contains(card));
+        var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
+        menu.Items.Add(CreateNewCardMenu(column));
+        AddMenuItem(menu, "Edit", (_, _) => OpenCardEditor(card, anchor));
+        AddMenuItem(menu, "Delete", (_, _) => DeleteCard(card));
+        var move = new MenuItem { Header = "Move to" };
+        foreach (var destination in Columns.Where(candidate => candidate != column))
+            AddMenuItem(move, destination.Title, (_, _) => MoveCard(card, column, destination));
+        menu.Items.Add(move);
+        menu.Items.Add(new Separator());
+        AddMenuItem(menu, card.IsCollapsed ? "Expand" : "Collapse", (_, _) => { card.IsCollapsed = !card.IsCollapsed; SaveProject(); });
+        AddMenuItem(menu, card.IsLocked ? "Unlock" : "Lock", (_, _) => { card.IsLocked = !card.IsLocked; SaveProject(); });
+        AddMenuItem(menu, card.IsBug ? "Remove bug flag" : "Mark as bug", (_, _) => ToggleBug(card));
+        menu.Items.Add(CreateLaunchMenu($"Process only task #{card.Index} ({card.Id}) in branch '{column.Branch ?? column.Title}'."));
+        menu.IsOpen = true;
+    }
+
+    private static void AddMenuItem(ItemsControl parent, string header, RoutedEventHandler handler)
+    {
+        var item = new MenuItem { Header = header };
+        item.Click += handler;
+        parent.Items.Add(item);
+    }
+
+    private MenuItem CreateNewCardMenu(BoardColumn column)
+    {
+        var add = new MenuItem { Header = "New card" };
+        AddCardTypeItem(add, "Task", CardKind.Task, column);
+        AddCardTypeItem(add, "Note — information only", CardKind.Note, column);
+        AddCardTypeItem(add, "Break — stop agents here", CardKind.Break, column);
+        AddCardTypeItem(add, "Bug — priority task", CardKind.Task, column, true);
+        return add;
+    }
+
+    private void DeleteCard(TaskCard card)
+    {
+        if (MessageBox.Show(this, $"Delete #{card.Index:000} · {card.Title}? Attached files will remain.", "Delete card", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+        Columns.FirstOrDefault(column => column.Tasks.Contains(card))?.Tasks.Remove(card);
+        SaveProject();
+    }
+
+    private void MoveCard(TaskCard card, BoardColumn source, BoardColumn destination)
+    {
+        if (!source.Tasks.Remove(card)) return;
+        card.IsDone = destination.IsArchive;
+        destination.Tasks.Add(card);
+        SaveProject();
+    }
+
+    private void ToggleBug(TaskCard card)
+    {
+        var existing = card.Tags.FirstOrDefault(tag => tag.Equals("bug", StringComparison.OrdinalIgnoreCase));
+        if (existing is null) card.Tags.Insert(0, "bug"); else card.Tags.Remove(existing);
+        SaveProject();
     }
 
     private void CardClickTimer_Tick(object? sender, EventArgs e)
@@ -317,6 +447,27 @@ public partial class MainWindow : Window
     {
         if (_isBoardPanning || e.LeftButton != MouseButtonState.Pressed)
             return;
+
+        if (_pressedCard is null && _pressedColumn is not null)
+        {
+            var columnPointer = e.GetPosition(RootLayout);
+            if (!_isColumnDragging && Math.Abs(columnPointer.X - _columnDragStart.X) < SystemParameters.MinimumHorizontalDragDistance)
+                return;
+            if (!_isColumnDragging)
+            {
+                _isColumnDragging = true;
+                Mouse.Capture(RootLayout, CaptureMode.SubTree);
+            }
+            var columnTarget = FindColumnAt(columnPointer)?.Column;
+            if (columnTarget is not null && columnTarget != _pressedColumn)
+            {
+                var targetIndex = Columns.IndexOf(columnTarget);
+                Columns.Move(Columns.IndexOf(_pressedColumn), targetIndex);
+            }
+            RootLayout.Cursor = Cursors.SizeWE;
+            e.Handled = true;
+            return;
+        }
 
         if (_activeDrag is null)
         {
@@ -352,7 +503,7 @@ public partial class MainWindow : Window
         _pendingClickCard = null;
 
         card.ReleaseMouseCapture();
-        _activeDrag = new TaskDragPayload(task, source, card);
+        _activeDrag = new TaskDragPayload(task, source, source.Tasks.IndexOf(task), card);
         CreateDragPreview(card);
         MoveDragPreview(Mouse.GetPosition(RootLayout));
 
@@ -463,16 +614,30 @@ public partial class MainWindow : Window
 
     private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
+        if (_pressedColumn is not null)
+        {
+            var changed = _isColumnDragging;
+            _pressedColumn = null;
+            _isColumnDragging = false;
+            RootLayout.ClearValue(CursorProperty);
+            if (Mouse.Captured == RootLayout) Mouse.Capture(null);
+            if (changed) SaveProject();
+            if (changed) e.Handled = true;
+        }
         if (_activeDrag is not null)
         {
             var drag = _activeDrag;
-            var target = FindColumnAt(e.GetPosition(RootLayout));
+            var pointer = e.GetPosition(RootLayout);
+            var target = FindColumnAt(pointer);
+            var beforeCard = FindCardAt(pointer);
             EndCardDrag();
-            if (target is not null && target.Value.Column != drag.Source &&
-                drag.Source.Tasks.Remove(drag.Task))
+            if (target is not null && drag.Source.Tasks.Remove(drag.Task))
             {
                 drag.Task.IsDone = target.Value.Column.Kind == ColumnKind.Archive;
-                target.Value.Column.Tasks.Add(drag.Task);
+                var insertionIndex = beforeCard == drag.Task
+                    ? Math.Min(drag.SourceIndex, target.Value.Column.Tasks.Count)
+                    : beforeCard is null ? target.Value.Column.Tasks.Count : target.Value.Column.Tasks.IndexOf(beforeCard);
+                target.Value.Column.Tasks.Insert(Math.Max(0, insertionIndex), drag.Task);
                 SaveProject();
             }
             e.Handled = true;
@@ -503,6 +668,13 @@ public partial class MainWindow : Window
     {
         if (_activeDrag is not null)
             EndCardDrag();
+        if (_pressedColumn is not null)
+        {
+            _pressedColumn = null;
+            _isColumnDragging = false;
+            RootLayout.ClearValue(CursorProperty);
+            if (Mouse.Captured == RootLayout) Mouse.Capture(null);
+        }
     }
 
     private (Border Border, BoardColumn Column)? FindColumnAt(Point point)
@@ -512,6 +684,17 @@ public partial class MainWindow : Window
         {
             if (element is Border { DataContext: BoardColumn column } border)
                 return (border, column);
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return null;
+    }
+
+    private TaskCard? FindCardAt(Point point)
+    {
+        var element = RootLayout.InputHitTest(point) as DependencyObject;
+        while (element is not null)
+        {
+            if (element is FrameworkElement { DataContext: TaskCard card }) return card;
             element = VisualTreeHelper.GetParent(element);
         }
         return null;
@@ -773,17 +956,18 @@ public partial class MainWindow : Window
         if (_activeDrag is not null) EndCardDrag();
     }
 
-    private void OpenModal(ModalMode mode)
+    private void OpenModal(ModalMode mode, bool bug = false)
     {
         _modalMode = mode;
         NameInput.Text = string.Empty;
         ValidationText.Visibility = Visibility.Collapsed;
-        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : "Add a task";
+        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : $"Add a {_newCardKind.ToString().ToLowerInvariant()}";
         ModalSubtitle.Text = mode == ModalMode.Column
             ? "Add another branch or category to this workspace."
             : $"Add a task to {_taskTarget?.Title}.";
-        NameLabel.Text = mode == ModalMode.Column ? "COLUMN NAME" : "TASK TITLE";
-        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : "Add task";
+        NameLabel.Text = mode == ModalMode.Column ? "COLUMN NAME" : $"{_newCardKind.ToString().ToUpperInvariant()} TITLE";
+        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : $"Add {_newCardKind.ToString().ToLowerInvariant()}";
+        ConfirmButton.Tag = bug;
         ModalScrim.Visibility = Visibility.Visible;
         NameInput.Focus();
     }
@@ -823,13 +1007,16 @@ public partial class MainWindow : Window
         }
         else if (_taskTarget is not null)
         {
-            _taskTarget.Tasks.Add(new TaskCard
+            var card = new TaskCard
             {
                 Index = _nextTaskIndex++,
+                Kind = _newCardKind,
                 Title = name,
                 Task = string.Empty,
-                Tags = ["task"]
-            });
+                Tags = _newCardKind switch { CardKind.Note => ["note"], CardKind.Break => ["break"], _ => ["task"] }
+            };
+            if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
+            _taskTarget.Tasks.Add(card);
             SaveProject();
             CloseModal();
         }
@@ -837,13 +1024,77 @@ public partial class MainWindow : Window
 
     private void ColumnMenu_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button { Tag: BoardColumn column } || column.IsPermanent) return;
+        if (sender is Button { Tag: BoardColumn column }) ShowColumnMenu((Button)sender, column);
+    }
 
-        var menu = new ContextMenu { PlacementTarget = (Button)sender };
-        var archive = new MenuItem { Header = "Archive column", Tag = column };
-        archive.Click += ArchiveColumn_Click;
-        menu.Items.Add(archive);
+    private void Column_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: BoardColumn column } element || FindDataContext<TaskCard>(e.OriginalSource as DependencyObject) is not null) return;
+        ShowColumnMenu(element, column);
+        e.Handled = true;
+    }
+
+    private void ShowColumnMenu(Control anchor, BoardColumn column) => ShowColumnMenu((FrameworkElement)anchor, column);
+
+    private void ShowColumnMenu(FrameworkElement anchor, BoardColumn column)
+    {
+        var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
+        menu.Items.Add(CreateNewCardMenu(column));
+        AddMenuItem(menu, column.IsCollapsed ? "Expand column" : "Collapse column", (_, _) => ToggleColumn(column));
+        menu.Items.Add(CreateLaunchMenu($"Process the eligible queue in branch '{column.Branch ?? column.Title}'."));
+        if (!column.IsPermanent)
+        {
+            menu.Items.Add(new Separator());
+            var archive = new MenuItem { Header = "Archive column", Tag = column };
+            archive.Click += ArchiveColumn_Click;
+            menu.Items.Add(archive);
+        }
         menu.IsOpen = true;
+    }
+
+    private void ToggleColumnCollapse_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: BoardColumn column }) ToggleColumn(column);
+    }
+
+    private void ToggleColumn(BoardColumn column)
+    {
+        column.IsCollapsed = !column.IsCollapsed;
+        SaveProject();
+    }
+
+    private void ColumnHeader_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: BoardColumn column } ||
+            FindDataContext<TaskCard>(e.OriginalSource as DependencyObject) is not null ||
+            FindVisualAncestor<Button>(e.OriginalSource as DependencyObject) is not null) return;
+        _pressedColumn = column;
+        _columnDragStart = e.GetPosition(RootLayout);
+    }
+
+    private void ColumnHeader_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_isColumnDragging) _pressedColumn = null;
+    }
+
+    private static T? FindDataContext<T>(DependencyObject? element) where T : class
+    {
+        while (element is not null)
+        {
+            if (element is FrameworkElement { DataContext: T value }) return value;
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return null;
+    }
+
+    private static T? FindVisualAncestor<T>(DependencyObject? element) where T : DependencyObject
+    {
+        while (element is not null)
+        {
+            if (element is T value) return value;
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return null;
     }
 
     private void ArchiveColumn_Click(object sender, RoutedEventArgs e)
@@ -949,7 +1200,8 @@ public partial class MainWindow : Window
 
     private enum ModalMode { Column, Task }
 
-    private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, Border SourceElement);
+    private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, int SourceIndex, Border SourceElement);
+    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug);
 
     [DllImport("user32.dll")]
     private static extern uint GetDoubleClickTime();

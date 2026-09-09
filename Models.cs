@@ -8,6 +8,9 @@ namespace Zen;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ColumnKind { Work, Archive }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CardKind { Task, Note, Break }
+
 public sealed class ProjectDocument
 {
     public int SchemaVersion { get; set; } = 1;
@@ -32,11 +35,21 @@ public sealed class ProjectDocument
 public sealed class BoardColumn : INotifyPropertyChanged
 {
     private string _title = string.Empty;
+    private bool _isCollapsed;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     [JsonPropertyName("name")]
     public string Title { get => _title; set => SetField(ref _title, value); }
     public string? Branch { get; set; }
     public bool IsArchive { get; set; }
+    public bool IsCollapsed
+    {
+        get => _isCollapsed;
+        set
+        {
+            if (!SetField(ref _isCollapsed, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CollapseGlyph)));
+        }
+    }
     [JsonPropertyName("isSystem")]
     public bool IsPermanent { get; set; }
     public ObservableCollection<TaskCard> Tasks { get; set; } = [];
@@ -48,12 +61,14 @@ public sealed class BoardColumn : INotifyPropertyChanged
     }
     [JsonIgnore] public string KindLabel => IsArchive ? "HISTORY" : Branch is null ? "CATEGORY" : $"BRANCH · {Branch}";
     [JsonIgnore] public string KindGlyph => IsArchive ? "↙" : Branch is null ? "◆" : "⑂";
+    [JsonIgnore] public string CollapseGlyph => IsCollapsed ? "▾" : "▴";
     public event PropertyChangedEventHandler? PropertyChanged;
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        return true;
     }
 }
 
@@ -67,6 +82,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     private bool _isBug;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public int Index { get; set; }
+    public CardKind Kind { get; set; } = CardKind.Task;
     public string Title { get => _title; set => SetField(ref _title, value); }
     public string Task { get => _task; set => SetField(ref _task, value); }
     public ObservableCollection<string> Tags { get; set; } = [];
@@ -91,6 +107,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string IndexLabel => $"#{Index:000}";
+    [JsonIgnore] public string KindLabel => Kind switch { CardKind.Note => "NOTE", CardKind.Break => "BREAK", _ => string.Empty };
     [JsonIgnore] public string RequirementProgress => $"{Requirements.Count(r => r.IsDone)}/{Requirements.Count}";
     public event PropertyChangedEventHandler? PropertyChanged;
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)

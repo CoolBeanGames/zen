@@ -14,12 +14,20 @@ DATA SHAPE AND OWNERSHIP
 - `main` always uses the Git branch `main`.
 - `Uncategorized` and `Archived` have `branch: null` and are not Git branches.
 - Task order within a branch is significant. When directed to process a branch, process eligible tasks from top to bottom.
+- Branch order is also significant when the scope is the whole project. Process branch objects from top to bottom.
 - Use a task's immutable `id` as its identity. `index` is a unique human-facing reference.
+
+CARD TYPES
+- `kind: "task"` is executable work and follows the normal eligibility and completion rules.
+- `kind: "note"` is information for humans and agents. Read it for context, but do not execute it or mark it done unless the user explicitly directs you to change it.
+- `kind: "break"` is a queue boundary. When processing a branch or the whole project, stop before the break card and leave it and all later cards untouched. Resume beyond it only when the user explicitly directs you to do so or moves/removes the break.
+- Older cards without `kind` are tasks.
 
 LOCKS AND ELIGIBILITY
 - Never select, edit, move, execute, or otherwise act on a task where `isLocked` is true. Locked tasks are reserved for the user.
 - Ignore tasks where `isDone` is true and tasks contained by `Archived`.
 - Work only on the task or branch the user directed you to. Ask when the requested target is ambiguous.
+- A launch request that names a task ID/index is explicit task scope. A launch request that names a branch is explicit branch scope. A project launch means process every eligible branch in stored order.
 
 BUG PRIORITY
 - A task tagged `bug` is a priority defect. Process eligible bug tasks before ordinary tasks in the same directed scope, while still respecting locks and explicit user direction.
