@@ -655,12 +655,20 @@ public partial class MainWindow : Window
         }
 
         var picker = new OpenFileDialog { Title = "Attach files to this card", Multiselect = true, CheckFileExists = true };
-        if (picker.ShowDialog(this) != true) return;
-        foreach (var path in picker.FileNames)
+        CardEditorPopup.StaysOpen = true;
+        try
         {
-            if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
-            _pendingUploadPaths.Add(path);
-            _editingFileNames.Add($"＋ {System.IO.Path.GetFileName(path)}");
+            if (picker.ShowDialog(this) != true) return;
+            foreach (var path in picker.FileNames)
+            {
+                if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
+                _pendingUploadPaths.Add(path);
+                _editingFileNames.Add($"＋ {System.IO.Path.GetFileName(path)}");
+            }
+        }
+        finally
+        {
+            CardEditorPopup.StaysOpen = false;
         }
     }
 

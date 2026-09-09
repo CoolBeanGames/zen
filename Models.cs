@@ -110,6 +110,8 @@ public sealed class CardFile
     public string Name { get; set; } = string.Empty;
     public string RelativePath { get; set; } = string.Empty;
     public long Size { get; set; }
+    [JsonIgnore] public string AbsolutePath { get; set; } = string.Empty;
+    [JsonIgnore] public bool IsImage { get; set; }
 }
 
 public sealed class CardFlags : INotifyPropertyChanged

@@ -31,6 +31,7 @@ public sealed class ProjectStore
                 ?? throw new InvalidDataException($"Could not read {DataFileName}.")
             : CreateDocument();
         Normalize(document);
+        HydrateFiles(document);
         Save(document);
         return document;
     }
@@ -55,7 +56,14 @@ public sealed class ProjectStore
             destinationName = $"{stem}-{suffix++}{extension}";
         var destination = Path.Combine(FilesPath, destinationName);
         File.Copy(sourcePath, destination);
-        return new CardFile { Name = originalName, RelativePath = $"files/{destinationName}", Size = new FileInfo(destination).Length };
+        return new CardFile
+        {
+            Name = originalName,
+            RelativePath = $"files/{destinationName}",
+            Size = new FileInfo(destination).Length,
+            AbsolutePath = destination,
+            IsImage = IsImageExtension(extension)
+        };
     }
 
     private void EnsurePromptFile()
@@ -117,6 +125,22 @@ public sealed class ProjectStore
         }
         document.NextCardIndex = Math.Max(document.NextCardIndex, maximumIndex + 1);
     }
+
+    private void HydrateFiles(ProjectDocument document)
+    {
+        foreach (var file in document.Branches.SelectMany(branch => branch.Tasks).SelectMany(card => card.Files))
+        {
+            var relativePath = file.RelativePath.Replace('/', Path.DirectorySeparatorChar);
+            var absolutePath = Path.GetFullPath(Path.Combine(RootDirectory, relativePath));
+            if (!absolutePath.StartsWith(RootDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                continue;
+            file.AbsolutePath = absolutePath;
+            file.IsImage = IsImageExtension(Path.GetExtension(file.Name));
+        }
+    }
+
+    private static bool IsImageExtension(string extension) => extension.ToLowerInvariant() is
+        ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tif" or ".tiff";
 
     public static string CreateBranchName(string title, string? fallbackId = null)
     {
