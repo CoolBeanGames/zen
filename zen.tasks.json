@@ -84,98 +84,20 @@
       "tasks": []
     },
     {
-      "id": "uncategorized",
-      "name": "Uncategorized",
-      "branch": null,
-      "isArchive": false,
-      "isCollapsed": false,
-      "isSystem": true,
-      "tasks": []
-    },
-    {
-      "id": "291e96835151430e94a05946e132a10a",
-      "name": "version_1_branch",
-      "branch": "version_1_branch",
-      "isArchive": false,
-      "isCollapsed": false,
-      "isSystem": false,
-      "tasks": [
-        {
-          "id": "9a3dbfe2c17d44d79ad9b952b26cfb46",
-          "index": 40,
-          "kind": "note",
-          "title": "this is a test note",
-          "task": "",
-          "tags": [
-            "note"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:34:29.2483747+00:00",
-          "updatedAt": "2026-09-09T14:34:29.2483775+00:00"
-        },
-        {
-          "id": "f2fdd5b48baa49799e23682b92b0635e",
-          "index": 52,
-          "kind": "task",
-          "title": "merge to main and publish Zen 0.2.1",
-          "task": "Verify version_1_branch, merge it safely into main, commit the merged task state, build the Windows release artifact, push main, and publish GitHub release v0.2.1.",
-          "tags": [
-            "release"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "7e62cdd326a9453c9a99c965e9b90c39",
-              "text": "merge version_1_branch into main",
-              "isDone": false
-            },
-            {
-              "id": "8b828a9fa5b24b9f8f7759f78924788f",
-              "text": "commit and push the merged main branch",
-              "isDone": false
-            },
-            {
-              "id": "64caf9cdc9004a029d1d4d6f70e99400",
-              "text": "build and publish GitHub release v0.2.1",
-              "isDone": false
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": true
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T19:02:52.4424755+00:00",
-          "updatedAt": "2026-09-09T19:02:52.4424755+00:00"
-        }
-      ]
-    },
-    {
       "id": "archive",
       "name": "Archived",
       "branch": null,
       "isArchive": true,
-      "isCollapsed": false,
+      "isCollapsed": true,
       "isSystem": true,
       "tasks": [
         {
           "id": "04f9ee3903a846ab997eb93ac64c77b8",
           "index": 27,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "Preserve card indexes during archive normalization",
           "task": "Fix normalization so a completed card moved into Archived is not processed a second time and assigned a new index.",
           "tags": [
@@ -205,6 +127,9 @@
           "id": "44c8656d2d904274a91ffe8f5b3d40b3",
           "index": 43,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "occasional fail to add task",
           "task": "sometimes when i add a task (and im assuming other things) nothing happens when i click add, it simply silently fails.",
           "tags": [
@@ -229,6 +154,9 @@
           "id": "ce32f812c96f4afab4959176c43d4482",
           "index": 25,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "move add task button",
           "task": "move the button to the top, have it above the column like a folder tab",
           "tags": [
@@ -252,6 +180,9 @@
           "id": "a84e20f4f1464db1b01d3af5b87dd7b3",
           "index": 28,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "open last opened project on load",
           "task": "when you open the project make it so it auto opens the last project you worked on",
           "tags": [
@@ -275,6 +206,9 @@
           "id": "602b2ac778884cd99316f3e511000aa4",
           "index": 31,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "change add task",
           "task": "change \u0022add task\u0022 to add, when you click it it opens a sub menu offering 4 types",
           "tags": [
@@ -314,6 +248,9 @@
           "id": "538cd81e57c34723ba3c497e9f739dae",
           "index": 32,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "drag to reorder",
           "task": "allow dragging to reorder inside of a branch",
           "tags": [
@@ -337,6 +274,9 @@
           "id": "6a100109f40f4e788a5b95162b88c136",
           "index": 29,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "right click card menu",
           "task": "create a right click menu that comes up when you right click a card",
           "tags": [
@@ -396,6 +336,9 @@
           "id": "4bb54ea5300c4921b10c4b9dfa8a424b",
           "index": 30,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "right click branch menu",
           "task": "similar to tasks add a right click menu when you click empty space on a branch",
           "tags": [
@@ -419,6 +362,9 @@
           "id": "008f03b20fbc48c39e72656bfc4d2c78",
           "index": 33,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "add collapse",
           "task": "add a collapse button near the add button that collapses a entire column",
           "tags": [
@@ -442,6 +388,9 @@
           "id": "804184e0a0e74bb0aabbe3d72bc7af8a",
           "index": 34,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "reorder branches",
           "task": "make it so we can reorder branches by dragging",
           "tags": [
@@ -465,6 +414,9 @@
           "id": "59f636d9d6c24588bc8037a864c1cd6c",
           "index": 36,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "update prompt",
           "task": "update prompt.txt with new instructions we added today",
           "tags": [
@@ -494,6 +446,9 @@
           "id": "1366f340dc2b4e80b2d0472f621174b1",
           "index": 37,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "add launch agents button",
           "task": "add the ability to launch a cli agentic agent to right click menus, in all cases direct the agent to read prompt and launch them in dangerous or yolo mode. support codex and claude\r\nmenu should be\r\nlaunch\r\n--codex\r\n--claude\r\n\r\nso a submenu within the submenu",
           "tags": [
@@ -533,6 +488,9 @@
           "id": "12e320db82b741f890245cb45e9f3605",
           "index": 38,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "pop up contrast",
           "task": "the right click pop up list is unreadable",
           "tags": [
@@ -557,6 +515,9 @@
           "id": "4c14a7d8df62447ba42ed5a1f5e99346",
           "index": 42,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "changes to notes",
           "task": "notes dont need as much data here are some changes to their card",
           "tags": [
@@ -591,6 +552,9 @@
           "id": "83579a7610244acc862abb77338ad00b",
           "index": 46,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "break adjustments",
           "task": "breaks dont need as much data here are some changes to their card",
           "tags": [
@@ -621,6 +585,9 @@
           "id": "11daa27b310c4037b4ef2ee4b01f00df",
           "index": 49,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "new data fields",
           "task": "these arent really as much for the AI but add the data fields below",
           "tags": [
@@ -665,6 +632,9 @@
           "id": "5301868f61024f329a8bb31cc33f4ead",
           "index": 50,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "in dialogs make apply and cancel always visible",
           "task": "currently if you scroll away or the window size increases they can get hidden, make then universally visible",
           "tags": [
@@ -694,6 +664,9 @@
           "id": "b65eebddfc80405484b7023bac139aeb",
           "index": 51,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "add settings menu",
           "task": "add a settings menu for configuring info",
           "tags": [
@@ -738,6 +711,9 @@
           "id": "ead8199bfd9c4fd5bddf68780c6812dc",
           "index": 47,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "change uncategorized",
           "task": "get rid of uncategorized all together, we dont need it",
           "tags": [
@@ -761,6 +737,9 @@
           "id": "64590ba0fa60477387a9469f65cb245b",
           "index": 39,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "change collapse behavior",
           "task": "when collapsing a whole branch make it so the entire branch collapses, not just the cards in it. I want the area of the branch itself to collapse down.",
           "tags": [
@@ -784,6 +763,9 @@
           "id": "ff1336b99b42424f9e17a4ff68eaf587",
           "index": 48,
           "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
           "title": "update instructions",
           "task": "add instructions for new changes, and add design notes",
           "tags": [
@@ -813,6 +795,48 @@
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:41:20.8968286+00:00",
           "updatedAt": "2026-09-09T15:30:46.7005735+00:00"
+        },
+        {
+          "id": "f2fdd5b48baa49799e23682b92b0635e",
+          "index": 52,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "merge to main and publish Zen 0.2.1",
+          "task": "Verify version_1_branch, merge it safely into main, commit the merged task state, build the Windows release artifact, push main, and publish GitHub release v0.2.1.",
+          "tags": [
+            "release"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "7e62cdd326a9453c9a99c965e9b90c39",
+              "text": "merge version_1_branch into main",
+              "isDone": true
+            },
+            {
+              "id": "8b828a9fa5b24b9f8f7759f78924788f",
+              "text": "commit and push the merged main branch",
+              "isDone": true
+            },
+            {
+              "id": "64caf9cdc9004a029d1d4d6f70e99400",
+              "text": "build and publish GitHub release v0.2.1",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": true
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T19:02:52.4424755+00:00",
+          "updatedAt": "2026-09-09T19:07:16.2476923+00:00"
         }
       ]
     }
