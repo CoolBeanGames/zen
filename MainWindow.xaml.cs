@@ -397,7 +397,10 @@ public partial class MainWindow : Window
         AddMenuItem(menu, card.IsCollapsed ? "Expand" : "Collapse", (_, _) => { card.IsCollapsed = !card.IsCollapsed; SaveProject(); });
         AddMenuItem(menu, card.IsLocked ? "Unlock" : "Lock", (_, _) => { card.IsLocked = !card.IsLocked; SaveProject(); });
         AddMenuItem(menu, card.IsBug ? "Remove bug flag" : "Mark as bug", (_, _) => ToggleBug(card));
-        menu.Items.Add(CreateLaunchMenu($"Process only task #{card.Index} ({card.Id}) in branch '{column.Branch ?? column.Title}'."));
+        if (column.IsLocked)
+            menu.Items.Add(new MenuItem { Header = "Launch — branch locked", IsEnabled = false });
+        else
+            menu.Items.Add(CreateLaunchMenu($"Process only task #{card.Index} ({card.Id}) in branch '{column.Branch ?? column.Title}'."));
         menu.IsOpen = true;
     }
 
@@ -1119,7 +1122,11 @@ public partial class MainWindow : Window
         var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
         menu.Items.Add(CreateNewCardMenu(column));
         AddMenuItem(menu, column.IsCollapsed ? "Expand column" : "Collapse column", (_, _) => ToggleColumn(column));
-        menu.Items.Add(CreateLaunchMenu($"Process the eligible queue in branch '{column.Branch ?? column.Title}'."));
+        AddMenuItem(menu, column.IsLocked ? "Unlock branch" : "Lock branch", (_, _) => { column.IsLocked = !column.IsLocked; SaveProject(); });
+        if (column.IsLocked)
+            menu.Items.Add(new MenuItem { Header = "Launch — branch locked", IsEnabled = false });
+        else
+            menu.Items.Add(CreateLaunchMenu($"Process the eligible queue in branch '{column.Branch ?? column.Title}'."));
         if (!column.IsPermanent)
         {
             menu.Items.Add(new Separator());

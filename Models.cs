@@ -39,6 +39,7 @@ public sealed class BoardColumn : INotifyPropertyChanged
 {
     private string _title = string.Empty;
     private bool _isCollapsed;
+    private bool _isLocked;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     [JsonPropertyName("name")]
     public string Title { get => _title; set => SetField(ref _title, value); }
@@ -55,6 +56,16 @@ public sealed class BoardColumn : INotifyPropertyChanged
     }
     [JsonPropertyName("isSystem")]
     public bool IsPermanent { get; set; }
+    public bool IsLocked
+    {
+        get => _isLocked;
+        set
+        {
+            if (!SetField(ref _isLocked, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LockGlyph)));
+        }
+    }
+    [JsonIgnore] public string LockGlyph => IsLocked ? "🔒" : string.Empty;
     public ObservableCollection<TaskCard> Tasks { get; set; } = [];
     [JsonIgnore]
     public ColumnKind Kind

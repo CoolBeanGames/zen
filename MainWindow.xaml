@@ -146,7 +146,10 @@
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="{StaticResource ColumnBrush}"/>
-                                        <Style.Triggers><DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Height" Value="68"/></DataTrigger></Style.Triggers>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Height" Value="68"/></DataTrigger>
+                                            <DataTrigger Binding="{Binding IsLocked}" Value="True"><Setter Property="BorderBrush" Value="#D69B45"/></DataTrigger>
+                                        </Style.Triggers>
                                     </Style>
                                 </Border.Style>
                                 <Grid>
@@ -168,6 +171,7 @@
                                                     <Border Style="{StaticResource TinyPill}" Margin="8,-2,0,0">
                                                         <TextBlock Text="{Binding Tasks.Count}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
                                                     </Border>
+                                                    <TextBlock Text="{Binding LockGlyph}" Foreground="#E5AE58" FontSize="11" Margin="6,-1,0,0" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding KindLabel}" FontSize="9" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0"/>
                                             </StackPanel>

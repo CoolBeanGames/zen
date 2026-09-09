@@ -27,6 +27,7 @@ CARD TYPES
 
 LOCKS AND ELIGIBILITY
 - Never select, edit, move, execute, or otherwise act on a task where `isLocked` is true. Locked tasks are reserved for the user.
+- Never enter, check out, create, execute, or otherwise act on a branch whose containing entry has `isLocked` true. Locked branches are reserved for the user. Skip a locked branch entirely when processing the whole project, and stop with a report if the user directs you at a locked branch or at a task inside one.
 - Ignore tasks where `isDone` is true and tasks contained by `Archived`.
 - Work only on the task or branch the user directed you to. Ask when the requested target is ambiguous.
 - A launch request that names a task ID/index is explicit task scope. A launch request that names a branch is explicit branch scope. A project launch means process every eligible branch in stored order.
