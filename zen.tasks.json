@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 28,
+  "nextCardIndex": 38,
   "tagCatalog": [
     {
       "name": "bug",
@@ -27,6 +27,14 @@
     {
       "name": "info_tags",
       "color": "#8C553E"
+    },
+    {
+      "name": "managment",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "input",
+      "color": "#704F9B"
     }
   ],
   "branches": [
@@ -52,7 +60,280 @@
       "branch": "version_1_branch",
       "isArchive": false,
       "isSystem": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": "a84e20f4f1464db1b01d3af5b87dd7b3",
+          "index": 28,
+          "title": "open last opened project on load",
+          "task": "when you open the project make it so it auto opens the last project you worked on",
+          "tags": [
+            "managment"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:07:22.5420964+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "602b2ac778884cd99316f3e511000aa4",
+          "index": 31,
+          "title": "change add task",
+          "task": "change \u0022add task\u0022 to add, when you click it it opens a sub menu offering 4 types",
+          "tags": [
+            "managment"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "2806dcf574b642619372773e7110ac2b",
+              "text": "add task",
+              "isDone": true
+            },
+            {
+              "id": "296556b177014d7c9d307f5c2fa64534",
+              "text": "add note - adds info only",
+              "isDone": true
+            },
+            {
+              "id": "ced0525abdab47c4a0fa922030204c01",
+              "text": "add break - tells the agent to stop when they hit it",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:09:58.6690451+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "538cd81e57c34723ba3c497e9f739dae",
+          "index": 32,
+          "title": "drag to reorder",
+          "task": "allow dragging to reorder inside of a branch",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:11:16.3379834+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "6a100109f40f4e788a5b95162b88c136",
+          "index": 29,
+          "title": "right click card menu",
+          "task": "create a right click menu that comes up when you right click a card",
+          "tags": [
+            "input"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "d8ea7257386043e0ac0be6e6b978f23e",
+              "text": "new card",
+              "isDone": true
+            },
+            {
+              "id": "94deb9aeedcf4f35883e79331c0f8062",
+              "text": "edit",
+              "isDone": true
+            },
+            {
+              "id": "4510331e2dfc4aa88c9560a31a49d775",
+              "text": "delete",
+              "isDone": true
+            },
+            {
+              "id": "a0726c3d56cf48039717ba08e6969a39",
+              "text": "move to (opens a sub drop down for all the branches)",
+              "isDone": true
+            },
+            {
+              "id": "4244dd6aa2584efa9eefad348bab892a",
+              "text": "collapse/expand",
+              "isDone": true
+            },
+            {
+              "id": "890f69b949e842e9961aa70ce3b669c6",
+              "text": "lock",
+              "isDone": true
+            },
+            {
+              "id": "b18e1bd18e3240848df2b617f22eaa9b",
+              "text": "bug",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:07:31.1493332+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "4bb54ea5300c4921b10c4b9dfa8a424b",
+          "index": 30,
+          "title": "right click branch menu",
+          "task": "similar to tasks add a right click menu when you click empty space on a branch",
+          "tags": [
+            "input"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:07:37.5925903+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "008f03b20fbc48c39e72656bfc4d2c78",
+          "index": 33,
+          "title": "add collapse",
+          "task": "add a collapse button near the add button that collapses a entire column",
+          "tags": [
+            "managment"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:12:08.4797455+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "804184e0a0e74bb0aabbe3d72bc7af8a",
+          "index": 34,
+          "title": "reorder branches",
+          "task": "make it so we can reorder branches by dragging",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T09:12:47.9766117+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "59f636d9d6c24588bc8037a864c1cd6c",
+          "index": 36,
+          "title": "update prompt",
+          "task": "update prompt.txt with new instructions we added today",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "bf5b8d3806d64a49b743e3f93b9c0af3",
+              "text": "text file updated",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T09:13:42.0540381+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        },
+        {
+          "id": "1366f340dc2b4e80b2d0472f621174b1",
+          "index": 37,
+          "title": "add launch agents button",
+          "task": "add the ability to launch a cli agentic agent to right click menus, in all cases direct the agent to read prompt and launch them in dangerous or yolo mode. support codex and claude\r\nmenu should be\r\nlaunch\r\n--codex\r\n--claude\r\n\r\nso a submenu within the submenu",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "db72187ef50a469fa0ee12ea371e38f4",
+              "text": "can launch on specific task only via rightclick on a task",
+              "isDone": true
+            },
+            {
+              "id": "15fd5236391840f09970eb44ff3648fe",
+              "text": "can launch on a branch by right click on branch",
+              "isDone": true
+            },
+            {
+              "id": "d7a907cf5c6647f78b4690cdd60869a2",
+              "text": "add button to launch the agent on the project",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-09T09:14:23.6302878+00:00",
+          "updatedAt": "2026-09-09T09:28:45.2607840+00:00"
+        }
+      ]
     },
     {
       "id": "archive",
