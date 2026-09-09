@@ -420,10 +420,10 @@
         <Border x:Name="EditorBackdrop" Grid.RowSpan="2" Panel.ZIndex="90"
                 Background="#72000000" Visibility="Collapsed" MouseDown="EditorBackdrop_MouseDown"/>
 
-        <primitives:Popup x:Name="CardEditorPopup" AllowsTransparency="True" StaysOpen="False"
-                          Placement="MousePoint" HorizontalOffset="12" VerticalOffset="10"
+        <primitives:Popup x:Name="CardEditorPopup" AllowsTransparency="True" StaysOpen="True"
+                          Placement="Center" HorizontalOffset="0" VerticalOffset="0"
                           PopupAnimation="Fade" Closed="CardEditorPopup_Closed">
-            <Border Width="500" MaxHeight="720" Background="#171B23" BorderBrush="#3A4252" BorderThickness="1" CornerRadius="13" Padding="20">
+            <Border x:Name="EditorShell" Width="500" MaxHeight="720" Background="#171B23" BorderBrush="#3A4252" BorderThickness="1" CornerRadius="13" Padding="20">
                 <Border.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="28" ShadowDepth="8" Opacity="0.7"/>
                 </Border.Effect>

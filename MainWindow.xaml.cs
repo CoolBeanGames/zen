@@ -782,8 +782,10 @@ public partial class MainWindow : Window
             RenderingBias = RenderingBias.Quality
         };
         EditorBackdrop.Visibility = Visibility.Visible;
-        CardEditorPopup.PlacementTarget = anchor;
-        CardEditorPopup.Placement = PlacementMode.MousePoint;
+        CardEditorPopup.PlacementTarget = RootLayout;
+        CardEditorPopup.Placement = PlacementMode.Center;
+        EditorShell.Height = Math.Max(360, RootLayout.ActualHeight - 48);
+        EditorShell.MaxHeight = EditorShell.Height;
         CardEditorPopup.IsOpen = true;
         Dispatcher.BeginInvoke(() =>
         {
@@ -881,20 +883,12 @@ public partial class MainWindow : Window
         }
 
         var picker = new OpenFileDialog { Title = "Attach files to this card", Multiselect = true, CheckFileExists = true };
-        CardEditorPopup.StaysOpen = true;
-        try
+        if (picker.ShowDialog(this) != true) return;
+        foreach (var path in picker.FileNames)
         {
-            if (picker.ShowDialog(this) != true) return;
-            foreach (var path in picker.FileNames)
-            {
-                if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
-                _pendingUploadPaths.Add(path);
-                _editingFileNames.Add($"＋ {System.IO.Path.GetFileName(path)}");
-            }
-        }
-        finally
-        {
-            CardEditorPopup.StaysOpen = false;
+            if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
+            _pendingUploadPaths.Add(path);
+            _editingFileNames.Add($"＋ {System.IO.Path.GetFileName(path)}");
         }
     }
 
