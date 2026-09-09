@@ -81,16 +81,97 @@
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
             <Setter Property="BorderBrush" Value="#394151"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="MinWidth" Value="190"/>
+            <Setter Property="MaxHeight" Value="560"/>
+            <Setter Property="HasDropShadow" Value="False"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border x:Name="MenuShell" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="26" ShadowDepth="9" Opacity="0.72"/>
+                            </Border.Effect>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="MenuItem">
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-            <Setter Property="Background" Value="#181D26"/>
-            <Setter Property="Padding" Value="10,7"/>
-            <Style.Triggers>
-                <Trigger Property="IsHighlighted" Value="True"><Setter Property="Background" Value="#332E55"/><Setter Property="Foreground" Value="White"/></Trigger>
-                <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="#656D7E"/></Trigger>
-            </Style.Triggers>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinHeight" Value="35"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Grid>
+                            <Border x:Name="ItemSurface" Background="{TemplateBinding Background}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="CheckGlyph" Text="✓" Foreground="#B9AFFF" FontWeight="Bold" FontSize="11"
+                                               VerticalAlignment="Center" Visibility="Collapsed"/>
+                                    <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True"
+                                                      VerticalAlignment="Center" Margin="2,0,12,0"/>
+                                    <TextBlock x:Name="SubmenuGlyph" Grid.Column="2" Text="›" Foreground="#737D91" FontSize="17"
+                                               FontWeight="SemiBold" VerticalAlignment="Center" Margin="4,-2,0,0" Visibility="Collapsed"/>
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="5" AllowsTransparency="True"
+                                   Focusable="False" PopupAnimation="Fade"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Border Background="#181D26" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="6" MinWidth="205">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="26" ShadowDepth="9" Opacity="0.72"/>
+                                    </Border.Effect>
+                                    <ScrollViewer MaxHeight="520" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemSurface" Property="Background" Value="#312C50"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="SubmenuGlyph" Property="Foreground" Value="#B9AFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsSubmenuOpen" Value="True">
+                                <Setter TargetName="ItemSurface" Property="Background" Value="#312C50"/>
+                                <Setter TargetName="SubmenuGlyph" Property="Foreground" Value="#B9AFFF"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="True"><Setter TargetName="SubmenuGlyph" Property="Visibility" Value="Visible"/></Trigger>
+                            <Trigger Property="IsChecked" Value="True"><Setter TargetName="CheckGlyph" Property="Visibility" Value="Visible"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#626B7D"/>
+                                <Setter TargetName="ItemSurface" Property="Opacity" Value="0.62"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1" Background="#303746" Margin="10,6" SnapsToDevicePixels="True"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
