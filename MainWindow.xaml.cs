@@ -23,6 +23,7 @@ public partial class MainWindow : Window
     private Border? _pressedCard;
     private TaskDragPayload? _activeDrag;
     private Border? _dragPreview;
+    private Border? _dropIndicator;
     private Border? _highlightedColumn;
     private bool _isBoardPanning;
     private Point _panStart;
@@ -497,7 +498,65 @@ public partial class MainWindow : Window
             ClearColumnHighlight();
         else
             HighlightColumn(target.Value.Border);
+        UpdateDropIndicator(pointer, target);
         e.Handled = true;
+    }
+
+    private (Border Border, bool After)? FindCardBorderAt(Point point)
+    {
+        var element = RootLayout.InputHitTest(point) as DependencyObject;
+        while (element is not null)
+        {
+            if (element is Border { DataContext: TaskCard } border)
+                return (border, point.Y > border.TranslatePoint(new Point(0, border.ActualHeight / 2), RootLayout).Y);
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return null;
+    }
+
+    private void UpdateDropIndicator(Point pointer, (Border Border, BoardColumn Column)? column)
+    {
+        if (_activeDrag is null || column is null)
+        {
+            if (_dropIndicator is not null) _dropIndicator.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        _dropIndicator ??= CreateDropIndicator();
+        double left, top, width;
+        var card = FindCardBorderAt(pointer);
+        if (card is not null && card.Value.Border != _activeDrag.SourceElement)
+        {
+            var origin = card.Value.Border.TranslatePoint(new Point(0, 0), RootLayout);
+            left = origin.X;
+            width = card.Value.Border.ActualWidth;
+            top = (card.Value.After ? origin.Y + card.Value.Border.ActualHeight : origin.Y) - 5;
+        }
+        else
+        {
+            var origin = column.Value.Border.TranslatePoint(new Point(0, 0), RootLayout);
+            left = origin.X + 11;
+            width = Math.Max(0, column.Value.Border.ActualWidth - 22);
+            top = origin.Y + 70;
+        }
+
+        _dropIndicator.Width = width;
+        Canvas.SetLeft(_dropIndicator, left);
+        Canvas.SetTop(_dropIndicator, top);
+        _dropIndicator.Visibility = Visibility.Visible;
+    }
+
+    private Border CreateDropIndicator()
+    {
+        var indicator = new Border
+        {
+            Height = 4,
+            CornerRadius = new CornerRadius(2),
+            Background = (Brush)FindResource("AccentBrush"),
+            Effect = new DropShadowEffect { Color = Colors.Black, BlurRadius = 8, ShadowDepth = 0, Opacity = 0.5 }
+        };
+        DragOverlay.Children.Add(indicator);
+        return indicator;
     }
 
     private void BeginCardDrag(Border card)
@@ -616,6 +675,7 @@ public partial class MainWindow : Window
         var target = FindColumnAt(_lastDragPointer);
         if (target is null) ClearColumnHighlight();
         else HighlightColumn(target.Value.Border);
+        UpdateDropIndicator(_lastDragPointer, target);
         UpdateEdgeScroll(_lastDragPointer);
     }
 
@@ -719,6 +779,7 @@ public partial class MainWindow : Window
         DragOverlay.Children.Clear();
         DragOverlay.Visibility = Visibility.Collapsed;
         _dragPreview = null;
+        _dropIndicator = null;
         _edgeScrollVelocity = default;
         _edgeScrollTimer.Stop();
         _activeDrag = null;
