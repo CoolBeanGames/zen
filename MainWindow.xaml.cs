@@ -507,21 +507,43 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    // Walk to the OUTERMOST border bound to a TaskCard: inner decoration borders
-    // (tag pills, flag chips) inherit the same DataContext and would otherwise
-    // give a tiny, mispositioned target.
-    private (Border Border, bool After)? FindCardBorderAt(Point point)
+    // Collect the card template roots inside a column, top to bottom. Matching on
+    // TemplatedParent skips the inner decoration borders that inherit the same
+    // TaskCard DataContext.
+    private static void CollectCardBorders(DependencyObject node, List<Border> into)
     {
-        var element = RootLayout.InputHitTest(point) as DependencyObject;
-        Border? match = null;
-        while (element is not null)
+        var count = VisualTreeHelper.GetChildrenCount(node);
+        for (var i = 0; i < count; i++)
         {
-            if (element is Border { DataContext: TaskCard } border) match = border;
-            element = VisualTreeHelper.GetParent(element);
+            var child = VisualTreeHelper.GetChild(node, i);
+            if (child is Border { DataContext: TaskCard, TemplatedParent: ContentPresenter } border)
+                into.Add(border);
+            else
+                CollectCardBorders(child, into);
         }
-        if (match is null || match.ActualHeight <= 0) return null;
-        var midY = match.TranslatePoint(new Point(0, match.ActualHeight / 2), RootLayout).Y;
-        return (match, point.Y > midY);
+    }
+
+    // Resolve the drop slot from the pointer's Y against real card bounds so the
+    // indicator does not flicker in the gaps between cards.
+    private (double Left, double Width, double Top)? ResolveDropSlot(Border columnBorder, Point pointer)
+    {
+        var cards = new List<Border>();
+        CollectCardBorders(columnBorder, cards);
+        if (cards.Count == 0)
+        {
+            var columnOrigin = columnBorder.TranslatePoint(new Point(0, 0), RootLayout);
+            return (columnOrigin.X + 13, Math.Max(0, columnBorder.ActualWidth - 26), columnOrigin.Y + columnBorder.ActualHeight - 6);
+        }
+
+        foreach (var card in cards)
+        {
+            if (card.ActualHeight <= 0) continue;
+            var origin = card.TranslatePoint(new Point(0, 0), RootLayout);
+            var after = pointer.Y > origin.Y + card.ActualHeight / 2;
+            if (pointer.Y < origin.Y + card.ActualHeight || card == cards[^1])
+                return (origin.X, card.ActualWidth, (after ? origin.Y + card.ActualHeight : origin.Y) - 3);
+        }
+        return null;
     }
 
     private void UpdateDropIndicator(Point pointer, (Border Border, BoardColumn Column)? column)
@@ -532,30 +554,18 @@ public partial class MainWindow : Window
             return;
         }
 
-        _dropIndicator ??= CreateDropIndicator();
-        DragOverlay.Visibility = Visibility.Visible;
-        double left, top, width;
-        var card = FindCardBorderAt(pointer);
-        if (card is not null)
+        var slot = ResolveDropSlot(column.Value.Border, pointer);
+        if (slot is null)
         {
-            var border = card.Value.Border;
-            var origin = border.TranslatePoint(new Point(0, 0), RootLayout);
-            left = origin.X;
-            width = border.ActualWidth;
-            top = (card.Value.After ? origin.Y + border.ActualHeight : origin.Y) - 3;
-        }
-        else
-        {
-            var border = column.Value.Border;
-            var origin = border.TranslatePoint(new Point(0, 0), RootLayout);
-            left = origin.X + 11;
-            width = Math.Max(0, border.ActualWidth - 22);
-            top = origin.Y + border.ActualHeight - 6;
+            if (_dropIndicator is not null) _dropIndicator.Visibility = Visibility.Collapsed;
+            return;
         }
 
-        _dropIndicator.Width = width;
-        Canvas.SetLeft(_dropIndicator, Math.Round(left));
-        Canvas.SetTop(_dropIndicator, Math.Round(top));
+        _dropIndicator ??= CreateDropIndicator();
+        DragOverlay.Visibility = Visibility.Visible;
+        _dropIndicator.Width = slot.Value.Width;
+        Canvas.SetLeft(_dropIndicator, Math.Round(slot.Value.Left));
+        Canvas.SetTop(_dropIndicator, Math.Round(slot.Value.Top));
         _dropIndicator.Visibility = Visibility.Visible;
     }
 
