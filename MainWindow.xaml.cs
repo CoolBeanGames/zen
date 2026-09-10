@@ -153,6 +153,7 @@ public partial class MainWindow : Window
             _recentProjects.Remember(store.RootDirectory, document.Name);
             ReloadButton.IsEnabled = true;
             LaunchProjectButton.IsEnabled = true;
+            OpenProjectFolderButton.IsEnabled = true;
             _periodicReloadTimer.Start();
         }
         catch (Exception exception)
@@ -343,6 +344,20 @@ public partial class MainWindow : Window
         var window = new SettingsWindow(_recentProjects) { Owner = this };
         if (window.ShowDialog() == true)
             _periodicReloadTimer.Interval = TimeSpan.FromSeconds(window.Settings.ReloadSeconds);
+    }
+
+    private void OpenProjectFolder_Click(object sender, RoutedEventArgs e)
+    {
+        if (_store is null || !Directory.Exists(_store.RootDirectory)) return;
+        try
+        {
+            Process.Start(new ProcessStartInfo { FileName = _store.RootDirectory, UseShellExecute = true });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, $"Could not open the project folder: {exception.Message}",
+                "Open folder failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void LaunchProject_Click(object sender, RoutedEventArgs e)

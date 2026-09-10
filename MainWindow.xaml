@@ -97,6 +97,7 @@
                             ToolTip="No release executable has been recorded" Content="Latest release" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button Style="{StaticResource IconButton}" Click="ScrollLeft_Click" ToolTip="Scroll left" FontSize="17" Content="←" Margin="0,0,4,0"/>
                     <Button Style="{StaticResource IconButton}" Click="ScrollRight_Click" ToolTip="Scroll right" FontSize="17" Content="→" Margin="0,0,12,0"/>
+                    <Button x:Name="OpenProjectFolderButton" Style="{StaticResource IconButton}" Click="OpenProjectFolder_Click" ToolTip="Open the project folder" Content="Open folder" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button x:Name="LaunchProjectButton" Style="{StaticResource IconButton}" Click="LaunchProject_Click" ToolTip="Launch an agent for this project" Content="Launch agent" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button Style="{StaticResource PrimaryButton}" Click="NewColumn_Click">
                         <StackPanel Orientation="Horizontal">
