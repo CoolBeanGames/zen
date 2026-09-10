@@ -44,8 +44,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="34" Height="34" Background="{StaticResource AccentBrush}" CornerRadius="10">
-                        <TextBlock Text="Z" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border Width="34" Height="34" CornerRadius="10" ClipToBounds="True">
+                        <Image Source="Assets/ZenIcon.ico" Width="34" Height="34" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
                     <TextBlock Text="zen" FontSize="19" FontWeight="SemiBold" Margin="11,0,0,0" VerticalAlignment="Center"/>
                     <Border Background="#222732" CornerRadius="5" Padding="7,3" Margin="9,1,0,0" VerticalAlignment="Center">
@@ -245,6 +245,10 @@
                                                                         <Setter Property="Background" Value="#282331"/>
                                                                         <Setter Property="BorderBrush" Value="#8B7CFF"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsCleanup}" Value="True">
+                                                                        <Setter Property="Background" Value="#282331"/>
+                                                                        <Setter Property="BorderBrush" Value="#8B7CFF"/>
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
@@ -252,8 +256,11 @@
                                                             <TextBlock Text="—  BREAK · AGENTS STOP HERE  —" HorizontalAlignment="Center" Foreground="#B8AEFF" FontSize="11" FontWeight="Bold">
                                                                 <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                                                             </TextBlock>
+                                                            <TextBlock Text="—  CLEANUP · REMOVE OLD BUILDS  —" HorizontalAlignment="Center" Foreground="#B8AEFF" FontSize="11" FontWeight="Bold">
+                                                                <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsCleanup}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                                            </TextBlock>
                                                             <StackPanel>
-                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsCleanup}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                                             <Grid Margin="0,0,0,10">
                                                                 <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
                                                                 <ItemsControl ItemsSource="{Binding TagViews}" MaxWidth="210" HorizontalAlignment="Left">
