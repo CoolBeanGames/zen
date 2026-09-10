@@ -226,20 +226,19 @@
           "tags": [
             "images",
             "graphics",
-            "application",
-            "in progress"
+            "application"
           ],
           "files": [],
           "requirements": [
             {
               "id": "c7697634c7594853b964542106b42fb7",
               "text": "image generated",
-              "isDone": false
+              "isDone": true
             },
             {
               "id": "d7fbac564b524e3ab703b2e126f3cff5",
               "text": "icon updated on exe, taskbar, and title bar",
-              "isDone": false
+              "isDone": true
             }
           ],
           "flags": {
@@ -248,11 +247,11 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:22:19.0706512+00:00",
-          "updatedAt": "2026-09-10T03:29:04.4091514+00:00"
+          "updatedAt": "2026-09-10T03:32:46.3288031+00:00"
         }
       ]
     },
