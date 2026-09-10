@@ -165,11 +165,11 @@
             "release": false,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T21:37:18.1832015+00:00",
-          "updatedAt": "2026-09-10T21:37:18.1832018+00:00"
+          "updatedAt": "2026-09-10T22:18:00+00:00"
         }
       ]
     },
