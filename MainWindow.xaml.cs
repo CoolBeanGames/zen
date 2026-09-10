@@ -412,10 +412,10 @@ public partial class MainWindow : Window
     {
         var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.Bottom };
         AddCardTypeItem(menu, "Task", CardKind.Task, column);
-        AddCardTypeItem(menu, "Note — information only", CardKind.Note, column);
-        AddCardTypeItem(menu, "Break — stop agents here", CardKind.Break, column);
-        AddCardTypeItem(menu, "Bug — priority task", CardKind.Task, column, true);
-        AddCardTypeItem(menu, "Cleanup — remove old builds", CardKind.Cleanup, column);
+        AddCardTypeItem(menu, "Note", CardKind.Note, column);
+        AddCardTypeItem(menu, "Break", CardKind.Break, column);
+        AddCardTypeItem(menu, "Bug", CardKind.Task, column, true);
+        AddCardTypeItem(menu, "Cleanup", CardKind.Cleanup, column);
         menu.IsOpen = true;
     }
 
@@ -594,10 +594,10 @@ public partial class MainWindow : Window
     {
         var add = new MenuItem { Header = "New card" };
         AddCardTypeItem(add, "Task", CardKind.Task, column);
-        AddCardTypeItem(add, "Note — information only", CardKind.Note, column);
-        AddCardTypeItem(add, "Break — stop agents here", CardKind.Break, column);
-        AddCardTypeItem(add, "Bug — priority task", CardKind.Task, column, true);
-        AddCardTypeItem(add, "Cleanup — remove old builds", CardKind.Cleanup, column);
+        AddCardTypeItem(add, "Note", CardKind.Note, column);
+        AddCardTypeItem(add, "Break", CardKind.Break, column);
+        AddCardTypeItem(add, "Bug", CardKind.Task, column, true);
+        AddCardTypeItem(add, "Cleanup", CardKind.Cleanup, column);
         return add;
     }
 

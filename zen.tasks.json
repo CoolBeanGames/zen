@@ -3,8 +3,8 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 78,
-  "latestExePath": "builds/Zen-0.2.6-win-x64/Zen.exe",
-  "latestReleasePath": "builds/Zen-0.2.6-win-x64/Zen.exe",
+  "latestExePath": "builds/Zen-0.2.7-win-x64/Zen.exe",
+  "latestReleasePath": "builds/Zen-0.2.7-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -222,7 +222,7 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:25:59.1926674+00:00",
@@ -339,7 +339,7 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:55:36.3177954+00:00",
