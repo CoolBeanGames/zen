@@ -112,6 +112,7 @@
                           PanningMode="Both" PreviewMouseWheel="BoardScroller_PreviewMouseWheel"
                           PreviewMouseDown="BoardScroller_PreviewMouseDown" PreviewMouseMove="BoardScroller_PreviewMouseMove"
                           PreviewMouseUp="BoardScroller_PreviewMouseUp" LostMouseCapture="BoardScroller_LostMouseCapture"
+                          ScrollChanged="BoardScroller_ScrollChanged"
                           Margin="0,0,0,16">
                 <ItemsControl ItemsSource="{Binding Columns}">
                     <ItemsControl.ItemsPanel>
@@ -123,7 +124,7 @@
                         <DataTemplate DataType="{x:Type local:BoardColumn}">
                             <Grid Width="326" Margin="0,0,14,0" Tag="{Binding}" PreviewMouseRightButtonUp="Column_PreviewMouseRightButtonUp">
                                 <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="12,0,0,-1" Panel.ZIndex="2">
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="12,0,0,-1" Panel.ZIndex="2" Tag="ColumnHeaderTabs">
                                 <Button Tag="{Binding}" Click="AddTask_Click" HorizontalAlignment="Left" Padding="12,7"
                                         Background="{StaticResource ColumnBrush}" Foreground="{StaticResource MutedBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Cursor="Hand">
                                     <Button.Template>

@@ -1502,6 +1502,41 @@ public partial class MainWindow : Window
         if (Mouse.Captured == BoardScroller) BoardScroller.ReleaseMouseCapture();
     }
 
+    // Keep each column's "Add" tab visible while the column itself is on screen:
+    // slide it down with the vertical scroll offset, clamped to the column body so
+    // it never floats past its own column. At offset 0 it sits exactly where the
+    // template places it.
+    private void BoardScroller_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+        if (e.VerticalChange == 0 && e.ExtentHeightChange == 0 && e.ViewportHeightChange == 0) return;
+        var headers = new List<FrameworkElement>();
+        CollectByTag(BoardScroller, "ColumnHeaderTabs", headers);
+        foreach (var header in headers)
+        {
+            var limit = 0d;
+            if (header.Parent is Grid columnGrid && columnGrid.Children.Count > 1 &&
+                columnGrid.Children[1] is FrameworkElement body)
+                limit = Math.Max(0, body.ActualHeight - header.ActualHeight - 12);
+            var offset = Math.Clamp(e.VerticalOffset, 0, limit);
+            if (header.RenderTransform is not TranslateTransform transform)
+                header.RenderTransform = transform = new TranslateTransform();
+            transform.Y = offset;
+        }
+    }
+
+    private static void CollectByTag(DependencyObject node, string tag, List<FrameworkElement> into)
+    {
+        var count = VisualTreeHelper.GetChildrenCount(node);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(node, i);
+            if (child is FrameworkElement { Tag: string value } element && value == tag)
+                into.Add(element);
+            else
+                CollectByTag(child, tag, into);
+        }
+    }
+
     private void ScrollLeft_Click(object sender, RoutedEventArgs e) =>
         BoardScroller.ScrollToHorizontalOffset(BoardScroller.HorizontalOffset - 680);
 
