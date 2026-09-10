@@ -435,7 +435,8 @@
         <primitives:Popup x:Name="CardEditorPopup" AllowsTransparency="True" StaysOpen="True"
                           Placement="Center" HorizontalOffset="0" VerticalOffset="0"
                           PopupAnimation="Fade" Closed="CardEditorPopup_Closed">
-            <Border x:Name="EditorShell" Width="500" MaxHeight="720" Background="#171B23" BorderBrush="#3A4252" BorderThickness="1" CornerRadius="13" Padding="20">
+            <Border x:Name="EditorShell" Width="500" MaxHeight="720" Background="#171B23" BorderBrush="#3A4252" BorderThickness="1" CornerRadius="13" Padding="20"
+                    PreviewKeyDown="CardEditor_PreviewKeyDown">
                 <Border.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="28" ShadowDepth="8" Opacity="0.7"/>
                 </Border.Effect>

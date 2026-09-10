@@ -42,6 +42,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<TaskRequirement> _editingRequirements = [];
     private readonly ObservableCollection<string> _editingFileNames = [];
     private readonly List<string> _pendingUploadPaths = [];
+    private readonly List<string> _temporaryClipboardPaths = [];
     private ProjectDocument? _document;
     private ProjectStore? _store;
     private readonly RecentProjectStore _recentProjects = new();
@@ -1041,11 +1042,47 @@ public partial class MainWindow : Window
         var picker = new OpenFileDialog { Title = "Attach files to this card", Multiselect = true, CheckFileExists = true };
         if (picker.ShowDialog(this) != true) return;
         foreach (var path in picker.FileNames)
+            QueuePendingFile(path);
+    }
+
+    private void CardEditor_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.V || Keyboard.Modifiers != ModifierKeys.Control || _editingCard is null ||
+            _editingCard.IsNote || _store is null)
+            return;
+
+        try
         {
-            if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) continue;
-            _pendingUploadPaths.Add(path);
-            _editingFileNames.Add($"＋ {System.IO.Path.GetFileName(path)}");
+            if (Clipboard.ContainsFileDropList())
+            {
+                foreach (var path in Clipboard.GetFileDropList().Cast<string>().Where(File.Exists))
+                    QueuePendingFile(path);
+                e.Handled = true;
+                return;
+            }
+
+            if (!Clipboard.ContainsImage()) return;
+            var image = Clipboard.GetImage();
+            if (image is null) return;
+            var temporaryPath = Path.Combine(Path.GetTempPath(), $"Zen-paste-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.png");
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(image));
+            using (var stream = File.Create(temporaryPath)) encoder.Save(stream);
+            _temporaryClipboardPaths.Add(temporaryPath);
+            QueuePendingFile(temporaryPath);
+            e.Handled = true;
         }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, "Could not paste attachment", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void QueuePendingFile(string path)
+    {
+        if (_pendingUploadPaths.Contains(path, StringComparer.OrdinalIgnoreCase)) return;
+        _pendingUploadPaths.Add(path);
+        _editingFileNames.Add($"＋ {Path.GetFileName(path)}");
     }
 
     private void EditTagsInput_TextChanged(object sender, TextChangedEventArgs e)
@@ -1114,6 +1151,12 @@ public partial class MainWindow : Window
 
     private void CardEditorPopup_Closed(object? sender, EventArgs e)
     {
+        foreach (var path in _temporaryClipboardPaths)
+        {
+            try { File.Delete(path); }
+            catch { /* Temporary clipboard files are best-effort cleanup. */ }
+        }
+        _temporaryClipboardPaths.Clear();
         _editingCard = null;
         EditValidationText.Visibility = Visibility.Collapsed;
         EditorBackdrop.Visibility = Visibility.Collapsed;
