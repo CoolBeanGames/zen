@@ -7,9 +7,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Zen</AssemblyName>
     <RootNamespace>Zen</RootNamespace>
-    <Version>0.2.4</Version>
+    <Version>0.2.5</Version>
+    <ApplicationIcon>Assets\ZenIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="prompt.txt" LogicalName="Zen.prompt.txt" />
+    <Resource Include="Assets\ZenIcon.ico" />
   </ItemGroup>
 </Project>

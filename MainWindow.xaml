@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Zen"
         xmlns:primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=PresentationFramework"
-        Title="Zen" Width="1440" Height="900" MinWidth="900" MinHeight="620"
+        Title="Zen" Icon="Assets/ZenIcon.ico" Width="1440" Height="900" MinWidth="900" MinHeight="620"
         Background="{StaticResource WindowBrush}" WindowStartupLocation="CenterScreen"
         PreviewMouseMove="Window_PreviewMouseMove" PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp"
         PreviewKeyDown="Window_PreviewKeyDown" LostMouseCapture="Window_LostMouseCapture"
