@@ -154,7 +154,7 @@ public sealed class ProjectStore
                     card.StartedDate = null;
                     card.Priority = null;
                 }
-                else if (card.Kind == CardKind.Break)
+                else if (card.Kind is CardKind.Break or CardKind.Cleanup)
                 {
                     card.Title = string.Empty;
                     card.Task = string.Empty;

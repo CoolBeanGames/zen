@@ -9,7 +9,7 @@ namespace Zen;
 public enum ColumnKind { Work, Archive }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CardKind { Task, Note, Break }
+public enum CardKind { Task, Note, Break, Cleanup }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CardPriority { Low, Normal, High, Critical }
@@ -146,9 +146,10 @@ public sealed class TaskCard : INotifyPropertyChanged
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string IndexLabel => $"#{Index:000}";
-    [JsonIgnore] public string KindLabel => Kind switch { CardKind.Note => "NOTE", CardKind.Break => "BREAK", _ => string.Empty };
+    [JsonIgnore] public string KindLabel => Kind switch { CardKind.Note => "NOTE", CardKind.Break => "BREAK", CardKind.Cleanup => "CLEANUP", _ => string.Empty };
     [JsonIgnore] public bool IsNote => Kind == CardKind.Note;
     [JsonIgnore] public bool IsBreak => Kind == CardKind.Break;
+    [JsonIgnore] public bool IsCleanup => Kind == CardKind.Cleanup;
     [JsonIgnore] public bool HasDueDate => DueDate.HasValue;
     [JsonIgnore] public bool HasStartedDate => StartedDate.HasValue;
     [JsonIgnore] public bool HasPriority => Priority.HasValue;

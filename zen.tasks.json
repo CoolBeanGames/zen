@@ -245,12 +245,12 @@
             {
               "id": "47bb9d61e8964ceabd9e129e4e0bf295",
               "text": "cleanup task made",
-              "isDone": false
+              "isDone": true
             },
             {
               "id": "f1c804b994b748a3b6c651ca285a1994",
               "text": "instructions updated",
-              "isDone": false
+              "isDone": true
             }
           ],
           "flags": {
@@ -259,7 +259,7 @@
             "release": false,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:53:23.5909818+00:00",

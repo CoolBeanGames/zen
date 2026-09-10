@@ -400,6 +400,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(menu, "Note — information only", CardKind.Note, column);
         AddCardTypeItem(menu, "Break — stop agents here", CardKind.Break, column);
         AddCardTypeItem(menu, "Bug — priority task", CardKind.Task, column, true);
+        AddCardTypeItem(menu, "Cleanup — remove old builds", CardKind.Cleanup, column);
         menu.IsOpen = true;
     }
 
@@ -420,9 +421,9 @@ public partial class MainWindow : Window
         if (target is null) return;
         _taskTarget = target;
         _newCardKind = request.Kind;
-        if (request.Kind == CardKind.Break)
+        if (request.Kind is CardKind.Break or CardKind.Cleanup)
         {
-            target.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = CardKind.Break });
+            target.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = request.Kind });
             SaveProject();
             _taskTarget = null;
             return;
@@ -581,6 +582,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(add, "Note — information only", CardKind.Note, column);
         AddCardTypeItem(add, "Break — stop agents here", CardKind.Break, column);
         AddCardTypeItem(add, "Bug — priority task", CardKind.Task, column, true);
+        AddCardTypeItem(add, "Cleanup — remove old builds", CardKind.Cleanup, column);
         return add;
     }
 
@@ -994,7 +996,7 @@ public partial class MainWindow : Window
     private void OpenCardEditor(TaskCard card, Border anchor)
     {
         EndCardDragIfActive();
-        if (card.IsBreak) return;
+        if (card.IsBreak || card.IsCleanup) return;
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
