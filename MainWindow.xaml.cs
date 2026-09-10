@@ -288,7 +288,7 @@ public partial class MainWindow : Window
     private void ProjectReloadTimer_Tick(object? sender, EventArgs e)
     {
         _projectReloadTimer.Stop();
-        if (_store is null || _activeDrag is not null || CardEditorPopup.IsOpen || ModalScrim.Visibility == Visibility.Visible)
+        if (_store is null || _activeDrag is not null || CardEditorHost.Visibility == Visibility.Visible || ModalScrim.Visibility == Visibility.Visible)
         {
             _projectReloadTimer.Start();
             return;
@@ -1022,18 +1022,9 @@ public partial class MainWindow : Window
         EditDueDate.SelectedDate = card.DueDate;
         EditPriority.SelectedIndex = card.Priority.HasValue ? (int)card.Priority.Value + 1 : 0;
         EditValidationText.Visibility = Visibility.Collapsed;
-        RootLayout.Effect = new BlurEffect
-        {
-            Radius = 7,
-            KernelType = KernelType.Gaussian,
-            RenderingBias = RenderingBias.Quality
-        };
-        EditorBackdrop.Visibility = Visibility.Visible;
-        CardEditorPopup.PlacementTarget = RootLayout;
-        CardEditorPopup.Placement = PlacementMode.Center;
         EditorShell.Height = Math.Max(360, RootLayout.ActualHeight - 48);
         EditorShell.MaxHeight = EditorShell.Height;
-        CardEditorPopup.IsOpen = true;
+        CardEditorHost.Visibility = Visibility.Visible;
         Dispatcher.BeginInvoke(() =>
         {
             EditTitleInput.Focus();
@@ -1045,7 +1036,7 @@ public partial class MainWindow : Window
     {
         if (_editingCard is null)
         {
-            CardEditorPopup.IsOpen = false;
+            CloseCardEditor();
             return;
         }
 
@@ -1095,7 +1086,7 @@ public partial class MainWindow : Window
             }
         }
         SaveProject();
-        CardEditorPopup.IsOpen = false;
+        CloseCardEditor();
     }
 
     private void AddRequirement_Click(object sender, RoutedEventArgs e) => AddPendingRequirement();
@@ -1239,11 +1230,14 @@ public partial class MainWindow : Window
         EditTagsInput.Focus();
     }
 
-    private void CancelCardEdit_Click(object sender, RoutedEventArgs e) =>
-        CardEditorPopup.IsOpen = false;
+    private void CancelCardEdit_Click(object sender, RoutedEventArgs e) => CloseCardEditor();
 
-    private void CardEditorPopup_Closed(object? sender, EventArgs e)
+    // The editor is an in-window overlay rather than a Popup so it stays clipped
+    // to the Zen window and never floats above other applications.
+    private void CloseCardEditor()
     {
+        if (CardEditorHost.Visibility != Visibility.Visible) return;
+        CardEditorHost.Visibility = Visibility.Collapsed;
         foreach (var path in _temporaryClipboardPaths)
         {
             try { File.Delete(path); }
@@ -1252,13 +1246,10 @@ public partial class MainWindow : Window
         _temporaryClipboardPaths.Clear();
         _editingCard = null;
         EditValidationText.Visibility = Visibility.Collapsed;
-        EditorBackdrop.Visibility = Visibility.Collapsed;
-        RootLayout.Effect = null;
         TagSuggestions.Visibility = Visibility.Collapsed;
     }
 
-    private void EditorBackdrop_MouseDown(object sender, MouseButtonEventArgs e) =>
-        CardEditorPopup.IsOpen = false;
+    private void EditorBackdrop_MouseDown(object sender, MouseButtonEventArgs e) => CloseCardEditor();
 
     private void EndCardDragIfActive()
     {
