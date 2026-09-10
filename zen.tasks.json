@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 78,
-  "latestExePath": "builds/Zen-0.2.7-win-x64/Zen.exe",
-  "latestReleasePath": "builds/Zen-0.2.7-win-x64/Zen.exe",
+  "nextCardIndex": 84,
+  "latestExePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
+  "latestReleasePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -122,97 +122,16 @@
       "isLocked": false,
       "tasks": [
         {
-          "id": "6b356c2073c04706b63792b5a94df1f0",
-          "index": 72,
+          "id": "49a2a9fc3a5940cca1bceb327f8c2e3c",
+          "index": 83,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "sometimes task not added",
-          "task": "sometiimes, maybe 10% of the time I add a task type the name and it doesnt get added to the list, please investigate and fix.",
+          "title": "cleanup",
+          "task": "cleanup should do old builds AND build artifacts, basically any data not essential",
           "tags": [
-            "bug",
-            "task"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:29:09.1251675+00:00",
-          "updatedAt": "2026-09-10T20:29:54.5630116+00:00"
-        },
-        {
-          "id": "69ccb4be122b4a9a97a1c89e6ac2baa6",
-          "index": 73,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Edit window",
-          "task": "when the edit window is up, if you switch tabs the window stays on top of the tab you opened, make it so the window is completly contained in the Zen App",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:52:28.3471112+00:00",
-          "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
-        },
-        {
-          "id": "f4418f561fda4e139c6520111861f9a2",
-          "index": 70,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "On the top left...",
-          "task": "on the top left is a small icon and the word \u0027Zen\u0027 please change the icon to match the application icon",
-          "tags": [
-            "icon",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:25:07.2464703+00:00",
-          "updatedAt": "2026-09-10T20:25:44.6495693+00:00"
-        },
-        {
-          "id": "8444f20c3ba549cf83be5a33578b8bd9",
-          "index": 71,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "make the prompt more explicit",
-          "task": "when prompting an AI agent make it explicitly clear to ignore any local prompt.txt and only download the current one. and in prompt.txt make it clear that they need to \r\n1.) mark items as in progress when they start\r\n2.) mark subtasks done as done when they finish them not all at once\r\n3.) update paths in the tasks file for releases and builds\r\n\r\na lot of agents have been ignoring these",
-          "tags": [
-            "task"
+            "instructions"
           ],
           "files": [],
           "requirements": [],
@@ -225,125 +144,32 @@
           "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:25:59.1926674+00:00",
-          "updatedAt": "2026-09-10T20:27:52.1957645+00:00"
+          "createdAt": "2026-09-10T21:38:17.6716909+00:00",
+          "updatedAt": "2026-09-10T22:12:00+00:00"
         },
         {
-          "id": "1bb107bb011846f591a9116f6cde4031",
-          "index": 74,
-          "kind": "task",
+          "id": "0cfb39280da849efb7c62519db3c02e2",
+          "index": 78,
+          "kind": "cleanup",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "cleanup task",
-          "task": "add a cleanup task button to the add menu, a cleanup task tells the agent to clean up old files/releases and keep only the most recent builds (not zips) this does not need descriptions, extra prompts, tags, info tags, or actions",
-          "tags": [
-            "task"
-          ],
+          "title": "",
+          "task": "",
+          "tags": [],
           "files": [],
-          "requirements": [
-            {
-              "id": "47bb9d61e8964ceabd9e129e4e0bf295",
-              "text": "cleanup task made",
-              "isDone": true
-            },
-            {
-              "id": "f1c804b994b748a3b6c651ca285a1994",
-              "text": "instructions updated",
-              "isDone": true
-            }
-          ],
+          "requirements": [],
           "flags": {
             "commit": false,
             "build": false,
             "release": false,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:53:23.5909818+00:00",
-          "updatedAt": "2026-09-10T20:54:56.4832664+00:00"
-        },
-        {
-          "id": "0eb149c77a8340678c6cf677d51a0276",
-          "index": 75,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "explorer button",
-          "task": "add a button to launch the project folder",
-          "tags": [
-            "ui",
-            "buttons"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:53:41.9451618+00:00",
-          "updatedAt": "2026-09-10T20:55:15.9013868+00:00"
-        },
-        {
-          "id": "ea3dcb9210354ec9babf0dce30de061a",
-          "index": 76,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "floating add button",
-          "task": "make the \u0022add\u0022 button always visible even as you scroll (when at the top of the screen it should appear EXACTLY as it is now, but as soon as it starts to get cut off, have it start floating. if you scroll back up it should return to how it is now.",
-          "tags": [
-            "buttons",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:55:23.3525128+00:00",
-          "updatedAt": "2026-09-10T20:57:15.1827123+00:00"
-        },
-        {
-          "id": "0e234be35f1a42ba9bd9d07caf6d1329",
-          "index": 77,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add text reduction",
-          "task": "currently in the add menu the entires are like \u0022add-\u003Enote - informational note\u0022 i only want them to say \u0022note\u0022 or whatever the entry is, not what it does",
-          "tags": [
-            "buttons"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:55:36.3177954+00:00",
-          "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
+          "createdAt": "2026-09-10T21:37:18.1832015+00:00",
+          "updatedAt": "2026-09-10T21:37:18.1832018+00:00"
         }
       ]
     },
@@ -534,6 +360,60 @@
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:17:04.4903021+00:00",
           "updatedAt": "2026-09-10T03:30:00+00:00"
+        },
+        {
+          "id": "6b356c2073c04706b63792b5a94df1f0",
+          "index": 72,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "sometimes task not added",
+          "task": "sometiimes, maybe 10% of the time I add a task type the name and it doesnt get added to the list, please investigate and fix.",
+          "tags": [
+            "bug",
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:29:09.1251675+00:00",
+          "updatedAt": "2026-09-10T20:29:54.5630116+00:00"
+        },
+        {
+          "id": "69ccb4be122b4a9a97a1c89e6ac2baa6",
+          "index": 73,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Edit window",
+          "task": "when the edit window is up, if you switch tabs the window stays on top of the tab you opened, make it so the window is completly contained in the Zen App",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:52:28.3471112+00:00",
+          "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -1574,6 +1454,176 @@
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:36:05.4475532+00:00",
           "updatedAt": "2026-09-10T03:48:00+00:00"
+        },
+        {
+          "id": "f4418f561fda4e139c6520111861f9a2",
+          "index": 70,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "On the top left...",
+          "task": "on the top left is a small icon and the word \u0027Zen\u0027 please change the icon to match the application icon",
+          "tags": [
+            "icon",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:25:07.2464703+00:00",
+          "updatedAt": "2026-09-10T20:25:44.6495693+00:00"
+        },
+        {
+          "id": "8444f20c3ba549cf83be5a33578b8bd9",
+          "index": 71,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "make the prompt more explicit",
+          "task": "when prompting an AI agent make it explicitly clear to ignore any local prompt.txt and only download the current one. and in prompt.txt make it clear that they need to \r\n1.) mark items as in progress when they start\r\n2.) mark subtasks done as done when they finish them not all at once\r\n3.) update paths in the tasks file for releases and builds\r\n\r\na lot of agents have been ignoring these",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:25:59.1926674+00:00",
+          "updatedAt": "2026-09-10T20:27:52.1957645+00:00"
+        },
+        {
+          "id": "1bb107bb011846f591a9116f6cde4031",
+          "index": 74,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "cleanup task",
+          "task": "add a cleanup task button to the add menu, a cleanup task tells the agent to clean up old files/releases and keep only the most recent builds (not zips) this does not need descriptions, extra prompts, tags, info tags, or actions",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "47bb9d61e8964ceabd9e129e4e0bf295",
+              "text": "cleanup task made",
+              "isDone": true
+            },
+            {
+              "id": "f1c804b994b748a3b6c651ca285a1994",
+              "text": "instructions updated",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:53:23.5909818+00:00",
+          "updatedAt": "2026-09-10T20:54:56.4832664+00:00"
+        },
+        {
+          "id": "0eb149c77a8340678c6cf677d51a0276",
+          "index": 75,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "explorer button",
+          "task": "add a button to launch the project folder",
+          "tags": [
+            "ui",
+            "buttons"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:53:41.9451618+00:00",
+          "updatedAt": "2026-09-10T20:55:15.9013868+00:00"
+        },
+        {
+          "id": "ea3dcb9210354ec9babf0dce30de061a",
+          "index": 76,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "floating add button",
+          "task": "make the \u0022add\u0022 button always visible even as you scroll (when at the top of the screen it should appear EXACTLY as it is now, but as soon as it starts to get cut off, have it start floating. if you scroll back up it should return to how it is now.",
+          "tags": [
+            "buttons",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:55:23.3525128+00:00",
+          "updatedAt": "2026-09-10T20:57:15.1827123+00:00"
+        },
+        {
+          "id": "0e234be35f1a42ba9bd9d07caf6d1329",
+          "index": 77,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add text reduction",
+          "task": "currently in the add menu the entires are like \u0022add-\u003Enote - informational note\u0022 i only want them to say \u0022note\u0022 or whatever the entry is, not what it does",
+          "tags": [
+            "buttons"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:55:36.3177954+00:00",
+          "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
         }
       ]
     }
