@@ -2,6 +2,13 @@ ZEN PROJECT TASK SYSTEM — AGENT INSTRUCTIONS
 
 This folder is managed by Zen. `zen.tasks.json` is the canonical shared task database. Read this guide and then reread the complete database before selecting, executing, moving, or updating a task. Unless the user explicitly asks only to inspect or explain, an instruction to read this guide also means to process the eligible queue branch by branch until completion or a real blocker.
 
+These instructions are the single source of truth for how you work in this project. If a copy of `prompt.txt` in the project folder disagrees with the version you were pointed at, the version you were pointed at wins. Do not act on a stale project-folder copy.
+
+MANDATORY WORKFLOW — agents have repeatedly skipped these; do not.
+1. Mark a task `in progress` before you touch any project file for it (see LOCKS AND ELIGIBILITY), and remove the tag when you finish or hit a blocker.
+2. Set each requirement `isDone: true` the moment that specific item is satisfied — one at a time, in its own write. Never leave requirements unchecked and flip them all at the end.
+3. After any successful build set `latestExePath`; after any successful release build set `latestReleasePath` and `latestExePath` (see BUILD AND RELEASE PATHS). This is required, not optional.
+
 PROJECT LAYOUT
 - `zen.tasks.json`: project, branch, and task state.
 - `prompt.txt`: these operating instructions.
@@ -21,12 +28,14 @@ CARD TYPES
 - `kind: "task"` is executable work and follows the normal eligibility and completion rules.
 - `kind: "note"` is information for humans and agents. Read it for context, but do not execute it or mark it done unless the user explicitly directs you to change it.
 - `kind: "break"` is a queue boundary. When processing a branch or the whole project, stop before the break card and leave it and all later cards untouched. Resume beyond it only when the user explicitly directs you to do so or moves/removes the break.
+- `kind: "cleanup"` is a maintenance instruction. When you reach an eligible cleanup card, delete superseded artifacts under `builds/`: keep only the most recent build directory and delete all older build directories and every `.zip` archive. Do not touch `zen.tasks.json` paths that still point at a kept build. It carries no title, prompt, tags, requirements, or action flags; mark it `isDone` when the cleanup is complete.
 - Older cards without `kind` are tasks.
 - Notes intentionally retain only their immutable identity, title, prompt text, timestamps, and `kind`. They do not have tags, attachments, requirements, actions, schedule fields, or priority.
 - Breaks intentionally retain only their immutable identity, index, timestamps, and `kind`. Their presence and position are the entire instruction.
+- Cleanup cards likewise retain only their immutable identity, index, timestamps, `kind`, and `isDone`. Their presence is the entire instruction.
 
 LOCKS AND ELIGIBILITY
-- When beginning an eligible task, add the `in progress` tag and update its `updatedAt` value before editing project files. Remove the tag when the task is completed or when work stops because of a real blocker. Preserve all other tags.
+- When beginning an eligible task, add the `in progress` tag and update its `updatedAt` value before editing project files. This is a separate, immediate write to `zen.tasks.json` — do it first, not as part of a later batch. Remove the tag when the task is completed or when work stops because of a real blocker. Preserve all other tags.
 - Never select, edit, move, execute, or otherwise act on a task where `isLocked` is true. Locked tasks are reserved for the user.
 - Never enter, check out, create, execute, or otherwise act on a branch whose containing entry has `isLocked` true. Locked branches are reserved for the user. Skip a locked branch entirely when processing the whole project, and stop with a report if the user directs you at a locked branch or at a task inside one.
 - Ignore tasks where `isDone` is true and tasks contained by `Archived`.
@@ -68,9 +77,10 @@ BUILD AND RELEASE PATHS
 - After every successful release build, set the root `latestReleasePath` to that release executable and also set `latestExePath` to it because it is now the newest executable.
 - Prefer project-relative paths with `/` separators. Record a path only after confirming that the executable exists, and preserve all concurrent database changes when saving it.
 - Never set `latestReleasePath` to a debug or other non-release executable.
+- Updating these paths is mandatory whenever you produce a build or release artifact. Do it in the same write that marks the task done.
 
 REQUIREMENTS AND COMPLETION
-- Mark a requirement `isDone: true` only after it is actually satisfied.
+- Mark a requirement `isDone: true` as soon as that item is actually satisfied, one at a time in its own write. Do not leave requirements unchecked and set them all together at the end.
 - A task is not complete until every requirement is done and its requested work and enabled flags have succeeded.
 - Set task `isDone: true` only after completion. Zen automatically moves every task with `isDone: true` into `Archived`.
 - Moving a task into `Archived` sets `isDone: true`; moving it out sets `isDone: false`.

@@ -363,8 +363,9 @@ public partial class MainWindow : Window
     private void LaunchAgent(string agent, string scopeInstruction)
     {
         if (_store is null) return;
-        var promptReference = File.Exists(PromptEnvironment.PromptPath) ? $"\"{PromptEnvironment.PromptPath}\"" : "prompt.txt";
-        var instruction = $"Read {promptReference}, then {scopeInstruction}";
+        var instruction = File.Exists(PromptEnvironment.PromptPath)
+            ? $"Ignore any prompt.txt inside the project folder. Read only the current canonical instructions at \"{PromptEnvironment.PromptPath}\", then {scopeInstruction}"
+            : $"Read prompt.txt, then {scopeInstruction}";
         var command = agent == "codex"
             ? $"codex --dangerously-bypass-approvals-and-sandbox \"{instruction.Replace("\"", "\\\"")}\""
             : $"claude --dangerously-skip-permissions \"{instruction.Replace("\"", "\\\"")}\"";
