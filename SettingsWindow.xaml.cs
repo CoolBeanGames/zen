@@ -54,6 +54,7 @@ public partial class SettingsWindow : Window
         Settings.GlobalPrompt = PromptInput.Text;
         Settings.ReloadSeconds = seconds;
         _settingsStore.Save(Settings);
+        try { PromptEnvironment.Sync(_settingsStore, Settings); } catch { /* PATH is best-effort */ }
         DialogResult = true;
     }
 

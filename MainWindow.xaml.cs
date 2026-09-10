@@ -79,6 +79,7 @@ public partial class MainWindow : Window
             Interval = TimeSpan.FromSeconds(_settingsStore.Load().ReloadSeconds)
         };
         _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
+        try { PromptEnvironment.Sync(_settingsStore, _settingsStore.Load()); } catch { /* PATH is best-effort */ }
         SeedBoard();
         Loaded += (_, _) => OpenLastProject();
     }
@@ -276,7 +277,8 @@ public partial class MainWindow : Window
     private void LaunchAgent(string agent, string scopeInstruction)
     {
         if (_store is null) return;
-        var instruction = $"Read prompt.txt, then {scopeInstruction}";
+        var promptReference = File.Exists(PromptEnvironment.PromptPath) ? $"\"{PromptEnvironment.PromptPath}\"" : "prompt.txt";
+        var instruction = $"Read {promptReference}, then {scopeInstruction}";
         var command = agent == "codex"
             ? $"codex --dangerously-bypass-approvals-and-sandbox \"{instruction.Replace("\"", "\\\"")}\""
             : $"claude --dangerously-skip-permissions \"{instruction.Replace("\"", "\\\"")}\"";

@@ -7,6 +7,7 @@ public sealed class ZenSettings
 {
     public int ReloadSeconds { get; set; } = 60;
     public string GlobalPrompt { get; set; } = string.Empty;
+    public string PromptPathEntry { get; set; } = string.Empty;
 }
 
 public sealed class SettingsStore
