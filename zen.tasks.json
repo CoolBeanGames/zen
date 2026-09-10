@@ -161,11 +161,11 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-10T03:18:17.7733816+00:00",
-          "updatedAt": "2026-09-10T03:21:14.097229+00:00"
+          "updatedAt": "2026-09-10T03:26:50.2565868+00:00"
         },
         {
           "id": "c7472e06b5be4d59a32e03ca8b24114f",
