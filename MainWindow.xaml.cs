@@ -412,16 +412,29 @@ public partial class MainWindow : Window
     private void NewCardType_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not MenuItem { Tag: NewCardRequest request }) return;
-        _taskTarget = request.Column;
+        // A background reload can rebuild the column collection between opening this
+        // menu and clicking an item, leaving request.Column detached from the board.
+        // Re-resolve by stable id so the new card is never added to an orphan column.
+        var target = ResolveColumn(request.Column);
+        if (target is null) return;
+        _taskTarget = target;
         _newCardKind = request.Kind;
         if (request.Kind == CardKind.Break)
         {
-            request.Column.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = CardKind.Break });
+            target.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = CardKind.Break });
             SaveProject();
             _taskTarget = null;
             return;
         }
         OpenModal(ModalMode.Task, request.Bug);
+    }
+
+    // Map a possibly-stale column reference back to the live instance on the board.
+    private BoardColumn? ResolveColumn(BoardColumn? column)
+    {
+        if (column is null) return null;
+        return Columns.FirstOrDefault(candidate => ReferenceEquals(candidate, column))
+            ?? Columns.FirstOrDefault(candidate => candidate.Id.Equals(column.Id, StringComparison.OrdinalIgnoreCase));
     }
 
     private void TaskCard_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1301,7 +1314,7 @@ public partial class MainWindow : Window
             CloseModal();
             Dispatcher.BeginInvoke(() => BoardScroller.ScrollToRightEnd());
         }
-        else if (_taskTarget is not null)
+        else if (ResolveColumn(_taskTarget) is { } target)
         {
             var card = new TaskCard
             {
@@ -1312,9 +1325,13 @@ public partial class MainWindow : Window
                 Tags = _newCardKind switch { CardKind.Note => ["note"], CardKind.Break => ["break"], _ => ["task"] }
             };
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
-            _taskTarget.Tasks.Add(card);
+            target.Tasks.Add(card);
             SaveProject();
             CloseModal();
+        }
+        else if (_taskTarget is not null)
+        {
+            ShowValidation("That column is no longer on the board. Close this dialog and try again.");
         }
     }
 

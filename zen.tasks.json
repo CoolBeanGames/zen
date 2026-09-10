@@ -2,7 +2,9 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 69,
+  "nextCardIndex": 78,
+  "latestExePath": "builds/Zen-0.2.6-win-x64/Zen.exe",
+  "latestReleasePath": "builds/Zen-0.2.6-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -99,6 +101,14 @@
     {
       "name": "application",
       "color": "#386D9A"
+    },
+    {
+      "name": "buttons",
+      "color": "#386D9A"
+    },
+    {
+      "name": "icon",
+      "color": "#386D9A"
     }
   ],
   "branches": [
@@ -112,26 +122,20 @@
       "isLocked": false,
       "tasks": [
         {
-          "id": "8c4879497db0464599dcf6f7f5d33fb7",
-          "index": 65,
+          "id": "6b356c2073c04706b63792b5a94df1f0",
+          "index": 72,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "Drag to upload",
-          "task": "allow dragging a file from explorer on to a card to add it as an attachment",
+          "title": "sometimes task not added",
+          "task": "sometiimes, maybe 10% of the time I add a task type the name and it doesnt get added to the list, please investigate and fix.",
           "tags": [
-            "files",
-            "attachments"
+            "bug",
+            "task"
           ],
           "files": [],
-          "requirements": [
-            {
-              "id": "478c2caca12f47e697e5971b33d429c0",
-              "text": "can now drag files form explorer",
-              "isDone": true
-            }
-          ],
+          "requirements": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -140,22 +144,75 @@
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:18:12.0157858+00:00",
-          "updatedAt": "2026-09-10T03:23:09.1833058+00:00"
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:29:09.1251675+00:00",
+          "updatedAt": "2026-09-10T20:29:54.5630116+00:00"
         },
         {
-          "id": "f52f902f3dbd47958d65a2e3bd065a69",
-          "index": 66,
+          "id": "69ccb4be122b4a9a97a1c89e6ac2baa6",
+          "index": 73,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "paste to upload",
-          "task": "if an image (or another file) is in the clip board, and the editor window is up, you can paste (ctrl\u002Bv) to auto attach it",
+          "title": "Edit window",
+          "task": "when the edit window is up, if you switch tabs the window stays on top of the tab you opened, make it so the window is completly contained in the Zen App",
           "tags": [
-            "files",
-            "attachments"
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:52:28.3471112+00:00",
+          "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
+        },
+        {
+          "id": "f4418f561fda4e139c6520111861f9a2",
+          "index": 70,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "On the top left...",
+          "task": "on the top left is a small icon and the word \u0027Zen\u0027 please change the icon to match the application icon",
+          "tags": [
+            "icon",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:25:07.2464703+00:00",
+          "updatedAt": "2026-09-10T20:25:44.6495693+00:00"
+        },
+        {
+          "id": "8444f20c3ba549cf83be5a33578b8bd9",
+          "index": 71,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "make the prompt more explicit",
+          "task": "when prompting an AI agent make it explicitly clear to ignore any local prompt.txt and only download the current one. and in prompt.txt make it clear that they need to \r\n1.) mark items as in progress when they start\r\n2.) mark subtasks done as done when they finish them not all at once\r\n3.) update paths in the tasks file for releases and builds\r\n\r\na lot of agents have been ignoring these",
+          "tags": [
+            "task"
           ],
           "files": [],
           "requirements": [],
@@ -165,93 +222,128 @@
             "release": true,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:18:17.7733816+00:00",
-          "updatedAt": "2026-09-10T03:26:50.2565868+00:00"
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:25:59.1926674+00:00",
+          "updatedAt": "2026-09-10T20:27:52.1957645+00:00"
         },
         {
-          "id": "c7472e06b5be4d59a32e03ca8b24114f",
-          "index": 67,
+          "id": "1bb107bb011846f591a9116f6cde4031",
+          "index": 74,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "add in progress tag",
-          "task": "add a tag that singnifies a task as in progress by an agent",
+          "title": "cleanup task",
+          "task": "add a cleanup task button to the add menu, a cleanup task tells the agent to clean up old files/releases and keep only the most recent builds (not zips) this does not need descriptions, extra prompts, tags, info tags, or actions",
           "tags": [
-            "cards",
-            "tags"
+            "task"
           ],
           "files": [],
           "requirements": [
             {
-              "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
-              "text": "in progress tag available",
-              "isDone": true
+              "id": "47bb9d61e8964ceabd9e129e4e0bf295",
+              "text": "cleanup task made",
+              "isDone": false
             },
             {
-              "id": "aa223372b0634a2b820b1b4410a3c1a2",
-              "text": "in progress visible from collapsed or expanded card",
-              "isDone": true
-            },
-            {
-              "id": "7a833bccf001433ca9b1a1587b4bf880",
-              "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
-              "isDone": true
+              "id": "f1c804b994b748a3b6c651ca285a1994",
+              "text": "instructions updated",
+              "isDone": false
             }
           ],
           "flags": {
-            "commit": true,
-            "build": true,
+            "commit": false,
+            "build": false,
             "release": false,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:20:04.8695351+00:00",
-          "updatedAt": "2026-09-10T03:28:30.9747402+00:00"
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:53:23.5909818+00:00",
+          "updatedAt": "2026-09-10T20:54:56.4832664+00:00"
         },
         {
-          "id": "5ee61bc5267a4e82a643a8bbd9f160fc",
-          "index": 68,
+          "id": "0eb149c77a8340678c6cf677d51a0276",
+          "index": 75,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "generate icon",
-          "task": "generate an icon with a similar style to the App ui that incorporates the name without actually putting text on it.",
+          "title": "explorer button",
+          "task": "add a button to launch the project folder",
           "tags": [
-            "images",
-            "graphics",
-            "application"
+            "ui",
+            "buttons"
           ],
           "files": [],
-          "requirements": [
-            {
-              "id": "c7697634c7594853b964542106b42fb7",
-              "text": "image generated",
-              "isDone": true
-            },
-            {
-              "id": "d7fbac564b524e3ab703b2e126f3cff5",
-              "text": "icon updated on exe, taskbar, and title bar",
-              "isDone": true
-            }
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:53:41.9451618+00:00",
+          "updatedAt": "2026-09-10T20:55:15.9013868+00:00"
+        },
+        {
+          "id": "ea3dcb9210354ec9babf0dce30de061a",
+          "index": 76,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "floating add button",
+          "task": "make the \u0022add\u0022 button always visible even as you scroll (when at the top of the screen it should appear EXACTLY as it is now, but as soon as it starts to get cut off, have it start floating. if you scroll back up it should return to how it is now.",
+          "tags": [
+            "buttons",
+            "ui"
           ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T20:55:23.3525128+00:00",
+          "updatedAt": "2026-09-10T20:57:15.1827123+00:00"
+        },
+        {
+          "id": "0e234be35f1a42ba9bd9d07caf6d1329",
+          "index": 77,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add text reduction",
+          "task": "currently in the add menu the entires are like \u0022add-\u003Enote - informational note\u0022 i only want them to say \u0022note\u0022 or whatever the entry is, not what it does",
+          "tags": [
+            "buttons"
+          ],
+          "files": [],
+          "requirements": [],
           "flags": {
             "commit": true,
             "build": true,
             "release": true,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T03:22:19.0706512+00:00",
-          "updatedAt": "2026-09-10T03:32:46.3288031+00:00"
+          "createdAt": "2026-09-10T20:55:36.3177954+00:00",
+          "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
         }
       ]
     },
@@ -1297,6 +1389,191 @@
           "isCollapsed": true,
           "createdAt": "2026-09-09T22:04:44.5704739+00:00",
           "updatedAt": "2026-09-10T00:30:00+00:00"
+        },
+        {
+          "id": "8c4879497db0464599dcf6f7f5d33fb7",
+          "index": 65,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Drag to upload",
+          "task": "allow dragging a file from explorer on to a card to add it as an attachment",
+          "tags": [
+            "files",
+            "attachments"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "478c2caca12f47e697e5971b33d429c0",
+              "text": "can now drag files form explorer",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:18:12.0157858+00:00",
+          "updatedAt": "2026-09-10T03:23:09.1833058+00:00"
+        },
+        {
+          "id": "f52f902f3dbd47958d65a2e3bd065a69",
+          "index": 66,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "paste to upload",
+          "task": "if an image (or another file) is in the clip board, and the editor window is up, you can paste (ctrl\u002Bv) to auto attach it",
+          "tags": [
+            "files",
+            "attachments"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:18:17.7733816+00:00",
+          "updatedAt": "2026-09-10T03:26:50.2565868+00:00"
+        },
+        {
+          "id": "c7472e06b5be4d59a32e03ca8b24114f",
+          "index": 67,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add in progress tag",
+          "task": "add a tag that singnifies a task as in progress by an agent",
+          "tags": [
+            "cards",
+            "tags"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
+              "text": "in progress tag available",
+              "isDone": true
+            },
+            {
+              "id": "aa223372b0634a2b820b1b4410a3c1a2",
+              "text": "in progress visible from collapsed or expanded card",
+              "isDone": true
+            },
+            {
+              "id": "7a833bccf001433ca9b1a1587b4bf880",
+              "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:20:04.8695351+00:00",
+          "updatedAt": "2026-09-10T03:28:30.9747402+00:00"
+        },
+        {
+          "id": "5ee61bc5267a4e82a643a8bbd9f160fc",
+          "index": 68,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "generate icon",
+          "task": "generate an icon with a similar style to the App ui that incorporates the name without actually putting text on it.",
+          "tags": [
+            "images",
+            "graphics",
+            "application"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "c7697634c7594853b964542106b42fb7",
+              "text": "image generated",
+              "isDone": true
+            },
+            {
+              "id": "d7fbac564b524e3ab703b2e126f3cff5",
+              "text": "icon updated on exe, taskbar, and title bar",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T03:22:19.0706512+00:00",
+          "updatedAt": "2026-09-10T03:32:46.3288031+00:00"
+        },
+        {
+          "id": "8627ee6bb05749a3b54c7d51e1a43ad7",
+          "index": 69,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "launch buttons",
+          "task": "I want two buttons, 1 to launch the most recent build, and 1 to launch the latest release build. The paths to these should be stored in the json file by the agent working on the app. latest release points to the newest .exe period regardless of what it is. latest release only points to release builds.\r\n\r\nif you clikc the button and nothing is there, fail gracefully and remove the path.\r\n\r\nif there is no path in the json the buttons should be greyed out.\r\n\r\nplace the buttons to the left of the arrow scroll buttons (by new column and launch agent)",
+          "tags": [
+            "buttons",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "5e20834ee87342c6b8ba76c90fb7e7bc",
+              "text": "latest release button added",
+              "isDone": true
+            },
+            {
+              "id": "b880bbdbf0b847a5a20cdbfbc3ce2679",
+              "text": "latest exe button added",
+              "isDone": true
+            },
+            {
+              "id": "7877f856270345818c5c24070f0a3154",
+              "text": "instructions updated so agents know to set these",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T03:36:05.4475532+00:00",
+          "updatedAt": "2026-09-10T03:48:00+00:00"
         }
       ]
     }
