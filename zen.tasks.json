@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 64,
+  "nextCardIndex": 69,
   "tagCatalog": [
     {
       "name": "bug",
@@ -79,6 +79,22 @@
     {
       "name": "drag and drop",
       "color": "#57742F"
+    },
+    {
+      "name": "attachments",
+      "color": "#704F9B"
+    },
+    {
+      "name": "images",
+      "color": "#386D9A"
+    },
+    {
+      "name": "graphics",
+      "color": "#57742F"
+    },
+    {
+      "name": "application",
+      "color": "#386D9A"
     }
   ],
   "branches": [
@@ -90,7 +106,150 @@
       "isCollapsed": false,
       "isSystem": true,
       "isLocked": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": "8c4879497db0464599dcf6f7f5d33fb7",
+          "index": 65,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Drag to upload",
+          "task": "allow dragging a file from explorer on to a card to add it as an attachment",
+          "tags": [
+            "files",
+            "attachments"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "478c2caca12f47e697e5971b33d429c0",
+              "text": "can now drag files form explorer",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:18:12.0157858+00:00",
+          "updatedAt": "2026-09-10T03:23:09.1833058+00:00"
+        },
+        {
+          "id": "f52f902f3dbd47958d65a2e3bd065a69",
+          "index": 66,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "paste to upload",
+          "task": "if an image (or another file) is in the clip board, and the editor window is up, you can paste (ctrl\u002Bv) to auto attach it",
+          "tags": [
+            "files",
+            "attachments"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:18:17.7733816+00:00",
+          "updatedAt": "2026-09-10T03:21:14.097229+00:00"
+        },
+        {
+          "id": "c7472e06b5be4d59a32e03ca8b24114f",
+          "index": 67,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add in progress tag",
+          "task": "add a tag that singnifies a task as in progress by an agent",
+          "tags": [
+            "cards",
+            "tags"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
+              "text": "in progress tag available",
+              "isDone": false
+            },
+            {
+              "id": "aa223372b0634a2b820b1b4410a3c1a2",
+              "text": "in progress visible from collapsed or expanded card",
+              "isDone": false
+            },
+            {
+              "id": "7a833bccf001433ca9b1a1587b4bf880",
+              "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-10T03:20:04.8695351+00:00",
+          "updatedAt": "2026-09-10T03:21:10.3478352+00:00"
+        },
+        {
+          "id": "5ee61bc5267a4e82a643a8bbd9f160fc",
+          "index": 68,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "generate icon",
+          "task": "generate an icon with a similar style to the App ui that incorporates the name without actually putting text on it.",
+          "tags": [
+            "images",
+            "graphics",
+            "application"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "c7697634c7594853b964542106b42fb7",
+              "text": "image generated",
+              "isDone": false
+            },
+            {
+              "id": "d7fbac564b524e3ab703b2e126f3cff5",
+              "text": "icon updated on exe, taskbar, and title bar",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T03:22:19.0706512+00:00",
+          "updatedAt": "2026-09-10T03:23:01.7461987+00:00"
+        }
+      ]
     },
     {
       "id": "archive",
@@ -240,6 +399,45 @@
           "isCollapsed": true,
           "createdAt": "2026-09-09T21:48:09.3534278+00:00",
           "updatedAt": "2026-09-09T23:10:00+00:00"
+        },
+        {
+          "id": "234292ef32bf445b9f9cbb64a04cfd20",
+          "index": 64,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "error pop up not sure cause",
+          "task": "this popped up for a bunch of letters, I had probably 20-40 of them on screen at once",
+          "tags": [
+            "bug"
+          ],
+          "files": [
+            {
+              "id": "0bdd2d538bfe457882115a46afd11ae4",
+              "name": "zen errror.png",
+              "relativePath": "files/zen errror.png",
+              "size": 6274
+            }
+          ],
+          "requirements": [
+            {
+              "id": "2f472f5b8fe7469f96bdbe794a025490",
+              "text": "fix the bug",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T03:17:04.4903021+00:00",
+          "updatedAt": "2026-09-10T03:30:00+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",

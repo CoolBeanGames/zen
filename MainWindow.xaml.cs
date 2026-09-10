@@ -52,6 +52,7 @@ public partial class MainWindow : Window
     private BoardColumn? _pressedColumn;
     private Point _columnDragStart;
     private bool _isColumnDragging;
+    private bool _manualReloadRequested;
 
     public ObservableCollection<BoardColumn> Columns { get; } = [];
 
@@ -236,7 +237,16 @@ public partial class MainWindow : Window
         }
         catch (JsonException exception)
         {
-            MessageBox.Show(this, exception.Message, "Invalid task data", MessageBoxButton.OK, MessageBoxImage.Warning);
+            // Editors and agents may replace the JSON over several filesystem
+            // events. Keep the last valid board visible and quietly retry instead
+            // of opening one warning window per intermediate write.
+            _projectReloadTimer.Start();
+            if (_manualReloadRequested)
+                MessageBox.Show(this, exception.Message, "Invalid task data", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally
+        {
+            _manualReloadRequested = false;
         }
     }
 
@@ -249,6 +259,7 @@ public partial class MainWindow : Window
     private void ReloadProject_Click(object sender, RoutedEventArgs e)
     {
         _projectReloadTimer.Stop();
+        _manualReloadRequested = true;
         ProjectReloadTimer_Tick(sender, EventArgs.Empty);
     }
 
@@ -382,6 +393,67 @@ public partial class MainWindow : Window
         _pendingClickCard = null;
         ShowCardMenu((Border)sender, card);
         e.Handled = true;
+    }
+
+    private bool CanAttachToCard(TaskCard card)
+    {
+        var column = Columns.FirstOrDefault(candidate => candidate.Tasks.Contains(card));
+        return _store is not null && !card.IsLocked && !card.IsNote && !card.IsBreak &&
+               column is { IsLocked: false, IsArchive: false };
+    }
+
+    private void TaskCard_DragEnter(object sender, DragEventArgs e) => UpdateFileDropTarget(sender, e);
+
+    private void TaskCard_DragOver(object sender, DragEventArgs e) => UpdateFileDropTarget(sender, e);
+
+    private void UpdateFileDropTarget(object sender, DragEventArgs e)
+    {
+        if (sender is not Border { DataContext: TaskCard card } border || !CanAttachToCard(card) ||
+            !e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
+        e.Effects = paths?.Any(File.Exists) == true ? DragDropEffects.Copy : DragDropEffects.None;
+        if (e.Effects == DragDropEffects.Copy)
+        {
+            border.BorderBrush = (Brush)FindResource("AccentBrush");
+            border.BorderThickness = new Thickness(2);
+        }
+        e.Handled = true;
+    }
+
+    private void TaskCard_DragLeave(object sender, DragEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.ClearValue(Border.BorderBrushProperty);
+            border.ClearValue(Border.BorderThicknessProperty);
+        }
+        e.Handled = true;
+    }
+
+    private void TaskCard_Drop(object sender, DragEventArgs e)
+    {
+        if (sender is not Border { DataContext: TaskCard card } border) return;
+        border.ClearValue(Border.BorderBrushProperty);
+        border.ClearValue(Border.BorderThicknessProperty);
+        e.Handled = true;
+        if (!CanAttachToCard(card) || e.Data.GetData(DataFormats.FileDrop) is not string[] paths) return;
+
+        try
+        {
+            foreach (var path in paths.Where(File.Exists))
+                card.Files.Add(_store!.ImportFile(path));
+            SaveProject();
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, "Could not attach file", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void ShowCardMenu(Border anchor, TaskCard card)
