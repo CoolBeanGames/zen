@@ -910,8 +910,11 @@ public partial class MainWindow : Window
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
-        EditTagsInput.Text = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase)));
+        EditTagsInput.Text = string.Join(", ", card.Tags.Where(tag =>
+            !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) &&
+            !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
         EditBugFlag.IsChecked = card.IsBug;
+        EditInProgressFlag.IsChecked = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
         EditTaskInput.Text = card.Task;
         EditPromptLabel.Text = card.IsNote ? "NOTE" : "TASK PROMPT";
         EditAdvancedFields.Visibility = card.IsNote ? Visibility.Collapsed : Visibility.Visible;
@@ -973,8 +976,11 @@ public partial class MainWindow : Window
         {
             _editingCard.Tags.Clear();
             if (EditBugFlag.IsChecked == true) _editingCard.Tags.Add("bug");
+            if (EditInProgressFlag.IsChecked == true) _editingCard.Tags.Add("in progress");
             foreach (var tag in EditTagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                         .Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase))
+                         .Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) &&
+                                       !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))
+                         .Distinct(StringComparer.OrdinalIgnoreCase))
                 _editingCard.Tags.Add(tag);
             _editingCard.Requirements.Clear();
             foreach (var requirement in _editingRequirements)

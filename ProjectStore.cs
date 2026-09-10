@@ -112,6 +112,11 @@ public sealed class ProjectStore
             document.TagCatalog.Add(new ProjectTag { Name = "bug", Color = "#7A2632" });
         else
             bugDefinition.Color = "#7A2632";
+        var inProgressDefinition = document.TagCatalog.FirstOrDefault(tag => tag.Name.Equals("in progress", StringComparison.OrdinalIgnoreCase));
+        if (inProgressDefinition is null)
+            document.TagCatalog.Add(new ProjectTag { Name = "in progress", Color = "#8B7CFF" });
+        else
+            inProgressDefinition.Color = "#8B7CFF";
         var main = EnsureSystemColumn(document, "main", "main", false);
         main.Branch = "main";
         var archive = EnsureSystemColumn(document, "archive", "Archived", true);

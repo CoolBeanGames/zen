@@ -85,6 +85,10 @@
       "color": "#704F9B"
     },
     {
+      "name": "in progress",
+      "color": "#8B7CFF"
+    },
+    {
       "name": "images",
       "color": "#386D9A"
     },
@@ -185,17 +189,17 @@
             {
               "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
               "text": "in progress tag available",
-              "isDone": false
+              "isDone": true
             },
             {
               "id": "aa223372b0634a2b820b1b4410a3c1a2",
               "text": "in progress visible from collapsed or expanded card",
-              "isDone": false
+              "isDone": true
             },
             {
               "id": "7a833bccf001433ca9b1a1587b4bf880",
               "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
-              "isDone": false
+              "isDone": true
             }
           ],
           "flags": {
@@ -204,11 +208,11 @@
             "release": false,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-10T03:20:04.8695351+00:00",
-          "updatedAt": "2026-09-10T03:21:10.3478352+00:00"
+          "updatedAt": "2026-09-10T03:28:30.9747402+00:00"
         },
         {
           "id": "5ee61bc5267a4e82a643a8bbd9f160fc",

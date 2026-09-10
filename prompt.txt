@@ -26,6 +26,7 @@ CARD TYPES
 - Breaks intentionally retain only their immutable identity, index, timestamps, and `kind`. Their presence and position are the entire instruction.
 
 LOCKS AND ELIGIBILITY
+- When beginning an eligible task, add the `in progress` tag and update its `updatedAt` value before editing project files. Remove the tag when the task is completed or when work stops because of a real blocker. Preserve all other tags.
 - Never select, edit, move, execute, or otherwise act on a task where `isLocked` is true. Locked tasks are reserved for the user.
 - Never enter, check out, create, execute, or otherwise act on a branch whose containing entry has `isLocked` true. Locked branches are reserved for the user. Skip a locked branch entirely when processing the whole project, and stop with a report if the user directs you at a locked branch or at a task inside one.
 - Ignore tasks where `isDone` is true and tasks contained by `Archived`.

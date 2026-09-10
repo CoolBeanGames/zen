@@ -463,6 +463,7 @@
                              Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="TagSuggestions_MouseLeftButtonUp"/>
                     <TextBlock Text="INFO" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <CheckBox x:Name="EditBugFlag" Content="Bug — priority defect" Foreground="{StaticResource TextBrush}"/>
+                    <CheckBox x:Name="EditInProgressFlag" Content="In progress — agent is working" Foreground="{StaticResource TextBrush}" Margin="0,6,0,0"/>
                     <TextBlock Text="REQUIREMENTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <ItemsControl x:Name="EditRequirementsList">
                         <ItemsControl.ItemTemplate>
