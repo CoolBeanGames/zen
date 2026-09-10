@@ -507,16 +507,21 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
+    // Walk to the OUTERMOST border bound to a TaskCard: inner decoration borders
+    // (tag pills, flag chips) inherit the same DataContext and would otherwise
+    // give a tiny, mispositioned target.
     private (Border Border, bool After)? FindCardBorderAt(Point point)
     {
         var element = RootLayout.InputHitTest(point) as DependencyObject;
+        Border? match = null;
         while (element is not null)
         {
-            if (element is Border { DataContext: TaskCard } border)
-                return (border, point.Y > border.TranslatePoint(new Point(0, border.ActualHeight / 2), RootLayout).Y);
+            if (element is Border { DataContext: TaskCard } border) match = border;
             element = VisualTreeHelper.GetParent(element);
         }
-        return null;
+        if (match is null || match.ActualHeight <= 0) return null;
+        var midY = match.TranslatePoint(new Point(0, match.ActualHeight / 2), RootLayout).Y;
+        return (match, point.Y > midY);
     }
 
     private void UpdateDropIndicator(Point pointer, (Border Border, BoardColumn Column)? column)
@@ -528,26 +533,29 @@ public partial class MainWindow : Window
         }
 
         _dropIndicator ??= CreateDropIndicator();
+        DragOverlay.Visibility = Visibility.Visible;
         double left, top, width;
         var card = FindCardBorderAt(pointer);
-        if (card is not null && card.Value.Border != _activeDrag.SourceElement)
+        if (card is not null)
         {
-            var origin = card.Value.Border.TranslatePoint(new Point(0, 0), RootLayout);
+            var border = card.Value.Border;
+            var origin = border.TranslatePoint(new Point(0, 0), RootLayout);
             left = origin.X;
-            width = card.Value.Border.ActualWidth;
-            top = (card.Value.After ? origin.Y + card.Value.Border.ActualHeight : origin.Y) - 5;
+            width = border.ActualWidth;
+            top = (card.Value.After ? origin.Y + border.ActualHeight : origin.Y) - 3;
         }
         else
         {
-            var origin = column.Value.Border.TranslatePoint(new Point(0, 0), RootLayout);
+            var border = column.Value.Border;
+            var origin = border.TranslatePoint(new Point(0, 0), RootLayout);
             left = origin.X + 11;
-            width = Math.Max(0, column.Value.Border.ActualWidth - 22);
-            top = origin.Y + 70;
+            width = Math.Max(0, border.ActualWidth - 22);
+            top = origin.Y + border.ActualHeight - 6;
         }
 
         _dropIndicator.Width = width;
-        Canvas.SetLeft(_dropIndicator, left);
-        Canvas.SetTop(_dropIndicator, top);
+        Canvas.SetLeft(_dropIndicator, Math.Round(left));
+        Canvas.SetTop(_dropIndicator, Math.Round(top));
         _dropIndicator.Visibility = Visibility.Visible;
     }
 
