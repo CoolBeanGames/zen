@@ -12,6 +12,7 @@
         <SolidColorBrush x:Key="MutedBrush" Color="#8992A5"/>
         <SolidColorBrush x:Key="AccentBrush" Color="#8B7CFF"/>
         <SolidColorBrush x:Key="AccentSoftBrush" Color="#25223C"/>
+        <SolidColorBrush x:Key="LockBrush" Color="#E5AE58"/>
 
         <Style TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI"/>
@@ -124,6 +125,8 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="CheckGlyph" Text="✓" Foreground="#B9AFFF" FontWeight="Bold" FontSize="11"
                                                VerticalAlignment="Center" Visibility="Collapsed"/>
+                                    <ContentPresenter x:Name="IconPresenter" ContentSource="Icon" VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center" Width="13" Height="13"/>
                                     <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True"
                                                       VerticalAlignment="Center" Margin="2,0,12,0"/>
                                     <TextBlock x:Name="SubmenuGlyph" Grid.Column="2" Text="›" Foreground="#737D91" FontSize="17"

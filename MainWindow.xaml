@@ -142,13 +142,19 @@
                                 <Button Tag="{Binding}" Click="ToggleColumnCollapse_Click" Content="{Binding CollapseGlyph}" ToolTip="Collapse or expand column" Padding="10,7"
                                         Background="{StaticResource ColumnBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="5,0,0,0"/>
                                 </StackPanel>
-                            <Border Grid.Row="1" Width="326" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="13" VerticalAlignment="Top">
+                            <Border Grid.Row="1" Width="326" CornerRadius="13" VerticalAlignment="Top">
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Background" Value="{StaticResource ColumnBrush}"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Height" Value="68"/></DataTrigger>
-                                            <DataTrigger Binding="{Binding IsLocked}" Value="True"><Setter Property="BorderBrush" Value="#D69B45"/></DataTrigger>
+                                            <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#E5AE58"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                                <Setter Property="Background" Value="#211C12"/>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
@@ -171,7 +177,7 @@
                                                     <Border Style="{StaticResource TinyPill}" Margin="8,-2,0,0">
                                                         <TextBlock Text="{Binding Tasks.Count}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
                                                     </Border>
-                                                    <TextBlock Text="{Binding LockGlyph}" Foreground="#E5AE58" FontSize="11" Margin="6,-1,0,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding LockGlyph}" Foreground="{StaticResource LockBrush}" FontSize="11" Margin="6,-1,0,0" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding KindLabel}" FontSize="9" FontWeight="Bold" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0"/>
                                             </StackPanel>

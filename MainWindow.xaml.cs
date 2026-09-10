@@ -814,9 +814,9 @@ public partial class MainWindow : Window
     private void ClearColumnHighlight()
     {
         if (_highlightedColumn is null) return;
-        _highlightedColumn.BorderBrush = (Brush)FindResource("BorderBrush");
-        _highlightedColumn.BorderThickness = new Thickness(1);
-        _highlightedColumn.Background = (Brush)FindResource("ColumnBrush");
+        _highlightedColumn.ClearValue(Border.BorderBrushProperty);
+        _highlightedColumn.ClearValue(Border.BorderThicknessProperty);
+        _highlightedColumn.ClearValue(Border.BackgroundProperty);
         _highlightedColumn = null;
     }
 
@@ -1132,7 +1132,13 @@ public partial class MainWindow : Window
         var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
         menu.Items.Add(CreateNewCardMenu(column));
         AddMenuItem(menu, column.IsCollapsed ? "Expand column" : "Collapse column", (_, _) => ToggleColumn(column));
-        AddMenuItem(menu, column.IsLocked ? "Unlock branch" : "Lock branch", (_, _) => { column.IsLocked = !column.IsLocked; SaveProject(); });
+        var lockItem = new MenuItem
+        {
+            Header = column.IsLocked ? "Unlock branch" : "Lock branch",
+            Icon = new TextBlock { Text = column.IsLocked ? "🔓" : "🔒", FontSize = 12, Foreground = (Brush)FindResource("LockBrush") }
+        };
+        lockItem.Click += (_, _) => { column.IsLocked = !column.IsLocked; SaveProject(); };
+        menu.Items.Add(lockItem);
         if (column.IsLocked)
             menu.Items.Add(new MenuItem { Header = "Launch — branch locked", IsEnabled = false });
         else
