@@ -63,6 +63,12 @@ EXECUTING TASKS
 - `flags.release`: create a release build and publish it as a GitHub release when authorized.
 - `flags.merge`: merge the containing Git branch into `main` after its work is verified.
 
+BUILD AND RELEASE PATHS
+- After every successful build, set the root `latestExePath` in `zen.tasks.json` to the executable produced by that build. This is the newest executable regardless of build configuration.
+- After every successful release build, set the root `latestReleasePath` to that release executable and also set `latestExePath` to it because it is now the newest executable.
+- Prefer project-relative paths with `/` separators. Record a path only after confirming that the executable exists, and preserve all concurrent database changes when saving it.
+- Never set `latestReleasePath` to a debug or other non-release executable.
+
 REQUIREMENTS AND COMPLETION
 - Mark a requirement `isDone: true` only after it is actually satisfied.
 - A task is not complete until every requirement is done and its requested work and enabled flags have succeeded.

@@ -24,6 +24,9 @@ public static class PromptEnvironment
 
     public static void Sync(SettingsStore store, ZenSettings settings)
     {
+        var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
+        var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
+        settings.GlobalPrompt = updatedPrompt;
         Materialize(settings.GlobalPrompt);
 
         const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
@@ -44,11 +47,28 @@ public static class PromptEnvironment
         if (changed)
             Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
 
-        if (!string.Equals(settings.PromptPathEntry, Directory, StringComparison.Ordinal))
+        if (promptChanged || !string.Equals(settings.PromptPathEntry, Directory, StringComparison.Ordinal))
         {
             settings.PromptPathEntry = Directory;
             store.Save(settings);
         }
+    }
+
+    private static string EnsureBuildPathInstructions(string prompt)
+    {
+        const string heading = "BUILD AND RELEASE PATHS";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+
+        const string instructions = "BUILD AND RELEASE PATHS\r\n" +
+            "- After every successful build, set the root `latestExePath` in `zen.tasks.json` to the executable produced by that build. This is the newest executable regardless of build configuration.\r\n" +
+            "- After every successful release build, set the root `latestReleasePath` to that release executable and also set `latestExePath` to it because it is now the newest executable.\r\n" +
+            "- Prefer project-relative paths with `/` separators. Record a path only after confirming that the executable exists, and preserve all concurrent database changes when saving it.\r\n" +
+            "- Never set `latestReleasePath` to a debug or other non-release executable.\r\n\r\n";
+        const string nextHeading = "REQUIREMENTS AND COMPLETION";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0
+            ? prompt.Insert(insertionPoint, instructions)
+            : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
 
     private static bool SamePath(string a, string b)

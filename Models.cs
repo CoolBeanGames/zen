@@ -20,6 +20,8 @@ public sealed class ProjectDocument
     public string ProjectId { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get; set; } = "Untitled project";
     public int NextCardIndex { get; set; } = 1;
+    public string? LatestExePath { get; set; }
+    public string? LatestReleasePath { get; set; }
     public ObservableCollection<ProjectTag> TagCatalog { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 

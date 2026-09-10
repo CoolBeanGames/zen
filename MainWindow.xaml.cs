@@ -185,6 +185,80 @@ public partial class MainWindow : Window
         _nextTaskIndex = document.NextCardIndex;
         ProjectNameText.Text = document.Name;
         ProjectNameText.ToolTip = _store?.RootDirectory;
+        UpdateExecutableButtons();
+    }
+
+    private void UpdateExecutableButtons()
+    {
+        SetExecutableButtonState(LaunchLatestExeButton, _document?.LatestExePath, "build");
+        SetExecutableButtonState(LaunchLatestReleaseButton, _document?.LatestReleasePath, "release");
+    }
+
+    private void SetExecutableButtonState(Button button, string? configuredPath, string kind)
+    {
+        button.IsEnabled = _store is not null && !string.IsNullOrWhiteSpace(configuredPath);
+        button.ToolTip = button.IsEnabled
+            ? $"Launch {configuredPath}"
+            : $"No {kind} executable has been recorded";
+    }
+
+    private void LaunchLatestExe_Click(object sender, RoutedEventArgs e) => LaunchConfiguredExecutable(false);
+
+    private void LaunchLatestRelease_Click(object sender, RoutedEventArgs e) => LaunchConfiguredExecutable(true);
+
+    private void LaunchConfiguredExecutable(bool release)
+    {
+        if (_store is null || _document is null) return;
+        var configuredPath = release ? _document.LatestReleasePath : _document.LatestExePath;
+        if (string.IsNullOrWhiteSpace(configuredPath))
+        {
+            UpdateExecutableButtons();
+            return;
+        }
+
+        string executablePath;
+        try
+        {
+            executablePath = Path.IsPathRooted(configuredPath)
+                ? Path.GetFullPath(configuredPath)
+                : Path.GetFullPath(Path.Combine(_store.RootDirectory, configuredPath));
+        }
+        catch (Exception exception) when (exception is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            ClearConfiguredExecutablePath(release, "The saved executable path is invalid. It was removed from the project.");
+            return;
+        }
+
+        if (!File.Exists(executablePath))
+        {
+            ClearConfiguredExecutablePath(release, "The saved executable no longer exists. Its path was removed from the project.");
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = executablePath,
+                WorkingDirectory = Path.GetDirectoryName(executablePath) ?? _store.RootDirectory,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, $"Could not launch the executable: {exception.Message}",
+                "Launch failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void ClearConfiguredExecutablePath(bool release, string message)
+    {
+        if (_document is null) return;
+        if (release) _document.LatestReleasePath = null;
+        else _document.LatestExePath = null;
+        SaveProject();
+        UpdateExecutableButtons();
+        MessageBox.Show(this, message, "Executable not found", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void StartProjectWatcher()
