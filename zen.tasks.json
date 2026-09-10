@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 60,
+  "nextCardIndex": 64,
   "tagCatalog": [
     {
       "name": "bug",
@@ -89,83 +89,8 @@
       "isArchive": false,
       "isCollapsed": false,
       "isSystem": true,
-      "tasks": [
-        {
-          "id": "4b49786e9dd2496b9daa555d25685a2b",
-          "index": 55,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "better drop preview",
-          "task": "when droppnig a card its hard to tell where its going to end up, add some sort of visual indicator as to where its going",
-          "tags": [
-            "cards",
-            "drag and drop",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:15.0214349+00:00",
-          "updatedAt": "2026-09-09T21:50:16.8939001+00:00"
-        },
-        {
-          "id": "2c404e2d9a4548a29ffb7a51df606c8e",
-          "index": 59,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "prompt on path",
-          "task": "when the program is launched it should add the prompt.txt to path, agent launchers should be updated to point to it",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "b90c43ef7fd4490cb6156cd711806a8a",
-              "text": "prompt made globally stored",
-              "isDone": true
-            },
-            {
-              "id": "c54fd8ab7c08444b96a8089e8b65af11",
-              "text": "prompt path added to path",
-              "isDone": true
-            },
-            {
-              "id": "96f9eb3dd5c44404878abb2909752d97",
-              "text": "path updated it local path changed",
-              "isDone": true
-            },
-            {
-              "id": "5d8001bf4fed439bb798fd7da330603b",
-              "text": "agent prompts updated",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T22:04:44.5704739+00:00",
-          "updatedAt": "2026-09-09T23:10:00.0000000+00:00"
-        }
-      ]
+      "isLocked": false,
+      "tasks": []
     },
     {
       "id": "archive",
@@ -174,6 +99,7 @@
       "isArchive": true,
       "isCollapsed": true,
       "isSystem": true,
+      "isLocked": false,
       "tasks": [
         {
           "id": "04f9ee3903a846ab997eb93ac64c77b8",
@@ -233,6 +159,87 @@
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:35:02.5029216+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+        },
+        {
+          "id": "dd29c1012bff4722a8e8aba0cbd37dc2",
+          "index": 53,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "bugs as info tags",
+          "task": "bugs are meant to be an info tag that can be toggled, not a custom card type. we can keep it in the add menu, but also add it as an info tag so we can toggle it",
+          "tags": [
+            "bug",
+            "cards"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T21:47:01.0686315+00:00",
+          "updatedAt": "2026-09-09T23:10:00+00:00"
+        },
+        {
+          "id": "4fb5b7db45af4caa90b7c5bf884863bf",
+          "index": 54,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "upload file issue",
+          "task": "sometimes when adding a file upload the edit card pop up closes and the upload doesnt complete",
+          "tags": [
+            "bug",
+            "files"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T21:47:07.4452504+00:00",
+          "updatedAt": "2026-09-09T23:10:00+00:00"
+        },
+        {
+          "id": "50bcd276d1f7421492d1da01e4c65ca1",
+          "index": 56,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "pop up placment",
+          "task": "when an edit card pop up spawns its all over the place in placment, spawn it exactly in the center every time and have it span the whole height",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T21:48:09.3534278+00:00",
+          "updatedAt": "2026-09-09T23:10:00+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -947,87 +954,6 @@
           "updatedAt": "2026-09-09T22:02:34.8868098+00:00"
         },
         {
-          "id": "dd29c1012bff4722a8e8aba0cbd37dc2",
-          "index": 53,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "bugs as info tags",
-          "task": "bugs are meant to be an info tag that can be toggled, not a custom card type. we can keep it in the add menu, but also add it as an info tag so we can toggle it",
-          "tags": [
-            "bug",
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:01.0686315+00:00",
-          "updatedAt": "2026-09-09T23:10:00.0000000+00:00"
-        },
-        {
-          "id": "4fb5b7db45af4caa90b7c5bf884863bf",
-          "index": 54,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "upload file issue",
-          "task": "sometimes when adding a file upload the edit card pop up closes and the upload doesnt complete",
-          "tags": [
-            "bug",
-            "files"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:07.4452504+00:00",
-          "updatedAt": "2026-09-09T23:10:00.0000000+00:00"
-        },
-        {
-          "id": "50bcd276d1f7421492d1da01e4c65ca1",
-          "index": 56,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "pop up placment",
-          "task": "when an edit card pop up spawns its all over the place in placment, spawn it exactly in the center every time and have it span the whole height",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:48:09.3534278+00:00",
-          "updatedAt": "2026-09-09T23:10:00.0000000+00:00"
-        },
-        {
           "id": "b6e45e3941a24a4f8d5a807e16dec9c9",
           "index": 58,
           "kind": "task",
@@ -1067,7 +993,108 @@
           "isLocked": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T22:03:30.2353031+00:00",
-          "updatedAt": "2026-09-09T23:10:00.0000000+00:00"
+          "updatedAt": "2026-09-09T23:10:00+00:00"
+        },
+        {
+          "id": "eed3ea84da0445b49faa4a1cacfb9215",
+          "index": 60,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "test",
+          "task": "",
+          "tags": [
+            "task"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T00:10:18.3471055+00:00",
+          "updatedAt": "2026-09-10T00:10:18.3474241+00:00"
+        },
+        {
+          "id": "4b49786e9dd2496b9daa555d25685a2b",
+          "index": 55,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "better drop preview",
+          "task": "when droppnig a card its hard to tell where its going to end up, add some sort of visual indicator as to where its going",
+          "tags": [
+            "cards",
+            "drag and drop",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T21:47:15.0214349+00:00",
+          "updatedAt": "2026-09-10T00:30:00+00:00"
+        },
+        {
+          "id": "2c404e2d9a4548a29ffb7a51df606c8e",
+          "index": 59,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "prompt on path",
+          "task": "when the program is launched it should add the prompt.txt to path, agent launchers should be updated to point to it",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "b90c43ef7fd4490cb6156cd711806a8a",
+              "text": "prompt made globally stored",
+              "isDone": true
+            },
+            {
+              "id": "c54fd8ab7c08444b96a8089e8b65af11",
+              "text": "prompt path added to path",
+              "isDone": true
+            },
+            {
+              "id": "96f9eb3dd5c44404878abb2909752d97",
+              "text": "path updated it local path changed",
+              "isDone": true
+            },
+            {
+              "id": "5d8001bf4fed439bb798fd7da330603b",
+              "text": "agent prompts updated",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-09T22:04:44.5704739+00:00",
+          "updatedAt": "2026-09-10T00:30:00+00:00"
         }
       ]
     }
