@@ -438,7 +438,7 @@ public partial class MainWindow : Window
         {
             "codex" => $"codex --dangerously-bypass-approvals-and-sandbox \"{escapedInstruction}\"",
             "claude" => $"claude --dangerously-skip-permissions \"{escapedInstruction}\"",
-            "gemini" => $"antigravity --yolo \"{escapedInstruction}\"",
+            "gemini" => $"agy --dangerously-skip-permissions -i \"{escapedInstruction}\"",
             _ => throw new ArgumentOutOfRangeException(nameof(agent), agent, "Unknown agent")
         };
         try

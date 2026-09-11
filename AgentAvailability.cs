@@ -12,7 +12,7 @@ public static class AgentAvailability
     [
         new("codex", "Codex", "codex", "npm install -g @openai/codex"),
         new("claude", "Claude", "claude", "npm install -g @anthropic-ai/claude-code"),
-        new("gemini", "Gemini", "antigravity", "npm install -g @google/antigravity")
+        new("gemini", "Gemini", "agy", "curl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd && install.cmd && del install.cmd")
     ];
 
     public static bool IsInstalled(string command)

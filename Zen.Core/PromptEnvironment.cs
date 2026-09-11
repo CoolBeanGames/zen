@@ -54,36 +54,63 @@ public static class PromptEnvironment
         }
     }
 
-    // The operator ships as zen-operator.exe alongside Zen.exe in the same publish folder.
-    // Make sure that folder is on PATH so agents can invoke it from any project directory.
+    private static readonly string[] OperatorFiles =
+    [
+        "zen-operator.exe", "zen-operator.dll", "zen-operator.deps.json", "zen-operator.runtimeconfig.json"
+    ];
+
+    // zen-operator ships alongside Zen.exe in a versioned publish folder, so its location
+    // changes every release. Rather than repeatedly reshuffling PATH (which already-open
+    // agent shells never pick up), copy it into the stable Directory, which Sync() already
+    // keeps on PATH permanently.
     public static void SyncOperatorPath(SettingsStore store, ZenSettings settings)
     {
         var operatorDirectory = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        if (!File.Exists(Path.Combine(operatorDirectory, "zen-operator.exe"))) return;
+        var sourceExe = Path.Combine(operatorDirectory, "zen-operator.exe");
+        if (!File.Exists(sourceExe) || SamePath(operatorDirectory, Directory)) return;
 
-        const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
-        var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
-            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .ToList();
-        var changed = false;
-
-        if (!string.IsNullOrEmpty(settings.OperatorPathEntry) && !SamePath(settings.OperatorPathEntry, operatorDirectory))
-            changed |= entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0;
-
-        if (!entries.Any(entry => SamePath(entry, operatorDirectory)))
+        System.IO.Directory.CreateDirectory(Directory);
+        foreach (var fileName in OperatorFiles)
         {
-            entries.Add(operatorDirectory);
-            changed = true;
+            var source = Path.Combine(operatorDirectory, fileName);
+            if (!File.Exists(source)) continue;
+            var destination = Path.Combine(Directory, fileName);
+            if (File.Exists(destination) && FilesAreIdentical(source, destination)) continue;
+            var temporaryPath = destination + ".tmp";
+            File.Copy(source, temporaryPath, true);
+            File.Move(temporaryPath, destination, true);
         }
 
-        if (changed)
-            Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
-
-        if (!string.Equals(settings.OperatorPathEntry, operatorDirectory, StringComparison.OrdinalIgnoreCase))
+        // Clean up a stale versioned PATH entry left behind by older Zen builds.
+        if (!string.IsNullOrEmpty(settings.OperatorPathEntry))
         {
-            settings.OperatorPathEntry = operatorDirectory;
+            const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
+            var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
+                .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+            if (entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0)
+                Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
+
+            settings.OperatorPathEntry = string.Empty;
             store.Save(settings);
         }
+    }
+
+    private static bool FilesAreIdentical(string a, string b)
+    {
+        var infoA = new FileInfo(a);
+        var infoB = new FileInfo(b);
+        if (infoA.Length != infoB.Length) return false;
+        using var streamA = File.OpenRead(a);
+        using var streamB = File.OpenRead(b);
+        int byteA, byteB;
+        do
+        {
+            byteA = streamA.ReadByte();
+            byteB = streamB.ReadByte();
+            if (byteA != byteB) return false;
+        } while (byteA != -1);
+        return true;
     }
 
     private static string EnsureBuildPathInstructions(string prompt)
