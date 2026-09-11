@@ -82,6 +82,7 @@ public partial class MainWindow : Window
         };
         _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
         try { PromptEnvironment.Sync(_settingsStore, _settingsStore.Load()); } catch { /* PATH is best-effort */ }
+        try { PromptEnvironment.SyncOperatorPath(_settingsStore, _settingsStore.Load()); } catch { /* PATH is best-effort */ }
         SeedBoard();
         Loaded += (_, _) => OpenLastProject();
     }

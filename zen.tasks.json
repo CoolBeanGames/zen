@@ -3,8 +3,8 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 104,
-  "latestExePath": "builds/release_2/Zen-0.3.0-win-x64/Zen.exe",
-  "latestReleasePath": "builds/release_2/Zen-0.3.0-win-x64/Zen.exe",
+  "latestExePath": "builds/release_2/Zen-0.3.1-win-x64/Zen.exe",
+  "latestReleasePath": "builds/release_2/Zen-0.3.1-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -160,60 +160,6 @@
       "isLocked": false,
       "tasks": [
         {
-          "id": "f60cffa032a34bfeb343f1970e284ee3",
-          "index": 97,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "dates unreadable on expanded card",
-          "task": "in both the calendar itself and the printed date everything is unreadable they are both white text on a white background. make the background colors in line with everything else",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:04:52.66057+00:00",
-          "updatedAt": "2026-09-11T03:00:00+00:00"
-        },
-        {
-          "id": "14fd5afa32ab4b129177efc6df044b97",
-          "index": 98,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Priority unreadable",
-          "task": "similar to dates, we cant read the priority settings, these need adjusted to be readable (make the background dark)",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:05:57.2503268+00:00",
-          "updatedAt": "2026-09-11T03:00:00+00:00"
-        },
-        {
           "id": "58a5811a20b14360a4febbe945b55f49",
           "index": 103,
           "kind": "note",
@@ -236,120 +182,6 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:50:42.2380425+00:00",
           "updatedAt": "2026-09-11T02:51:11.7363899+00:00"
-        },
-        {
-          "id": "17ffe087a86c40eb979c8aac0fcb16de",
-          "index": 89,
-          "kind": "cleanup",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "",
-          "task": "",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:48:47.6752282+00:00",
-          "updatedAt": "2026-09-11T01:48:47.6752285+00:00"
-        },
-        {
-          "id": "ca82182be58b4704b279af520cb1f6c0",
-          "index": 87,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Operator",
-          "task": "The operator is the new single entry point for all tasks to agents (including you) once it is built requests are sent to the operator and it replies with data. \r\n\r\nthe operator is a CLI tool. When the program is launched first check the windows \u0027path\u0027 if the operator isnt there OR the path doesnt match update/add it so all agents can freely access it.\r\n\r\nwhen the operator is requested to add data it is added to a queue, then the whole queue is copied, the original queue is cleared, and  the copy is flushed to the json file before being deleted. in requirements i will outline basic jobs of the operator, you will then implement the specific commands.",
-          "tags": [
-            "operator",
-            "tasks",
-            "projects"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "08edbbf3dfcf477ca92d04155ce8a202",
-              "text": "get the prompt",
-              "isDone": false
-            },
-            {
-              "id": "9b383607ab21499b9b3a9465788c0da8",
-              "text": "get all tasks",
-              "isDone": false
-            },
-            {
-              "id": "4d96ce3adce44340b006a561cbe23550",
-              "text": "get a specific task",
-              "isDone": false
-            },
-            {
-              "id": "22e6e580f2f646bd9c57b2ced7fc52ce",
-              "text": "write 1 tag",
-              "isDone": false
-            },
-            {
-              "id": "a99044165322430fbca62565ec894e19",
-              "text": "write many tags",
-              "isDone": false
-            },
-            {
-              "id": "4d23e7d70cd14985b89acca8b9ed3d4d",
-              "text": "archive tasks",
-              "isDone": false
-            },
-            {
-              "id": "dc6667f12cd84db6aa325c96ceaef841",
-              "text": "read notes",
-              "isDone": false
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:48:34.7198243+00:00",
-          "updatedAt": "2026-09-11T01:53:24.2364235+00:00"
-        },
-        {
-          "id": "d77b786a6e114a558b2c128eb5dc3ef4",
-          "index": 88,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Update Instructions",
-          "task": "update the instructions to explain to all agents how to use the operator and to NEVER edit or read tasks.json manually",
-          "tags": [
-            "tasks"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:48:45.3001752+00:00",
-          "updatedAt": "2026-09-11T01:53:11.3407164+00:00"
         },
         {
           "id": "3be1f6f3b0774592b4bb09eff49bb68d",
@@ -935,6 +767,60 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:30:00+00:00",
           "updatedAt": "2026-09-11T02:49:46.6256408+00:00"
+        },
+        {
+          "id": "f60cffa032a34bfeb343f1970e284ee3",
+          "index": 97,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "dates unreadable on expanded card",
+          "task": "in both the calendar itself and the printed date everything is unreadable they are both white text on a white background. make the background colors in line with everything else",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:04:52.66057+00:00",
+          "updatedAt": "2026-09-11T03:00:00+00:00"
+        },
+        {
+          "id": "14fd5afa32ab4b129177efc6df044b97",
+          "index": 98,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Priority unreadable",
+          "task": "similar to dates, we cant read the priority settings, these need adjusted to be readable (make the background dark)",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:05:57.2503268+00:00",
+          "updatedAt": "2026-09-11T03:00:00+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -2249,6 +2135,120 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T01:45:11.7516827+00:00",
           "updatedAt": "2026-09-11T02:35:00+00:00"
+        },
+        {
+          "id": "17ffe087a86c40eb979c8aac0fcb16de",
+          "index": 89,
+          "kind": "cleanup",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:48:47.6752282+00:00",
+          "updatedAt": "2026-09-11T01:48:47.6752285+00:00"
+        },
+        {
+          "id": "ca82182be58b4704b279af520cb1f6c0",
+          "index": 87,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Operator",
+          "task": "The operator is the new single entry point for all tasks to agents (including you) once it is built requests are sent to the operator and it replies with data. \r\n\r\nthe operator is a CLI tool. When the program is launched first check the windows \u0027path\u0027 if the operator isnt there OR the path doesnt match update/add it so all agents can freely access it.\r\n\r\nwhen the operator is requested to add data it is added to a queue, then the whole queue is copied, the original queue is cleared, and  the copy is flushed to the json file before being deleted. in requirements i will outline basic jobs of the operator, you will then implement the specific commands.",
+          "tags": [
+            "operator",
+            "tasks",
+            "projects"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "08edbbf3dfcf477ca92d04155ce8a202",
+              "text": "get the prompt",
+              "isDone": true
+            },
+            {
+              "id": "9b383607ab21499b9b3a9465788c0da8",
+              "text": "get all tasks",
+              "isDone": true
+            },
+            {
+              "id": "4d96ce3adce44340b006a561cbe23550",
+              "text": "get a specific task",
+              "isDone": true
+            },
+            {
+              "id": "22e6e580f2f646bd9c57b2ced7fc52ce",
+              "text": "write 1 tag",
+              "isDone": true
+            },
+            {
+              "id": "a99044165322430fbca62565ec894e19",
+              "text": "write many tags",
+              "isDone": true
+            },
+            {
+              "id": "4d23e7d70cd14985b89acca8b9ed3d4d",
+              "text": "archive tasks",
+              "isDone": true
+            },
+            {
+              "id": "dc6667f12cd84db6aa325c96ceaef841",
+              "text": "read notes",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:48:34.7198243+00:00",
+          "updatedAt": "2026-09-11T04:46:33.6086234+00:00"
+        },
+        {
+          "id": "d77b786a6e114a558b2c128eb5dc3ef4",
+          "index": 88,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Update Instructions",
+          "task": "update the instructions to explain to all agents how to use the operator and to NEVER edit or read tasks.json manually",
+          "tags": [
+            "tasks"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:48:45.3001752+00:00",
+          "updatedAt": "2026-09-11T04:46:34.5318339+00:00"
         }
       ]
     }

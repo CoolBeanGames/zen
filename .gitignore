@@ -4,3 +4,6 @@ builds/
 .vs/
 *.user
 *.suo
+.zen-queue.json
+.zen-queue.flushing.json
+.zen-queue.lock

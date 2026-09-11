@@ -54,6 +54,38 @@ public static class PromptEnvironment
         }
     }
 
+    // The operator ships as zen-operator.exe alongside Zen.exe in the same publish folder.
+    // Make sure that folder is on PATH so agents can invoke it from any project directory.
+    public static void SyncOperatorPath(SettingsStore store, ZenSettings settings)
+    {
+        var operatorDirectory = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        if (!File.Exists(Path.Combine(operatorDirectory, "zen-operator.exe"))) return;
+
+        const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
+        var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
+            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+        var changed = false;
+
+        if (!string.IsNullOrEmpty(settings.OperatorPathEntry) && !SamePath(settings.OperatorPathEntry, operatorDirectory))
+            changed |= entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0;
+
+        if (!entries.Any(entry => SamePath(entry, operatorDirectory)))
+        {
+            entries.Add(operatorDirectory);
+            changed = true;
+        }
+
+        if (changed)
+            Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
+
+        if (!string.Equals(settings.OperatorPathEntry, operatorDirectory, StringComparison.OrdinalIgnoreCase))
+        {
+            settings.OperatorPathEntry = operatorDirectory;
+            store.Save(settings);
+        }
+    }
+
     private static string EnsureBuildPathInstructions(string prompt)
     {
         const string heading = "BUILD AND RELEASE PATHS";
