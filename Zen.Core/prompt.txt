@@ -46,6 +46,7 @@ USING THE OPERATOR
   - `zen-operator branch archive <id>` — archive a non-permanent branch; its tasks move into Archived and are marked done.
 - `zen-operator paths --exe <relative-path> [--release]` — set `latestExePath` (and `latestReleasePath` with `--release`) after confirming the path exists.
 - If a command you need does not exist yet, say so and ask for the operator to be extended rather than falling back to hand-editing `zen.tasks.json` — the point is full control through one safe path, not a restricted subset.
+- If the `zen-operator` command is not found on PATH, it usually means your shell session started before Zen last updated PATH — Windows does not refresh a shell that is already open. Read `operator-path.txt`, in the same folder as this prompt.txt, for the absolute path to the current `zen-operator.exe`, and invoke it directly by that path instead of giving up.
 
 DATA SHAPE AND OWNERSHIP
 - The database hierarchy is `branches[] -> tasks[]`.

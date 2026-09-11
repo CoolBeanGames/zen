@@ -25,6 +25,7 @@ public static class PromptEnvironment
     public static void Sync(SettingsStore store, ZenSettings settings)
     {
         var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
+        updatedPrompt = EnsureOperatorPathFallbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
         settings.GlobalPrompt = updatedPrompt;
         Materialize(settings.GlobalPrompt);
@@ -54,63 +55,65 @@ public static class PromptEnvironment
         }
     }
 
-    private static readonly string[] OperatorFiles =
-    [
-        "zen-operator.exe", "zen-operator.dll", "zen-operator.deps.json", "zen-operator.runtimeconfig.json"
-    ];
+    public static string OperatorPointerPath => Path.Combine(Directory, "operator-path.txt");
 
-    // zen-operator ships alongside Zen.exe in a versioned publish folder, so its location
-    // changes every release. Rather than repeatedly reshuffling PATH (which already-open
-    // agent shells never pick up), copy it into the stable Directory, which Sync() already
-    // keeps on PATH permanently.
+    // The operator ships as zen-operator.exe alongside Zen.exe in the same publish folder,
+    // which is a new, versioned location every release. Keep PATH pointing at wherever this
+    // running instance actually lives, correcting it whenever it's missing or stale. Windows
+    // never refreshes PATH in shells that were already open, so also drop a pointer file next
+    // to prompt.txt (a location agents already know to fetch from) with the exe's current
+    // absolute path, so an agent whose PATH is stale can still find and invoke it directly.
     public static void SyncOperatorPath(SettingsStore store, ZenSettings settings)
     {
         var operatorDirectory = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        var sourceExe = Path.Combine(operatorDirectory, "zen-operator.exe");
-        if (!File.Exists(sourceExe) || SamePath(operatorDirectory, Directory)) return;
+        var operatorExePath = Path.Combine(operatorDirectory, "zen-operator.exe");
+        if (!File.Exists(operatorExePath)) return;
 
-        System.IO.Directory.CreateDirectory(Directory);
-        foreach (var fileName in OperatorFiles)
+        const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
+        var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
+            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+        var changed = false;
+
+        if (!string.IsNullOrEmpty(settings.OperatorPathEntry) && !SamePath(settings.OperatorPathEntry, operatorDirectory))
+            changed |= entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0;
+
+        if (!entries.Any(entry => SamePath(entry, operatorDirectory)))
         {
-            var source = Path.Combine(operatorDirectory, fileName);
-            if (!File.Exists(source)) continue;
-            var destination = Path.Combine(Directory, fileName);
-            if (File.Exists(destination) && FilesAreIdentical(source, destination)) continue;
-            var temporaryPath = destination + ".tmp";
-            File.Copy(source, temporaryPath, true);
-            File.Move(temporaryPath, destination, true);
+            entries.Add(operatorDirectory);
+            changed = true;
         }
 
-        // Clean up a stale versioned PATH entry left behind by older Zen builds.
-        if (!string.IsNullOrEmpty(settings.OperatorPathEntry))
-        {
-            const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
-            var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
-                .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .ToList();
-            if (entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0)
-                Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
+        if (changed)
+            Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
 
-            settings.OperatorPathEntry = string.Empty;
+        if (!string.Equals(settings.OperatorPathEntry, operatorDirectory, StringComparison.OrdinalIgnoreCase))
+        {
+            settings.OperatorPathEntry = operatorDirectory;
             store.Save(settings);
+        }
+
+        System.IO.Directory.CreateDirectory(Directory);
+        if (!File.Exists(OperatorPointerPath) || File.ReadAllText(OperatorPointerPath) != operatorExePath)
+        {
+            var temporaryPath = OperatorPointerPath + ".tmp";
+            File.WriteAllText(temporaryPath, operatorExePath);
+            File.Move(temporaryPath, OperatorPointerPath, true);
         }
     }
 
-    private static bool FilesAreIdentical(string a, string b)
+    private static string EnsureOperatorPathFallbackInstructions(string prompt)
     {
-        var infoA = new FileInfo(a);
-        var infoB = new FileInfo(b);
-        if (infoA.Length != infoB.Length) return false;
-        using var streamA = File.OpenRead(a);
-        using var streamB = File.OpenRead(b);
-        int byteA, byteB;
-        do
-        {
-            byteA = streamA.ReadByte();
-            byteB = streamB.ReadByte();
-            if (byteA != byteB) return false;
-        } while (byteA != -1);
-        return true;
+        const string marker = "operator-path.txt";
+        if (prompt.Contains(marker, StringComparison.Ordinal)) return prompt;
+
+        const string instructions =
+            "- If the `zen-operator` command is not found on PATH, it usually means your shell session started before Zen last updated PATH — Windows does not refresh a shell that is already open. Read `operator-path.txt`, in the same folder as this prompt.txt, for the absolute path to the current `zen-operator.exe`, and invoke it directly by that path instead of giving up.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0
+            ? prompt.Insert(insertionPoint, instructions)
+            : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
 
     private static string EnsureBuildPathInstructions(string prompt)
