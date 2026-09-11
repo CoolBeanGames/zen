@@ -133,7 +133,7 @@
                                                FontWeight="SemiBold" VerticalAlignment="Center" Margin="4,-2,0,0" Visibility="Collapsed"/>
                                 </Grid>
                             </Border>
-                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="5" AllowsTransparency="True"
+                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="-2" AllowsTransparency="True"
                                    Focusable="False" PopupAnimation="Fade"
                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
                                 <Border Background="#181D26" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="6" MinWidth="205">

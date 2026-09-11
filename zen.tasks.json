@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 84,
+  "nextCardIndex": 99,
   "latestExePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
   "latestReleasePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
   "tagCatalog": [
@@ -109,6 +109,34 @@
     {
       "name": "icon",
       "color": "#386D9A"
+    },
+    {
+      "name": "subtasks",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "operator",
+      "color": "#6557B8"
+    },
+    {
+      "name": "tasks",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "projects",
+      "color": "#386D9A"
+    },
+    {
+      "name": "agents",
+      "color": "#815B32"
+    },
+    {
+      "name": "settings",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "add",
+      "color": "#2F7A68"
     }
   ],
   "branches": [
@@ -122,16 +150,44 @@
       "isLocked": false,
       "tasks": [
         {
-          "id": "49a2a9fc3a5940cca1bceb327f8c2e3c",
-          "index": 83,
+          "id": "ec6fa1b602b24b7bb4a152477743cd47",
+          "index": 85,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "cleanup",
-          "task": "cleanup should do old builds AND build artifacts, basically any data not essential",
+          "title": "reuquirements display",
+          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
           "tags": [
-            "instructions"
+            "ui",
+            "cards",
+            "subtasks"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
+          "updatedAt": "2026-09-11T02:25:00+00:00"
+        },
+        {
+          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
+          "index": 86,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "better in progress indicator",
+          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
+          "tags": [
+            "cards"
           ],
           "files": [],
           "requirements": [],
@@ -141,15 +197,80 @@
             "release": true,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T21:38:17.6716909+00:00",
-          "updatedAt": "2026-09-10T22:12:00+00:00"
+          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
+          "updatedAt": "2026-09-11T01:48:09.7292129+00:00"
+        }
+      ]
+    },
+    {
+      "id": "d19c7b9453fe4560ac46c6cdf07da9a7",
+      "name": "release 2",
+      "branch": "release-2",
+      "isArchive": false,
+      "isCollapsed": false,
+      "isSystem": false,
+      "isLocked": true,
+      "tasks": [
+        {
+          "id": "f60cffa032a34bfeb343f1970e284ee3",
+          "index": 97,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "dates unreadable on expanded card",
+          "task": "in both the calendar itself and the printed date everything is unreadable they are both white text on a white background. make the background colors in line with everything else",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:04:52.66057+00:00",
+          "updatedAt": "2026-09-11T02:05:48.4921326+00:00"
         },
         {
-          "id": "0cfb39280da849efb7c62519db3c02e2",
-          "index": 78,
+          "id": "14fd5afa32ab4b129177efc6df044b97",
+          "index": 98,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Priority unreadable",
+          "task": "similar to dates, we cant read the priority settings, these need adjusted to be readable (make the background dark)",
+          "tags": [
+            "bug",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:05:57.2503268+00:00",
+          "updatedAt": "2026-09-11T02:06:25.5819964+00:00"
+        },
+        {
+          "id": "17ffe087a86c40eb979c8aac0fcb16de",
+          "index": 89,
           "kind": "cleanup",
           "dueDate": null,
           "startedDate": null,
@@ -165,11 +286,297 @@
             "release": false,
             "merge": false
           },
-          "isDone": true,
+          "isDone": false,
           "isLocked": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T21:37:18.1832015+00:00",
-          "updatedAt": "2026-09-10T22:18:00+00:00"
+          "createdAt": "2026-09-11T01:48:47.6752282+00:00",
+          "updatedAt": "2026-09-11T01:48:47.6752285+00:00"
+        },
+        {
+          "id": "ca82182be58b4704b279af520cb1f6c0",
+          "index": 87,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Operator",
+          "task": "The operator is the new single entry point for all tasks to agents (including you) once it is built requests are sent to the operator and it replies with data. \r\n\r\nthe operator is a CLI tool. When the program is launched first check the windows \u0027path\u0027 if the operator isnt there OR the path doesnt match update/add it so all agents can freely access it.\r\n\r\nwhen the operator is requested to add data it is added to a queue, then the whole queue is copied, the original queue is cleared, and  the copy is flushed to the json file before being deleted. in requirements i will outline basic jobs of the operator, you will then implement the specific commands.",
+          "tags": [
+            "operator",
+            "tasks",
+            "projects"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "08edbbf3dfcf477ca92d04155ce8a202",
+              "text": "get the prompt",
+              "isDone": false
+            },
+            {
+              "id": "9b383607ab21499b9b3a9465788c0da8",
+              "text": "get all tasks",
+              "isDone": false
+            },
+            {
+              "id": "4d96ce3adce44340b006a561cbe23550",
+              "text": "get a specific task",
+              "isDone": false
+            },
+            {
+              "id": "22e6e580f2f646bd9c57b2ced7fc52ce",
+              "text": "write 1 tag",
+              "isDone": false
+            },
+            {
+              "id": "a99044165322430fbca62565ec894e19",
+              "text": "write many tags",
+              "isDone": false
+            },
+            {
+              "id": "4d23e7d70cd14985b89acca8b9ed3d4d",
+              "text": "archive tasks",
+              "isDone": false
+            },
+            {
+              "id": "dc6667f12cd84db6aa325c96ceaef841",
+              "text": "read notes",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:48:34.7198243+00:00",
+          "updatedAt": "2026-09-11T01:53:24.2364235+00:00"
+        },
+        {
+          "id": "d77b786a6e114a558b2c128eb5dc3ef4",
+          "index": 88,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Update Instructions",
+          "task": "update the instructions to explain to all agents how to use the operator and to NEVER edit or read tasks.json manually",
+          "tags": [
+            "tasks"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:48:45.3001752+00:00",
+          "updatedAt": "2026-09-11T01:53:11.3407164+00:00"
+        },
+        {
+          "id": "9e12b21c6a8340b6b195ff593c528a09",
+          "index": 91,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Gemini",
+          "task": "Similar to claude and codex add support for gemini through antigravity",
+          "tags": [
+            "agents",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:56:22.1664935+00:00",
+          "updatedAt": "2026-09-11T01:59:54.4445429+00:00"
+        },
+        {
+          "id": "566848531914457ba7ee1de3ca6c2a48",
+          "index": 92,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Add download agents option",
+          "task": "Add the option (in settings) to check for and dowload all 3 agents (or a specific one) Only installed agents show up in the launch agent menu, this check happens when you launch the program",
+          "tags": [
+            "agents",
+            "ui",
+            "settings"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:57:14.7771124+00:00",
+          "updatedAt": "2026-09-11T01:59:55.5825792+00:00"
+        },
+        {
+          "id": "aa39394578a04843a563566e2020decb",
+          "index": 93,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add merge task",
+          "task": "add a dedicated \u0022merge\u0022 task to the add menu that adds a task that just tells the agent to merge to origin",
+          "tags": [
+            "ui",
+            "add",
+            "cards"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:58:27.7759276+00:00",
+          "updatedAt": "2026-09-11T01:59:57.4225776+00:00"
+        },
+        {
+          "id": "fb27d14f8b304ff99263e09a5cf8abff",
+          "index": 94,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "update instructions",
+          "task": "update the instructions with information on how the merge card works.",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:59:12.1573429+00:00",
+          "updatedAt": "2026-09-11T01:59:58.8294389+00:00"
+        }
+      ]
+    },
+    {
+      "id": "1300b2033216470da66c2c51d253a2ba",
+      "name": "release 3",
+      "branch": "release-3",
+      "isArchive": false,
+      "isCollapsed": false,
+      "isSystem": false,
+      "isLocked": true,
+      "tasks": [
+        {
+          "id": "a2f97d28ab0343b99ab4678d41cbf1f7",
+          "index": 95,
+          "kind": "cleanup",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:00:23.5184922+00:00",
+          "updatedAt": "2026-09-11T02:00:23.5184925+00:00"
+        },
+        {
+          "id": "a7510fc441b0421695e91a8541ce8947",
+          "index": 96,
+          "kind": "task",
+          "dueDate": "2026-09-16T00:00:00",
+          "startedDate": null,
+          "priority": null,
+          "title": "Card Studio",
+          "task": "a custom (per project) custom card editor. you can create custom card types with custom fields, they then get added to the add menu. It also adds instructions on how to use that card type for any AI agents who read it.",
+          "tags": [
+            "cards"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "4c6d0ae25ed547f89016e3c38fa06248",
+              "text": "create card studio ui",
+              "isDone": false
+            },
+            {
+              "id": "bc28200f80d84999b18f9aa83535d3ed",
+              "text": "create custom card coding",
+              "isDone": false
+            },
+            {
+              "id": "4be6cbe9a8984a9cb1a37dcbe9e5b144",
+              "text": "add to add card menu",
+              "isDone": false
+            },
+            {
+              "id": "aa89b745daae4132ae77c20f046afc8f",
+              "text": "add custom card instructions",
+              "isDone": false
+            },
+            {
+              "id": "cacdc8a5521747c991eed7015737e1cd",
+              "text": "adjust operator so when asked for prompt it appends ALL custom card instructions before sending",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:00:27.3927513+00:00",
+          "updatedAt": "2026-09-11T02:02:24.410768+00:00"
         }
       ]
     },
@@ -414,6 +821,60 @@
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:52:28.3471112+00:00",
           "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
+        },
+        {
+          "id": "0bc23ea237994ae4b26790a6493de926",
+          "index": 84,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "instructions not correct",
+          "task": "i have been informed by a claude agent that the global instructions to not refernce that they should mark tasks as in progress, cross off subtasks as they finish them. one agent was confused about what to do when it hits a clean task. please go through instructions and make sure every agent knows exactlt how to use every tag and to ALWAYS update the executable paths when building",
+          "tags": [
+            "bug",
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:43:09.3734793+00:00",
+          "updatedAt": "2026-09-11T02:15:00+00:00"
+        },
+        {
+          "id": "70867f7fbdfb48f08bab3cff1b43e26a",
+          "index": 90,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "launch agent issue",
+          "task": "a majority of the time when i click launch agent then the sub menu pops up, when i try to mouse over on it assumes the mouse went away and it closes. we need better mouse recognintion. this happens everywhere the launch agent dialog is",
+          "tags": [
+            "bug",
+            "agents"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:55:14.3013644+00:00",
+          "updatedAt": "2026-09-11T02:15:00+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -1624,6 +2085,56 @@
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:55:36.3177954+00:00",
           "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
+        },
+        {
+          "id": "49a2a9fc3a5940cca1bceb327f8c2e3c",
+          "index": 83,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "cleanup",
+          "task": "cleanup should do old builds AND build artifacts, basically any data not essential",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T21:38:17.6716909+00:00",
+          "updatedAt": "2026-09-10T22:12:00+00:00"
+        },
+        {
+          "id": "0cfb39280da849efb7c62519db3c02e2",
+          "index": 78,
+          "kind": "cleanup",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-10T21:37:18.1832015+00:00",
+          "updatedAt": "2026-09-10T22:18:00+00:00"
         }
       ]
     }

@@ -372,7 +372,52 @@ public partial class MainWindow : Window
         var launch = new MenuItem { Header = "Launch" };
         AddMenuItem(launch, "Codex", (_, _) => LaunchAgent("codex", scopeInstruction));
         AddMenuItem(launch, "Claude", (_, _) => LaunchAgent("claude", scopeInstruction));
+        MakeSubmenuSticky(launch);
         return launch;
+    }
+
+    // WPF's default MenuItem hover tracking has no "safe path" tolerance between a header item and its
+    // flyout Popup, so moving the mouse across the small gap between them can register as leaving both
+    // and slam the submenu shut before the user reaches it. This keeps the submenu open across that gap
+    // by only closing it after a short grace period with the pointer over neither the item nor its popup.
+    private static void MakeSubmenuSticky(MenuItem headerItem)
+    {
+        DispatcherTimer? closeTimer = null;
+
+        void CancelClose()
+        {
+            closeTimer?.Stop();
+            closeTimer = null;
+        }
+
+        bool IsPointerOverItemOrPopup() =>
+            headerItem.IsMouseOver ||
+            (headerItem.Template?.FindName("PART_Popup", headerItem) is Popup { Child: FrameworkElement child } && child.IsMouseOver);
+
+        void ScheduleClose()
+        {
+            CancelClose();
+            closeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+            closeTimer.Tick += (_, _) =>
+            {
+                CancelClose();
+                if (!IsPointerOverItemOrPopup())
+                    headerItem.IsSubmenuOpen = false;
+            };
+            closeTimer.Start();
+        }
+
+        headerItem.MouseEnter += (_, _) => { CancelClose(); headerItem.IsSubmenuOpen = true; };
+        headerItem.MouseLeave += (_, _) => ScheduleClose();
+        headerItem.SubmenuOpened += (_, _) =>
+        {
+            CancelClose();
+            if (headerItem.Template?.FindName("PART_Popup", headerItem) is Popup { Child: FrameworkElement child })
+            {
+                child.MouseEnter += (_, _) => CancelClose();
+                child.MouseLeave += (_, _) => ScheduleClose();
+            }
+        };
     }
 
     private void LaunchAgent(string agent, string scopeInstruction)
@@ -571,6 +616,7 @@ public partial class MainWindow : Window
         var move = new MenuItem { Header = "Move to" };
         foreach (var destination in Columns.Where(candidate => candidate != column))
             AddMenuItem(move, destination.Title, (_, _) => MoveCard(card, column, destination));
+        MakeSubmenuSticky(move);
         menu.Items.Add(move);
         menu.Items.Add(new Separator());
         AddMenuItem(menu, card.IsCollapsed ? "Expand" : "Collapse", (_, _) => { card.IsCollapsed = !card.IsCollapsed; SaveProject(); });
@@ -598,6 +644,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(add, "Break", CardKind.Break, column);
         AddCardTypeItem(add, "Bug", CardKind.Task, column, true);
         AddCardTypeItem(add, "Cleanup", CardKind.Cleanup, column);
+        MakeSubmenuSticky(add);
         return add;
     }
 
