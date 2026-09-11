@@ -16,23 +16,36 @@ PROJECT LAYOUT
 - `files/`: task attachments. Resolve every card `relativePath` from the project root.
 
 USING THE OPERATOR
-- `zen-operator` is a CLI tool installed alongside Zen and kept on PATH automatically. It is the single entry point for reading and writing project state — never open, parse, or hand-edit `zen.tasks.json` yourself, and never write to it with any tool other than `zen-operator`. Run every command from within the project directory (or a subdirectory of it); it finds `zen.tasks.json` by walking up from the current directory.
-- Every write command enqueues the change, then copies the queue, clears the original, applies the copy to `zen.tasks.json`, and deletes the copy — this keeps concurrent agents from corrupting the file, so always prefer the smallest command that does what you need rather than reading the whole file and reasoning about the merge yourself.
+- `zen-operator` is a CLI tool installed alongside Zen and kept on PATH automatically. It is the single entry point for reading and writing project state. It exists to serialize concurrent writers — you, other agents, and the running app — through one queue so nobody's change silently overwrites somebody else's; it is not meant to restrict what you can do. It gives full read and write access to the project data. Never open, parse, or hand-edit `zen.tasks.json` yourself, and never write to it with any tool other than `zen-operator`. Run every command from within the project directory (or a subdirectory of it); it finds `zen.tasks.json` by walking up from the current directory.
+- Every write command enqueues the change, then copies the queue, clears the original, applies the copy to `zen.tasks.json`, and deletes the copy — this keeps concurrent writers from corrupting the file, so always prefer the smallest command that does what you need rather than reading the whole file and reasoning about the merge yourself.
 - Read commands (print JSON or text to stdout):
   - `zen-operator prompt` — print these canonical instructions.
+  - `zen-operator project` — print project id/name/`nextCardIndex`/`latestExePath`/`latestReleasePath`/tag catalog.
   - `zen-operator branches` — list branches with id, git branch, lock state, task count.
   - `zen-operator tasks [--branch <id>] [--eligible]` — list tasks, optionally filtered to one branch and/or to only eligible ones.
   - `zen-operator task <id-or-index>` — print one task.
   - `zen-operator eligible [--branch <id>]` — the actual eligible queue for a branch (or every branch) with locks, the break boundary, and bug-priority reordering already applied. Prefer this over manually re-deriving eligibility from `tasks`.
   - `zen-operator notes [--branch <id>]` — list note cards.
-- Write commands (each is one queued operation):
+- Task write commands (each is one queued operation):
+  - `zen-operator task create --branch <id> --title <t> --task <t> [--tag <t>]* [--requirement <r>]* [--commit] [--build] [--release] [--merge]` — create a plain task (use `bug` instead for a defect).
+  - `zen-operator task edit <id-or-index> [--title <t>] [--task <t>] [--due <date|clear>] [--started <date|clear>] [--priority low|normal|high|critical|clear] [--commit|--no-commit] [--build|--no-build] [--release|--no-release] [--merge|--no-merge]` — edit any field on an existing task.
+  - `zen-operator task lock|unlock <id-or-index>` — lock or unlock a task.
+  - `zen-operator task delete <id-or-index>` — permanently delete a task.
+  - `zen-operator task move <id-or-index> --to <branchId>` — move a task to another branch; moving it out of Archived also marks it not done, moving it into Archived also marks it done, matching the app's own drag-and-drop.
   - `zen-operator tag add|remove <id-or-index> <tag>` — add or remove a single tag.
   - `zen-operator tags set <id-or-index> <t1,t2,...>` — replace a task's whole tag list.
   - `zen-operator requirement <id-or-index> <requirementId> done|undone` — toggle one requirement.
   - `zen-operator progress <id-or-index> start|stop` — the `in progress` tag, kept as its own command because agents kept forgetting it.
-  - `zen-operator archive <id-or-index> [--undo]` — mark a task done (moves it into Archived) or, with `--undo`, mark it not done again.
+  - `zen-operator archive <id-or-index>` — mark a task done (moves it into Archived).
+  - `zen-operator archive <id-or-index> --undo [--to <branchId>]` — move a task out of Archived and mark it not done (defaults to `main`).
   - `zen-operator bug --branch <id> --title <t> --task <t> [--tag <t>]* [--requirement <r>]* [--commit] [--build] [--release] [--merge]` — file a new bug task with a correct new id, `nextCardIndex`, and insertion before non-bug tasks in that branch, per BUG PRIORITY.
-  - `zen-operator paths --exe <relative-path> [--release]` — set `latestExePath` (and `latestReleasePath` with `--release`) after confirming the path exists.
+- Branch write commands:
+  - `zen-operator branch create --title <t> [--branch <gitBranchName>]` — create a new branch/column.
+  - `zen-operator branch lock|unlock <id>` — lock or unlock a branch.
+  - `zen-operator branch rename <id> --title <t>` — rename a branch.
+  - `zen-operator branch archive <id>` — archive a non-permanent branch; its tasks move into Archived and are marked done.
+- `zen-operator paths --exe <relative-path> [--release]` — set `latestExePath` (and `latestReleasePath` with `--release`) after confirming the path exists.
+- If a command you need does not exist yet, say so and ask for the operator to be extended rather than falling back to hand-editing `zen.tasks.json` — the point is full control through one safe path, not a restricted subset.
 
 DATA SHAPE AND OWNERSHIP
 - The database hierarchy is `branches[] -> tasks[]`.

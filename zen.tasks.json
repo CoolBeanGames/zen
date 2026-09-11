@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 104,
-  "latestExePath": "builds/release_2/Zen-0.3.3-win-x64/Zen.exe",
-  "latestReleasePath": "builds/release_2/Zen-0.3.2-win-x64/Zen.exe",
+  "nextCardIndex": 105,
+  "latestExePath": "builds/release_2/Zen-0.3.4-win-x64/Zen.exe",
+  "latestReleasePath": "builds/release_2/Zen-0.3.4-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -137,6 +137,18 @@
     {
       "name": "add",
       "color": "#2F7A68"
+    },
+    {
+      "name": "testing",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "verified",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "smoke-test",
+      "color": "#8C553E"
     }
   ],
   "branches": [
