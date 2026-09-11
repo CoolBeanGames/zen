@@ -473,12 +473,13 @@ public partial class MainWindow : Window
         AddCardTypeItem(menu, "Break", CardKind.Break, column);
         AddCardTypeItem(menu, "Bug", CardKind.Task, column, true);
         AddCardTypeItem(menu, "Cleanup", CardKind.Cleanup, column);
+        AddCardTypeItem(menu, "Merge", CardKind.Task, column, merge: true);
         menu.IsOpen = true;
     }
 
-    private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false)
+    private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false, bool merge = false)
     {
-        var item = new MenuItem { Header = header, Tag = new NewCardRequest(column, kind, bug) };
+        var item = new MenuItem { Header = header, Tag = new NewCardRequest(column, kind, bug, merge) };
         item.Click += NewCardType_Click;
         menu.Items.Add(item);
     }
@@ -500,7 +501,7 @@ public partial class MainWindow : Window
             _taskTarget = null;
             return;
         }
-        OpenModal(ModalMode.Task, request.Bug);
+        OpenModal(ModalMode.Task, request.Bug, request.Merge);
     }
 
     // Map a possibly-stale column reference back to the live instance on the board.
@@ -656,6 +657,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(add, "Break", CardKind.Break, column);
         AddCardTypeItem(add, "Bug", CardKind.Task, column, true);
         AddCardTypeItem(add, "Cleanup", CardKind.Cleanup, column);
+        AddCardTypeItem(add, "Merge", CardKind.Task, column, merge: true);
         MakeSubmenuSticky(add);
         return add;
     }
@@ -1333,20 +1335,21 @@ public partial class MainWindow : Window
         if (_activeDrag is not null) EndCardDrag();
     }
 
-    private void OpenModal(ModalMode mode, bool bug = false)
+    private void OpenModal(ModalMode mode, bool bug = false, bool merge = false)
     {
         _modalMode = mode;
-        NameInput.Text = string.Empty;
         ValidationText.Visibility = Visibility.Collapsed;
-        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : $"Add a {_newCardKind.ToString().ToLowerInvariant()}";
+        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : merge ? "Add a merge task" : $"Add a {_newCardKind.ToString().ToLowerInvariant()}";
         ModalSubtitle.Text = mode == ModalMode.Column
             ? "Add another branch or category to this workspace."
             : $"Add a task to {_taskTarget?.Title}.";
         NameLabel.Text = mode == ModalMode.Column ? "COLUMN NAME" : $"{_newCardKind.ToString().ToUpperInvariant()} TITLE";
-        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : $"Add {_newCardKind.ToString().ToLowerInvariant()}";
-        ConfirmButton.Tag = bug;
+        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : merge ? "Add merge task" : $"Add {_newCardKind.ToString().ToLowerInvariant()}";
+        ConfirmButton.Tag = (bug, merge);
         ModalScrim.Visibility = Visibility.Visible;
+        NameInput.Text = merge ? "Merge to main" : string.Empty;
         NameInput.Focus();
+        NameInput.SelectAll();
     }
 
     private void ConfirmModal_Click(object sender, RoutedEventArgs e)
@@ -1384,15 +1387,23 @@ public partial class MainWindow : Window
         }
         else if (ResolveColumn(_taskTarget) is { } target)
         {
+            var (isBug, isMerge) = ConfirmButton.Tag is ValueTuple<bool, bool> tag ? tag : (false, false);
             var card = new TaskCard
             {
                 Index = _nextTaskIndex++,
                 Kind = _newCardKind,
                 Title = name,
-                Task = string.Empty,
+                Task = isMerge ? "Merge this branch into main following the MERGE TASKS instructions, then push if authorized." : string.Empty,
                 Tags = _newCardKind switch { CardKind.Note => ["note"], CardKind.Break => ["break"], _ => ["task"] }
             };
-            if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
+            if (isBug) card.Tags.Insert(0, "bug");
+            if (isMerge)
+            {
+                card.Tags.Insert(0, "merge");
+                card.Flags.Commit = true;
+                card.Flags.Build = true;
+                card.Flags.Merge = true;
+            }
             target.Tasks.Add(card);
             SaveProject();
             CloseModal();
@@ -1627,7 +1638,7 @@ public partial class MainWindow : Window
     private enum ModalMode { Column, Task }
 
     private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, int SourceIndex, Border SourceElement);
-    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug);
+    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug, bool Merge = false);
 
     [DllImport("user32.dll")]
     private static extern uint GetDoubleClickTime();

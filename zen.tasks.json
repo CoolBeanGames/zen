@@ -3,7 +3,7 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 104,
-  "latestExePath": "builds/release_2/Zen-0.3.2-win-x64/Zen.exe",
+  "latestExePath": "builds/release_2/Zen-0.3.3-win-x64/Zen.exe",
   "latestReleasePath": "builds/release_2/Zen-0.3.2-win-x64/Zen.exe",
   "tagCatalog": [
     {
@@ -230,60 +230,6 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:50:09.4547608+00:00",
           "updatedAt": "2026-09-11T02:50:09.454761+00:00"
-        },
-        {
-          "id": "aa39394578a04843a563566e2020decb",
-          "index": 93,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add merge task",
-          "task": "add a dedicated \u0022merge\u0022 task to the add menu that adds a task that just tells the agent to merge to origin",
-          "tags": [
-            "ui",
-            "add",
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:58:27.7759276+00:00",
-          "updatedAt": "2026-09-11T01:59:57.4225776+00:00"
-        },
-        {
-          "id": "fb27d14f8b304ff99263e09a5cf8abff",
-          "index": 94,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "update instructions",
-          "task": "update the instructions with information on how the merge card works.",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:59:12.1573429+00:00",
-          "updatedAt": "2026-09-11T02:50:20.0396727+00:00"
         }
       ]
     },
@@ -2249,6 +2195,60 @@
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:57:14.7771124+00:00",
           "updatedAt": "2026-09-11T05:01:35.2606187+00:00"
+        },
+        {
+          "id": "aa39394578a04843a563566e2020decb",
+          "index": 93,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "add merge task",
+          "task": "add a dedicated \u0022merge\u0022 task to the add menu that adds a task that just tells the agent to merge to origin",
+          "tags": [
+            "ui",
+            "add",
+            "cards"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:58:27.7759276+00:00",
+          "updatedAt": "2026-09-11T05:17:49.8251819+00:00"
+        },
+        {
+          "id": "fb27d14f8b304ff99263e09a5cf8abff",
+          "index": 94,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "update instructions",
+          "task": "update the instructions with information on how the merge card works.",
+          "tags": [
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:59:12.1573429+00:00",
+          "updatedAt": "2026-09-11T05:17:50.0899401+00:00"
         }
       ]
     }

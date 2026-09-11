@@ -123,6 +123,8 @@ When a task with `flags.merge: true` is reached:
 7. Push only when requested or required by an enabled release workflow and authorized by the user.
 8. Set the merge task `isDone: true` only after the merge succeeds. If it fails or conflicts, leave it incomplete and report the blocker.
 
+- The add menu's "Merge" entry creates a quick task preset for this: `flags.commit`, `flags.build`, and `flags.merge` are already true, and its task text already says to merge into main and push if authorized. A human added it because they want this branch merged — treat its title as the only thing they customized and follow the steps above normally.
+
 RELEASE TASKS
 When `flags.release` is true, create the requested release build and publish a GitHub release only after successful verification and with the required authorization. Record failure honestly and leave the task incomplete if publishing does not succeed.
 
