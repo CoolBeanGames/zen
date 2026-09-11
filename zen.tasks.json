@@ -3,8 +3,8 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 104,
-  "latestExePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
-  "latestReleasePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
+  "latestExePath": "builds/release_2/Zen-0.3.0-win-x64/Zen.exe",
+  "latestReleasePath": "builds/release_2/Zen-0.3.0-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
