@@ -54,6 +54,7 @@ public partial class MainWindow : Window
     private Point _columnDragStart;
     private bool _isColumnDragging;
     private bool _manualReloadRequested;
+    private Dictionary<string, bool> _agentInstalled = new();
 
     public ObservableCollection<BoardColumn> Columns { get; } = [];
 
@@ -83,6 +84,7 @@ public partial class MainWindow : Window
         _periodicReloadTimer.Tick += PeriodicReloadTimer_Tick;
         try { PromptEnvironment.Sync(_settingsStore, _settingsStore.Load()); } catch { /* PATH is best-effort */ }
         try { PromptEnvironment.SyncOperatorPath(_settingsStore, _settingsStore.Load()); } catch { /* PATH is best-effort */ }
+        _agentInstalled = AgentAvailability.DetectAll();
         SeedBoard();
         Loaded += (_, _) => OpenLastProject();
     }
@@ -345,6 +347,7 @@ public partial class MainWindow : Window
         var window = new SettingsWindow(_recentProjects) { Owner = this };
         if (window.ShowDialog() == true)
             _periodicReloadTimer.Interval = TimeSpan.FromSeconds(window.Settings.ReloadSeconds);
+        _agentInstalled = AgentAvailability.DetectAll();
     }
 
     private void OpenProjectFolder_Click(object sender, RoutedEventArgs e)
@@ -371,8 +374,11 @@ public partial class MainWindow : Window
     private MenuItem CreateLaunchMenu(string scopeInstruction)
     {
         var launch = new MenuItem { Header = "Launch" };
-        AddMenuItem(launch, "Codex", (_, _) => LaunchAgent("codex", scopeInstruction));
-        AddMenuItem(launch, "Claude", (_, _) => LaunchAgent("claude", scopeInstruction));
+        foreach (var agent in AgentAvailability.Agents)
+            if (_agentInstalled.GetValueOrDefault(agent.Key))
+                AddMenuItem(launch, agent.Label, (_, _) => LaunchAgent(agent.Key, scopeInstruction));
+        if (launch.Items.Count == 0)
+            launch.Items.Add(new MenuItem { Header = "No agents installed — see Settings", IsEnabled = false });
         MakeSubmenuSticky(launch);
         return launch;
     }
@@ -427,9 +433,14 @@ public partial class MainWindow : Window
         var instruction = File.Exists(PromptEnvironment.PromptPath)
             ? $"Ignore any prompt.txt inside the project folder. Read only the current canonical instructions at \"{PromptEnvironment.PromptPath}\", then {scopeInstruction}"
             : $"Read prompt.txt, then {scopeInstruction}";
-        var command = agent == "codex"
-            ? $"codex --dangerously-bypass-approvals-and-sandbox \"{instruction.Replace("\"", "\\\"")}\""
-            : $"claude --dangerously-skip-permissions \"{instruction.Replace("\"", "\\\"")}\"";
+        var escapedInstruction = instruction.Replace("\"", "\\\"");
+        var command = agent switch
+        {
+            "codex" => $"codex --dangerously-bypass-approvals-and-sandbox \"{escapedInstruction}\"",
+            "claude" => $"claude --dangerously-skip-permissions \"{escapedInstruction}\"",
+            "gemini" => $"antigravity --yolo \"{escapedInstruction}\"",
+            _ => throw new ArgumentOutOfRangeException(nameof(agent), agent, "Unknown agent")
+        };
         try
         {
             Process.Start(new ProcessStartInfo

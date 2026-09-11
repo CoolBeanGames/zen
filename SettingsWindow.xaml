@@ -24,6 +24,26 @@
                     <TextBlock Text="seconds (5–3600)" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
 
+                <Grid Margin="0,22,0,8">
+                    <TextBlock Text="AGENTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Content="Recheck" Click="RecheckAgents_Click"/>
+                </Grid>
+                <ItemsControl x:Name="AgentsList" Margin="0,0,0,4">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,0,0,7">
+                                <Grid>
+                                    <StackPanel Margin="0,0,90,0">
+                                        <TextBlock Text="{Binding Label}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusBrush}" FontSize="10"/>
+                                    </StackPanel>
+                                    <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Content="Install" Tag="{Binding}" Click="InstallAgent_Click" Visibility="{Binding InstallVisibility}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
                 <TextBlock Text="KNOWN PROJECTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,22,0,8"/>
                 <ItemsControl x:Name="ProjectsList">
                     <ItemsControl.ItemTemplate>

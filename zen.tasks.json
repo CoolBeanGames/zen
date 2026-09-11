@@ -3,8 +3,8 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 104,
-  "latestExePath": "builds/release_2/Zen-0.3.1-win-x64/Zen.exe",
-  "latestReleasePath": "builds/release_2/Zen-0.3.1-win-x64/Zen.exe",
+  "latestExePath": "builds/release_2/Zen-0.3.2-win-x64/Zen.exe",
+  "latestReleasePath": "builds/release_2/Zen-0.3.2-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -206,61 +206,6 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:49:55.3697747+00:00",
           "updatedAt": "2026-09-11T02:49:55.3697749+00:00"
-        },
-        {
-          "id": "9e12b21c6a8340b6b195ff593c528a09",
-          "index": 91,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Gemini",
-          "task": "Similar to claude and codex add support for gemini through antigravity",
-          "tags": [
-            "agents",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:56:22.1664935+00:00",
-          "updatedAt": "2026-09-11T01:59:54.4445429+00:00"
-        },
-        {
-          "id": "566848531914457ba7ee1de3ca6c2a48",
-          "index": 92,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Add download agents option",
-          "task": "Add the option (in settings) to check for and dowload all 3 agents (or a specific one) Only installed agents show up in the launch agent menu, this check happens when you launch the program",
-          "tags": [
-            "agents",
-            "ui",
-            "settings"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:57:14.7771124+00:00",
-          "updatedAt": "2026-09-11T01:59:55.5825792+00:00"
         },
         {
           "id": "8c3c58a235f64340927a6ad427cde8bf",
@@ -2249,6 +2194,61 @@
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:48:45.3001752+00:00",
           "updatedAt": "2026-09-11T04:46:34.5318339+00:00"
+        },
+        {
+          "id": "9e12b21c6a8340b6b195ff593c528a09",
+          "index": 91,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Gemini",
+          "task": "Similar to claude and codex add support for gemini through antigravity",
+          "tags": [
+            "agents",
+            "ui"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:56:22.1664935+00:00",
+          "updatedAt": "2026-09-11T05:01:34.8925925+00:00"
+        },
+        {
+          "id": "566848531914457ba7ee1de3ca6c2a48",
+          "index": 92,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Add download agents option",
+          "task": "Add the option (in settings) to check for and dowload all 3 agents (or a specific one) Only installed agents show up in the launch agent menu, this check happens when you launch the program",
+          "tags": [
+            "agents",
+            "ui",
+            "settings"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-11T01:57:14.7771124+00:00",
+          "updatedAt": "2026-09-11T05:01:35.2606187+00:00"
         }
       ]
     }

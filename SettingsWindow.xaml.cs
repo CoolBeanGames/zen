@@ -1,8 +1,20 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Zen;
+
+public sealed class AgentStatusRow(AgentDefinition definition, bool isInstalled)
+{
+    public AgentDefinition Definition { get; } = definition;
+    public string Label => Definition.Label;
+    public bool IsInstalled { get; } = isInstalled;
+    public string StatusText => IsInstalled ? "Installed" : "Not installed";
+    public Brush StatusBrush => IsInstalled ? Brushes.MediumSeaGreen : (Brush)Application.Current.FindResource("MutedBrush");
+    public Visibility InstallVisibility => IsInstalled ? Visibility.Collapsed : Visibility.Visible;
+}
 
 public partial class SettingsWindow : Window
 {
@@ -20,8 +32,37 @@ public partial class SettingsWindow : Window
         ReloadInput.Text = Settings.ReloadSeconds.ToString();
         _projects = new ObservableCollection<RecentProject>(_projectStore.Load());
         ProjectsList.ItemsSource = _projects;
+        RefreshAgents();
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         VersionText.Text = $"Zen {version?.ToString(3) ?? "development"}";
+    }
+
+    private void RefreshAgents()
+    {
+        var installed = AgentAvailability.DetectAll();
+        AgentsList.ItemsSource = AgentAvailability.Agents
+            .Select(agent => new AgentStatusRow(agent, installed.GetValueOrDefault(agent.Key)))
+            .ToList();
+    }
+
+    private void RecheckAgents_Click(object sender, RoutedEventArgs e) => RefreshAgents();
+
+    private void InstallAgent_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: AgentStatusRow row }) return;
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/k {row.Definition.InstallCommand}",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, $"Could not start install for {row.Label}: {exception.Message}", "Install failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void RemoveProject_Click(object sender, RoutedEventArgs e)
