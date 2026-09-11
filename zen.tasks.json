@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 100,
+  "nextCardIndex": 104,
   "latestExePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
   "latestReleasePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
   "tagCatalog": [
@@ -148,105 +148,7 @@
       "isCollapsed": false,
       "isSystem": true,
       "isLocked": false,
-      "tasks": [
-        {
-          "id": "5f0e2a6c9b3a4d1b8e7f6c4a2d1b9e30",
-          "index": 99,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "stale global prompt never re-syncs to updated embedded default",
-          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json's globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever — prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json — the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user's deliberately customized prompt.",
-          "tags": [
-            "bug",
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "a1c2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
-              "text": "detect when the stored globalPrompt matches a known older embedded default rather than a user customization",
-              "isDone": false
-            },
-            {
-              "id": "b2c3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
-              "text": "refresh settings.json and prompt.txt to the current embedded default in that case",
-              "isDone": false
-            },
-            {
-              "id": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
-              "text": "leave a genuinely user-edited prompt untouched",
-              "isDone": false
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:30:00+00:00",
-          "updatedAt": "2026-09-11T02:30:00+00:00"
-        },
-        {
-          "id": "ec6fa1b602b24b7bb4a152477743cd47",
-          "index": 85,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "reuquirements display",
-          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
-          "tags": [
-            "ui",
-            "cards",
-            "subtasks"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
-          "updatedAt": "2026-09-11T02:25:00+00:00"
-        },
-        {
-          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
-          "index": 86,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "better in progress indicator",
-          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
-          "tags": [
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
-          "updatedAt": "2026-09-11T02:35:00+00:00"
-        }
-      ]
+      "tasks": []
     },
     {
       "id": "d19c7b9453fe4560ac46c6cdf07da9a7",
@@ -255,7 +157,7 @@
       "isArchive": false,
       "isCollapsed": false,
       "isSystem": false,
-      "isLocked": true,
+      "isLocked": false,
       "tasks": [
         {
           "id": "f60cffa032a34bfeb343f1970e284ee3",
@@ -278,11 +180,11 @@
             "release": false,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:04:52.66057+00:00",
-          "updatedAt": "2026-09-11T02:05:48.4921326+00:00"
+          "updatedAt": "2026-09-11T03:00:00+00:00"
         },
         {
           "id": "14fd5afa32ab4b129177efc6df044b97",
@@ -305,11 +207,35 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:05:57.2503268+00:00",
-          "updatedAt": "2026-09-11T02:06:25.5819964+00:00"
+          "updatedAt": "2026-09-11T03:00:00+00:00"
+        },
+        {
+          "id": "58a5811a20b14360a4febbe945b55f49",
+          "index": 103,
+          "kind": "note",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "builds",
+          "task": "put all builds for this version in release_2 and debug_2 so i can keep using version 1 wihile its in progress",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:50:42.2380425+00:00",
+          "updatedAt": "2026-09-11T02:51:11.7363899+00:00"
         },
         {
           "id": "17ffe087a86c40eb979c8aac0fcb16de",
@@ -426,6 +352,30 @@
           "updatedAt": "2026-09-11T01:53:11.3407164+00:00"
         },
         {
+          "id": "3be1f6f3b0774592b4bb09eff49bb68d",
+          "index": 101,
+          "kind": "break",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:49:55.3697747+00:00",
+          "updatedAt": "2026-09-11T02:49:55.3697749+00:00"
+        },
+        {
           "id": "9e12b21c6a8340b6b195ff593c528a09",
           "index": 91,
           "kind": "task",
@@ -481,6 +431,30 @@
           "updatedAt": "2026-09-11T01:59:55.5825792+00:00"
         },
         {
+          "id": "8c3c58a235f64340927a6ad427cde8bf",
+          "index": 102,
+          "kind": "break",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:50:09.4547608+00:00",
+          "updatedAt": "2026-09-11T02:50:09.454761+00:00"
+        },
+        {
           "id": "aa39394578a04843a563566e2020decb",
           "index": 93,
           "kind": "task",
@@ -525,14 +499,14 @@
           "flags": {
             "commit": true,
             "build": true,
-            "release": false,
+            "release": true,
             "merge": false
           },
           "isDone": false,
           "isLocked": false,
-          "isCollapsed": true,
+          "isCollapsed": false,
           "createdAt": "2026-09-11T01:59:12.1573429+00:00",
-          "updatedAt": "2026-09-11T01:59:58.8294389+00:00"
+          "updatedAt": "2026-09-11T02:50:20.0396727+00:00"
         }
       ]
     },
@@ -619,7 +593,7 @@
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:00:27.3927513+00:00",
-          "updatedAt": "2026-09-11T02:02:24.410768+00:00"
+          "updatedAt": "2026-09-11T02:46:50.362828+00:00"
         }
       ]
     },
@@ -918,6 +892,49 @@
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:55:14.3013644+00:00",
           "updatedAt": "2026-09-11T02:15:00+00:00"
+        },
+        {
+          "id": "5f0e2a6c9b3a4d1b8e7f6c4a2d1b9e30",
+          "index": 99,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "stale global prompt never re-syncs to updated embedded default",
+          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json\u0027s globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever \u2014 prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json \u2014 the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user\u0027s deliberately customized prompt.",
+          "tags": [
+            "bug",
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "a1c2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+              "text": "detect when the stored globalPrompt matches a known older embedded default rather than a user customization",
+              "isDone": false
+            },
+            {
+              "id": "b2c3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
+              "text": "refresh settings.json and prompt.txt to the current embedded default in that case",
+              "isDone": false
+            },
+            {
+              "id": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+              "text": "leave a genuinely user-edited prompt untouched",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:30:00+00:00",
+          "updatedAt": "2026-09-11T02:49:46.6256408+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -2178,6 +2195,60 @@
           "isCollapsed": false,
           "createdAt": "2026-09-10T21:37:18.1832015+00:00",
           "updatedAt": "2026-09-10T22:18:00+00:00"
+        },
+        {
+          "id": "ec6fa1b602b24b7bb4a152477743cd47",
+          "index": 85,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "reuquirements display",
+          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
+          "tags": [
+            "ui",
+            "cards",
+            "subtasks"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
+          "updatedAt": "2026-09-11T02:25:00+00:00"
+        },
+        {
+          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
+          "index": 86,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "better in progress indicator",
+          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
+          "tags": [
+            "cards"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
+          "updatedAt": "2026-09-11T02:35:00+00:00"
         }
       ]
     }
