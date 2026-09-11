@@ -160,32 +160,7 @@
       "isCollapsed": false,
       "isSystem": true,
       "isLocked": false,
-      "tasks": [
-        {
-          "id": "e85478b883e04934a1153da74f56b6ea",
-          "index": 105,
-          "kind": "cleanup",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "",
-          "task": "",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T06:22:16.544938+00:00",
-          "updatedAt": "2026-09-11T06:22:16.5449383+00:00"
-        }
-      ]
+      "tasks": []
     },
     {
       "id": "d19c7b9453fe4560ac46c6cdf07da9a7",
@@ -196,77 +171,6 @@
       "isSystem": false,
       "isLocked": false,
       "tasks": [
-        {
-          "id": "f034b9f93c3a43ceac2de442506dfdf6",
-          "index": 106,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "missing gemini install",
-          "task": "settings shows gemini as not installed but i manually installed it myself earlier, it is infact installed. also the install command you set doesnt work. try\r\n\r\ncurl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd \u0026\u0026 install.cmd \u0026\u0026 del install.cmd",
-          "tags": [
-            "bug",
-            "agents",
-            "in progress"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T06:22:25.2565807+00:00",
-          "updatedAt": "2026-09-11T06:23:59.5090913+00:00"
-        },
-        {
-          "id": "2ec0d547a6534395a22ff6d37b5050ed",
-          "index": 107,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "agents can\u0027t see zen-operator on PATH",
-          "task": "The operator ships in a versioned publish folder (e.g. builds/release_2/Zen-0.3.4-win-x64) that changes every release. Zen used to add that versioned folder directly to the user PATH, but already-open agent shells never pick up PATH changes, and the entry itself churns on every release. Fix: copy zen-operator\u0027s files into the stable AppData/Local/Zen folder (already permanently on PATH via PromptEnvironment.Sync) instead, and clean up the old versioned PATH entry.",
-          "tags": [
-            "bug",
-            "in progress"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "08e0999f528749aebd0effb6563e854d",
-              "text": "SyncOperatorPath copies zen-operator files into the stable AppData/Local/Zen directory",
-              "isDone": true
-            },
-            {
-              "id": "7f95e17b8b5e49e4b0ab54d0cb0cac88",
-              "text": "stale versioned PATH entries from older releases are removed",
-              "isDone": true
-            },
-            {
-              "id": "3a3be17913e04483aff22141d56a55c1",
-              "text": "build verified",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T06:32:56.7325717+00:00",
-          "updatedAt": "2026-09-11T06:32:56.732744+00:00"
-        },
         {
           "id": "58a5811a20b14360a4febbe945b55f49",
           "index": 103,
@@ -772,6 +676,75 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:05:57.2503268+00:00",
           "updatedAt": "2026-09-11T03:00:00+00:00"
+        },
+        {
+          "id": "f034b9f93c3a43ceac2de442506dfdf6",
+          "index": 106,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "missing gemini install",
+          "task": "settings shows gemini as not installed but i manually installed it myself earlier, it is infact installed. also the install command you set doesnt work. try\r\n\r\ncurl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd \u0026\u0026 install.cmd \u0026\u0026 del install.cmd",
+          "tags": [
+            "bug",
+            "agents"
+          ],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T06:22:25.2565807+00:00",
+          "updatedAt": "2026-09-11T06:43:41.4559206+00:00"
+        },
+        {
+          "id": "2ec0d547a6534395a22ff6d37b5050ed",
+          "index": 107,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "agents can\u0027t see zen-operator on PATH",
+          "task": "The operator ships in a versioned publish folder (e.g. builds/release_2/Zen-0.3.4-win-x64) that changes every release. Zen used to add that versioned folder directly to the user PATH, but already-open agent shells never pick up PATH changes, and the entry itself churns on every release. Fix: copy zen-operator\u0027s files into the stable AppData/Local/Zen folder (already permanently on PATH via PromptEnvironment.Sync) instead, and clean up the old versioned PATH entry.",
+          "tags": [
+            "bug"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "08e0999f528749aebd0effb6563e854d",
+              "text": "SyncOperatorPath copies zen-operator files into the stable AppData/Local/Zen directory",
+              "isDone": true
+            },
+            {
+              "id": "7f95e17b8b5e49e4b0ab54d0cb0cac88",
+              "text": "stale versioned PATH entries from older releases are removed",
+              "isDone": true
+            },
+            {
+              "id": "3a3be17913e04483aff22141d56a55c1",
+              "text": "build verified",
+              "isDone": true
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T06:32:56.7325717+00:00",
+          "updatedAt": "2026-09-11T06:43:41.7536666+00:00"
         },
         {
           "id": "ce32f812c96f4afab4959176c43d4482",
@@ -2309,6 +2282,30 @@
           "isCollapsed": false,
           "createdAt": "2026-09-11T01:59:12.1573429+00:00",
           "updatedAt": "2026-09-11T05:17:50.0899401+00:00"
+        },
+        {
+          "id": "e85478b883e04934a1153da74f56b6ea",
+          "index": 105,
+          "kind": "cleanup",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "requirements": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T06:22:16.544938+00:00",
+          "updatedAt": "2026-09-11T06:46:07.1666378+00:00"
         }
       ]
     }
