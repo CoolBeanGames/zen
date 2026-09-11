@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Zen</AssemblyName>
     <RootNamespace>Zen</RootNamespace>
-    <Version>0.2.8</Version>
+    <Version>0.2.9</Version>
     <ApplicationIcon>Assets\ZenIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>

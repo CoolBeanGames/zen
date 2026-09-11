@@ -1,9 +1,26 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using System.Windows;
+using System.Windows.Data;
 
 namespace Zen;
+
+public sealed class FractionToStarConverter : IValueConverter
+{
+    public bool Invert { get; set; }
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        var fraction = value is double d ? Math.Clamp(d, 0, 1) : 0;
+        return new GridLength(Invert ? 1 - fraction : fraction, GridUnitType.Star);
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
+}
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ColumnKind { Work, Archive }
@@ -90,12 +107,15 @@ public sealed class BoardColumn : INotifyPropertyChanged
 
 public sealed class TaskCard : INotifyPropertyChanged
 {
+    public TaskCard() => AttachRequirements(_requirements);
+
     private string _title = string.Empty;
     private string _task = string.Empty;
     private bool _isDone;
     private bool _isCollapsed;
     private bool _isLocked;
     private bool _isBug;
+    private bool _isInProgress;
     private DateTime? _dueDate;
     private DateTime? _startedDate;
     private CardPriority? _priority;
@@ -127,7 +147,19 @@ public sealed class TaskCard : INotifyPropertyChanged
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
-    public ObservableCollection<TaskRequirement> Requirements { get; set; } = [];
+    private ObservableCollection<TaskRequirement> _requirements = [];
+    public ObservableCollection<TaskRequirement> Requirements
+    {
+        get => _requirements;
+        set
+        {
+            if (ReferenceEquals(_requirements, value)) return;
+            DetachRequirements(_requirements);
+            _requirements = value ?? [];
+            AttachRequirements(_requirements);
+            RaiseRequirementProgressChanged();
+        }
+    }
     public CardFlags Flags { get; set; } = new();
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
     public bool IsLocked { get => _isLocked; set => SetField(ref _isLocked, value); }
@@ -143,6 +175,17 @@ public sealed class TaskCard : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsBug)));
         }
     }
+    [JsonIgnore]
+    public bool IsInProgress
+    {
+        get => _isInProgress;
+        internal set
+        {
+            if (_isInProgress == value) return;
+            _isInProgress = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsInProgress)));
+        }
+    }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string IndexLabel => $"#{Index:000}";
@@ -155,7 +198,42 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool HasPriority => Priority.HasValue;
     [JsonIgnore] public string PriorityLabel => Priority?.ToString().ToUpperInvariant() ?? string.Empty;
     [JsonIgnore] public string RequirementProgress => $"{Requirements.Count(r => r.IsDone)}/{Requirements.Count}";
+    [JsonIgnore] public bool HasRequirements => Requirements.Count > 0;
+    [JsonIgnore] public double RequirementProgressFraction => Requirements.Count == 0 ? 0 : (double)Requirements.Count(r => r.IsDone) / Requirements.Count;
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void AttachRequirements(ObservableCollection<TaskRequirement> requirements)
+    {
+        requirements.CollectionChanged += OnRequirementsCollectionChanged;
+        foreach (var requirement in requirements) requirement.PropertyChanged += OnRequirementPropertyChanged;
+    }
+
+    private void DetachRequirements(ObservableCollection<TaskRequirement> requirements)
+    {
+        requirements.CollectionChanged -= OnRequirementsCollectionChanged;
+        foreach (var requirement in requirements) requirement.PropertyChanged -= OnRequirementPropertyChanged;
+    }
+
+    private void OnRequirementsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems is not null)
+            foreach (TaskRequirement requirement in e.OldItems) requirement.PropertyChanged -= OnRequirementPropertyChanged;
+        if (e.NewItems is not null)
+            foreach (TaskRequirement requirement in e.NewItems) requirement.PropertyChanged += OnRequirementPropertyChanged;
+        RaiseRequirementProgressChanged();
+    }
+
+    private void OnRequirementPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(TaskRequirement.IsDone)) RaiseRequirementProgressChanged();
+    }
+
+    private void RaiseRequirementProgressChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequirementProgress)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasRequirements)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequirementProgressFraction)));
+    }
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;

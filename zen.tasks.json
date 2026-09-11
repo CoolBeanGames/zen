@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 99,
-  "latestExePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
-  "latestReleasePath": "builds/Zen-0.2.8-win-x64/Zen.exe",
+  "nextCardIndex": 100,
+  "latestExePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
+  "latestReleasePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -150,6 +150,49 @@
       "isLocked": false,
       "tasks": [
         {
+          "id": "5f0e2a6c9b3a4d1b8e7f6c4a2d1b9e30",
+          "index": 99,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "stale global prompt never re-syncs to updated embedded default",
+          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json's globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever — prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json — the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user's deliberately customized prompt.",
+          "tags": [
+            "bug",
+            "instructions"
+          ],
+          "files": [],
+          "requirements": [
+            {
+              "id": "a1c2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+              "text": "detect when the stored globalPrompt matches a known older embedded default rather than a user customization",
+              "isDone": false
+            },
+            {
+              "id": "b2c3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
+              "text": "refresh settings.json and prompt.txt to the current embedded default in that case",
+              "isDone": false
+            },
+            {
+              "id": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+              "text": "leave a genuinely user-edited prompt untouched",
+              "isDone": false
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T02:30:00+00:00",
+          "updatedAt": "2026-09-11T02:30:00+00:00"
+        },
+        {
           "id": "ec6fa1b602b24b7bb4a152477743cd47",
           "index": 85,
           "kind": "task",
@@ -197,11 +240,11 @@
             "release": true,
             "merge": false
           },
-          "isDone": false,
+          "isDone": true,
           "isLocked": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T01:45:11.7516827+00:00",
-          "updatedAt": "2026-09-11T01:48:09.7292129+00:00"
+          "updatedAt": "2026-09-11T02:35:00+00:00"
         }
       ]
     },

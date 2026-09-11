@@ -223,6 +223,7 @@ public sealed class ProjectStore
         foreach (var card in document.Branches.SelectMany(branch => branch.Tasks))
         {
             card.IsBug = card.Tags.Contains("bug", StringComparer.OrdinalIgnoreCase);
+            card.IsInProgress = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
             card.TagViews.Clear();
             foreach (var tag in card.Tags)
             {

@@ -1,8 +1,11 @@
 <Application x:Class="Zen.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Zen"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <local:FractionToStarConverter x:Key="FractionToStarConverter"/>
+        <local:FractionToStarConverter x:Key="FractionToRemainderStarConverter" Invert="True"/>
         <SolidColorBrush x:Key="WindowBrush" Color="#0B0D12"/>
         <SolidColorBrush x:Key="PanelBrush" Color="#12151C"/>
         <SolidColorBrush x:Key="ColumnBrush" Color="#161A22"/>

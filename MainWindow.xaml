@@ -221,7 +221,7 @@
                                         </ItemsControl.Style>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type local:TaskCard}">
-                                                    <Border BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,9"
+                                                    <Border BorderThickness="1" CornerRadius="10" Padding="0" Margin="0,0,0,9" ClipToBounds="True"
                                                             AllowDrop="True" DragEnter="TaskCard_DragEnter" DragOver="TaskCard_DragOver"
                                                             DragLeave="TaskCard_DragLeave" Drop="TaskCard_Drop"
                                                             Cursor="Hand" PreviewMouseLeftButtonDown="TaskCard_PreviewMouseLeftButtonDown"
@@ -251,10 +251,19 @@
                                                                         <Setter Property="Background" Value="#282331"/>
                                                                         <Setter Property="BorderBrush" Value="#8B7CFF"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsInProgress}" Value="True">
+                                                                        <Setter Property="Background" Value="#232C3D"/>
+                                                                        <Setter Property="BorderBrush" Value="#4C8DFF"/>
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
-                                                        <StackPanel>
+                                                        <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <StackPanel Grid.Row="0" Margin="14,14,14,12">
                                                             <TextBlock Text="—  BREAK · AGENTS STOP HERE  —" HorizontalAlignment="Center" Foreground="#B8AEFF" FontSize="11" FontWeight="Bold">
                                                                 <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                                                             </TextBlock>
@@ -397,8 +406,9 @@
                                                                     </Style>
                                                                 </Grid.Style>
                                                                 <StackPanel Orientation="Horizontal">
+                                                                    <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding HasRequirements}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                                                     <TextBlock Text="☑" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,0,5,0"/>
-                                                                    <TextBlock Text="{Binding Requirements.Count}" Foreground="#B6BDCC" FontSize="11"/>
+                                                                    <TextBlock Text="{Binding RequirementProgress}" Foreground="#B6BDCC" FontSize="11"/>
                                                                     <TextBlock Text=" requirements" Foreground="#B6BDCC" FontSize="11"/>
                                                                 </StackPanel>
                                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -408,6 +418,25 @@
                                                             </Grid>
                                                             </StackPanel>
                                                         </StackPanel>
+                                                        <Grid Grid.Row="1" Height="4">
+                                                            <Grid.Style>
+                                                                <Style TargetType="Grid">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding HasRequirements}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Grid.Style>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="{Binding RequirementProgressFraction, Converter={StaticResource FractionToStarConverter}}"/>
+                                                                <ColumnDefinition Width="{Binding RequirementProgressFraction, Converter={StaticResource FractionToRemainderStarConverter}}"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Border Grid.ColumnSpan="2" Background="#12151C"/>
+                                                            <Border Grid.Column="0" Background="{StaticResource AccentBrush}"/>
+                                                        </Grid>
+                                                        </Grid>
                                                     </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
