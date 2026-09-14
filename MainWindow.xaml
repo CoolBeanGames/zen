@@ -488,19 +488,24 @@
                 </Border.Effect>
                 <Grid>
                 <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                 <StackPanel Margin="0,0,6,0">
                     <Grid Margin="0,0,0,17">
                         <StackPanel>
-                            <TextBlock Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="EditHeading" Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
                             <TextBlock x:Name="EditIdentityText" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,4,0,0"/>
                         </StackPanel>
                         <Button Style="{StaticResource IconButton}" Content="×" HorizontalAlignment="Right" Click="CancelCardEdit_Click" FontSize="19" Padding="6,1"/>
                     </Grid>
-                    <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
-                    <TextBox x:Name="EditTitleInput" Style="{StaticResource EditorField}"/>
-                    <TextBlock x:Name="EditPromptLabel" Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
-                    <TextBox x:Name="EditTaskInput" Style="{StaticResource EditorField}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                    <StackPanel x:Name="EditStandardFields">
+                        <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                        <TextBox x:Name="EditTitleInput" Style="{StaticResource EditorField}"/>
+                        <TextBlock x:Name="EditPromptLabel" Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
+                        <TextBox x:Name="EditTaskInput" Style="{StaticResource EditorField}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                    </StackPanel>
+                    <Border x:Name="EditCustomCardHost" Visibility="Collapsed" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16">
+                        <Canvas x:Name="EditCustomCardCanvas" Background="#161A22" ClipToBounds="True"/>
+                    </Border>
                     <StackPanel x:Name="EditAdvancedFields">
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <TextBox x:Name="EditTagsInput" Style="{StaticResource EditorField}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"

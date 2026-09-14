@@ -1097,7 +1097,6 @@ public partial class MainWindow : Window
         EditInProgressFlag.IsChecked = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
         EditTaskInput.Text = card.Task;
         EditPromptLabel.Text = card.IsNote ? "NOTE" : "TASK PROMPT";
-        EditAdvancedFields.Visibility = card.IsNote ? Visibility.Collapsed : Visibility.Visible;
         _editingRequirements.Clear();
         foreach (var requirement in card.Requirements)
             _editingRequirements.Add(new TaskRequirement { Id = requirement.Id, Index = requirement.Index, Text = requirement.Text, IsDone = requirement.IsDone });
@@ -1114,7 +1113,13 @@ public partial class MainWindow : Window
             foreach (var field in customDefinition.Fields)
                 _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
         EditCustomFieldsList.ItemsSource = _editingCustomValues;
-        EditCustomFieldsHost.Visibility = _editingCustomValues.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        EditCustomFieldsHost.Visibility = Visibility.Collapsed;
+        var isCustomCard = customDefinition is not null;
+        EditHeading.Text = isCustomCard ? customDefinition!.Name : "Edit card";
+        EditStandardFields.Visibility = isCustomCard ? Visibility.Collapsed : Visibility.Visible;
+        EditAdvancedFields.Visibility = card.IsNote || isCustomCard ? Visibility.Collapsed : Visibility.Visible;
+        EditCustomCardHost.Visibility = isCustomCard ? Visibility.Visible : Visibility.Collapsed;
+        if (customDefinition is not null) RenderCustomCardEditor(customDefinition);
         _pendingUploadPaths.Clear();
         _editingFileNames.Clear();
         foreach (var file in card.Files) _editingFileNames.Add(file.Name);
@@ -1129,12 +1134,54 @@ public partial class MainWindow : Window
         EditValidationText.Visibility = Visibility.Collapsed;
         EditorShell.Height = Math.Max(360, RootLayout.ActualHeight - 48);
         EditorShell.MaxHeight = EditorShell.Height;
+        EditorShell.Width = isCustomCard ? Math.Min(Math.Max(620, EditCustomCardCanvas.Width + 42), Math.Max(620, RootLayout.ActualWidth - 80)) : 500;
         CardEditorHost.Visibility = Visibility.Visible;
         Dispatcher.BeginInvoke(() =>
         {
-            EditTitleInput.Focus();
-            EditTitleInput.SelectAll();
+            if (!isCustomCard)
+            {
+                EditTitleInput.Focus();
+                EditTitleInput.SelectAll();
+            }
         });
+    }
+
+    private void RenderCustomCardEditor(CustomCardDefinition definition)
+    {
+        EditCustomCardCanvas.Children.Clear();
+        EditCustomCardCanvas.Width = Math.Max(540, definition.Fields.Count == 0 ? 540 : definition.Fields.Max(item => item.X + item.Width) + 20);
+        EditCustomCardCanvas.Height = Math.Max(320, definition.Fields.Count == 0 ? 320 : definition.Fields.Max(item => item.Y + item.Height) + 20);
+        foreach (var field in definition.Fields)
+        {
+            var value = _editingCustomValues.First(item => item.FieldId == field.Id);
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = (Brush)FindResource("MutedBrush"), FontSize = 9, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
+            FrameworkElement input;
+            if (field.Type == "checkbox")
+            {
+                var checkbox = new CheckBox { Content = field.Name, Foreground = (Brush)FindResource("TextBrush"), IsChecked = bool.TryParse(value.Value, out var selected) && selected };
+                checkbox.Checked += (_, _) => value.Value = bool.TrueString;
+                checkbox.Unchecked += (_, _) => value.Value = bool.FalseString;
+                input = checkbox;
+            }
+            else if (field.Type == "dropdown")
+            {
+                var combo = new ComboBox { ItemsSource = field.Options, SelectedItem = value.Value, MinHeight = 34 };
+                combo.SelectionChanged += (_, _) => value.Value = combo.SelectedItem?.ToString() ?? string.Empty;
+                input = combo;
+            }
+            else
+            {
+                var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 34 };
+                text.TextChanged += (_, _) => value.Value = text.Text;
+                input = text;
+            }
+            stack.Children.Add(input);
+            var container = new Border { Width = field.Width, Height = field.Height, Background = new SolidColorBrush(Color.FromRgb(29, 34, 44)), BorderBrush = new SolidColorBrush(Color.FromRgb(52, 61, 76)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(8), Padding = new Thickness(10), Child = stack };
+            Canvas.SetLeft(container, field.X);
+            Canvas.SetTop(container, field.Y);
+            EditCustomCardCanvas.Children.Add(container);
+        }
     }
 
     private void ApplyCardEdit_Click(object sender, RoutedEventArgs e)
@@ -1155,7 +1202,7 @@ public partial class MainWindow : Window
 
         _editingCard.Title = title;
         _editingCard.Task = EditTaskInput.Text.Trim();
-        if (!_editingCard.IsNote)
+        if (!_editingCard.IsNote && _editingCard.CustomTypeId is null)
         {
             _editingCard.Tags.Clear();
             if (EditBugFlag.IsChecked == true) _editingCard.Tags.Add("bug");
@@ -1171,7 +1218,6 @@ public partial class MainWindow : Window
             _editingCard.Notes.Clear();
             foreach (var note in _editingNotes.Where(note => !string.IsNullOrWhiteSpace(note.Text)))
                 _editingCard.Notes.Add(new TaskNote { Id = note.Id, Text = note.Text.Trim() });
-            foreach (var field in _editingCustomValues) _editingCard.CustomValues[field.FieldId] = field.Value;
             _editingCard.Flags.Commit = EditCommitFlag.IsChecked == true;
             _editingCard.Flags.Build = EditBuildFlag.IsChecked == true;
             _editingCard.Flags.Release = EditReleaseFlag.IsChecked == true;
@@ -1180,6 +1226,7 @@ public partial class MainWindow : Window
             _editingCard.DueDate = EditDueDate.SelectedDate;
             _editingCard.Priority = EditPriority.SelectedIndex > 0 ? (CardPriority?)(EditPriority.SelectedIndex - 1) : null;
         }
+        foreach (var field in _editingCustomValues) _editingCard.CustomValues[field.FieldId] = field.Value;
 
         if (_store is not null)
         {
