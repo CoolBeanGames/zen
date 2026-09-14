@@ -44,6 +44,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<CustomFieldValue> _editingCustomValues = [];
     private readonly ObservableCollection<string> _editingFileNames = [];
     private readonly List<string> _pendingUploadPaths = [];
+    private readonly Dictionary<string, string> _pendingCustomFilePaths = [];
     private readonly List<string> _temporaryClipboardPaths = [];
     private ProjectDocument? _document;
     private ProjectStore? _store;
@@ -1121,6 +1122,7 @@ public partial class MainWindow : Window
         EditCustomCardHost.Visibility = isCustomCard ? Visibility.Visible : Visibility.Collapsed;
         if (customDefinition is not null) RenderCustomCardEditor(customDefinition);
         _pendingUploadPaths.Clear();
+        _pendingCustomFilePaths.Clear();
         _editingFileNames.Clear();
         foreach (var file in card.Files) _editingFileNames.Add(file.Name);
         EditFilesList.ItemsSource = _editingFileNames;
@@ -1173,6 +1175,20 @@ public partial class MainWindow : Window
             else if (field.Type == "list")
             {
                 input = new CustomListFieldEditor(value);
+            }
+            else if (field.Type == "file")
+            {
+                var row = new StackPanel { Orientation = Orientation.Horizontal };
+                var choose = new Button { Content = "Choose file…", Padding = new Thickness(10, 6, 10, 6) };
+                var fileName = new TextBlock { Text = Path.GetFileName(value.Value), Foreground = (Brush)FindResource("MutedBrush"), Margin = new Thickness(9, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center, TextTrimming = TextTrimming.CharacterEllipsis };
+                choose.Click += (_, _) =>
+                {
+                    var picker = new OpenFileDialog { Title = $"Choose {field.Name}", Multiselect = false, CheckFileExists = true };
+                    if (picker.ShowDialog(this) != true) return;
+                    _pendingCustomFilePaths[field.Id] = picker.FileName;
+                    fileName.Text = Path.GetFileName(picker.FileName);
+                };
+                row.Children.Add(choose); row.Children.Add(fileName); input = row;
             }
             else
             {
@@ -1238,6 +1254,12 @@ public partial class MainWindow : Window
             {
                 foreach (var sourcePath in _pendingUploadPaths)
                     _editingCard.Files.Add(_store.ImportFile(sourcePath));
+                foreach (var pending in _pendingCustomFilePaths)
+                {
+                    var file = _store.ImportFile(pending.Value);
+                    _editingCard.Files.Add(file);
+                    _editingCard.CustomValues[pending.Key] = file.RelativePath;
+                }
             }
             catch (Exception exception)
             {
@@ -1437,6 +1459,7 @@ public partial class MainWindow : Window
             catch { /* Temporary clipboard files are best-effort cleanup. */ }
         }
         _temporaryClipboardPaths.Clear();
+        _pendingCustomFilePaths.Clear();
         _editingCard = null;
         EditValidationText.Visibility = Visibility.Collapsed;
         TagSuggestions.Visibility = Visibility.Collapsed;

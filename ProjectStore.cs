@@ -261,6 +261,7 @@ public sealed class ProjectStore
                 {
                     try { value = string.Join(", ", JsonSerializer.Deserialize<List<string>>(value) ?? []); } catch { }
                 }
+                else if (field.Type == "file") value = Path.GetFileName(value);
                 card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Value=value, X=field.CompactX, Y=field.CompactY, Width=field.CompactWidth, Height=field.CompactHeight });
             }
             card.NotifyCustomCompactLayoutChanged();

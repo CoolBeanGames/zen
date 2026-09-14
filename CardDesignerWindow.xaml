@@ -11,6 +11,7 @@
         <Button Content="Checkbox" Tag="checkbox" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
         <Button Content="Dropdown" Tag="dropdown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10"/>
         <Button Content="List" Tag="list" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,7,0,0"/>
+        <Button Content="File upload" Tag="file" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,7,0,0"/>
         <TextBlock Text="Drag an element onto the card." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,14,0,0"/>
       </StackPanel></Border>
       <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
@@ -19,7 +20,7 @@
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">
         <StackPanel><TextBlock Text="INSPECTOR" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
           <TextBlock Text="NAME" Foreground="#8992A5" FontSize="9" Margin="0,15,0,4"/><TextBox x:Name="FieldName" TextChanged="InspectorChanged" Padding="8"/>
-          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/></ComboBox>
+          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="file"/></ComboBox>
           <TextBlock Text="DEFAULT VALUE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="DefaultValue" TextChanged="InspectorChanged" Padding="8"/>
           <StackPanel x:Name="OptionsHost"><TextBlock Text="DROPDOWN OPTIONS (comma separated)" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="OptionsInput" TextChanged="InspectorChanged" Padding="8"/></StackPanel>
           <CheckBox x:Name="CollapsedVisible" Content="Visible on compact card" Checked="InspectorChanged" Unchecked="InspectorChanged" Margin="0,14,0,0"/>
