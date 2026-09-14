@@ -96,7 +96,18 @@ public partial class CardDesignerWindow : Window
     }
     private void AddResizeHandle(Grid host, CustomFieldDefinition field, DesignerSurface surface, bool horizontal, bool vertical, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, double width, double height, Cursor cursor)
     {
-        var thumb = new Thumb { HorizontalAlignment=horizontalAlignment, VerticalAlignment=verticalAlignment, Cursor=cursor, Background=Brushes.Transparent, Opacity=1 };
+        // A zero-opacity Thumb keeps its full hit area and drag behavior without
+        // allowing the platform's default Thumb chrome to leak into the layout.
+        var thumb = new Thumb
+        {
+            HorizontalAlignment=horizontalAlignment,
+            VerticalAlignment=verticalAlignment,
+            Cursor=cursor,
+            Background=Brushes.Transparent,
+            Opacity=0,
+            Focusable=false,
+            IsHitTestVisible=true
+        };
         if (!double.IsNaN(width)) thumb.Width=width;
         if (!double.IsNaN(height)) thumb.Height=height;
         double startWidth=0, startHeight=0, accumulatedX=0, accumulatedY=0;
