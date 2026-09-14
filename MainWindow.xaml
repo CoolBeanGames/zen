@@ -337,13 +337,25 @@
                                                                 <ItemsControl.Style><Style TargetType="ItemsControl"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCollapsed}" Value="True"/><Condition Binding="{Binding HasCustomCompactFields}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></ItemsControl.Style>
                                                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                                                 <ItemsControl.ItemContainerStyle><Style TargetType="ContentPresenter"><Setter Property="Canvas.Left" Value="{Binding X}"/><Setter Property="Canvas.Top" Value="{Binding Y}"/></Style></ItemsControl.ItemContainerStyle>
-                                                                <ItemsControl.ItemTemplate><DataTemplate><Border Width="{Binding Width}" Height="{Binding Height}" Background="#202630" BorderBrush="#343D4C" BorderThickness="1" CornerRadius="6" Padding="7"><StackPanel><TextBlock Text="{Binding Name}" Foreground="#8992A5" FontSize="9"/><TextBlock Text="{Binding Value}" Foreground="#F4F6FA" FontSize="11" TextTrimming="CharacterEllipsis"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate>
+                                                                <ItemsControl.ItemTemplate><DataTemplate>
+                                                                    <Grid Width="{Binding Width}" Height="{Binding Height}" ClipToBounds="True">
+                                                                        <StackPanel x:Name="ValueView"><TextBlock Text="{Binding Name}" Foreground="#8992A5" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"/><TextBlock Text="{Binding Value}" Foreground="#F4F6FA" FontSize="13" TextTrimming="CharacterEllipsis"/></StackPanel>
+                                                                        <CheckBox x:Name="CheckView" Content="{Binding Name}" IsChecked="{Binding IsChecked}" FontSize="12" IsHitTestVisible="False" Visibility="Collapsed"/>
+                                                                    </Grid>
+                                                                    <DataTemplate.Triggers><DataTrigger Binding="{Binding Type}" Value="checkbox"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="CheckView" Property="Visibility" Value="Visible"/></DataTrigger></DataTemplate.Triggers>
+                                                                </DataTemplate></ItemsControl.ItemTemplate>
                                                             </ItemsControl>
                                                             <ItemsControl ItemsSource="{Binding CustomExpandedFields}" Height="{Binding ExpandedLayoutHeight}" Margin="0,8,0,0">
                                                                 <ItemsControl.Style><Style TargetType="ItemsControl"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCollapsed}" Value="False"/><Condition Binding="{Binding HasCustomExpandedFields}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></ItemsControl.Style>
                                                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                                                 <ItemsControl.ItemContainerStyle><Style TargetType="ContentPresenter"><Setter Property="Canvas.Left" Value="{Binding X}"/><Setter Property="Canvas.Top" Value="{Binding Y}"/></Style></ItemsControl.ItemContainerStyle>
-                                                                <ItemsControl.ItemTemplate><DataTemplate><Border Width="{Binding Width}" Height="{Binding Height}" Background="#202630" BorderBrush="#343D4C" BorderThickness="1" CornerRadius="6" Padding="7"><StackPanel><TextBlock Text="{Binding Name}" Foreground="#8992A5" FontSize="9"/><TextBlock Text="{Binding Value}" Foreground="#F4F6FA" FontSize="11" TextTrimming="CharacterEllipsis"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate>
+                                                                <ItemsControl.ItemTemplate><DataTemplate>
+                                                                    <Grid Width="{Binding Width}" Height="{Binding Height}" ClipToBounds="True">
+                                                                        <StackPanel x:Name="ValueView"><TextBlock Text="{Binding Name}" Foreground="#8992A5" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"/><TextBlock Text="{Binding Value}" Foreground="#F4F6FA" FontSize="13" TextTrimming="CharacterEllipsis"/></StackPanel>
+                                                                        <CheckBox x:Name="CheckView" Content="{Binding Name}" IsChecked="{Binding IsChecked}" FontSize="12" IsHitTestVisible="False" Visibility="Collapsed"/>
+                                                                    </Grid>
+                                                                    <DataTemplate.Triggers><DataTrigger Binding="{Binding Type}" Value="checkbox"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="CheckView" Property="Visibility" Value="Visible"/></DataTrigger></DataTemplate.Triggers>
+                                                                </DataTemplate></ItemsControl.ItemTemplate>
                                                             </ItemsControl>
                                                             <TextBlock Text="{Binding Task}" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" LineHeight="18" Margin="0,7,0,0" MaxHeight="72" TextTrimming="CharacterEllipsis">
                                                                 <TextBlock.Style>
@@ -513,8 +525,8 @@
                         <TextBlock x:Name="EditPromptLabel" Text="TASK PROMPT" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                         <TextBox x:Name="EditTaskInput" Style="{StaticResource EditorField}" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
                     </StackPanel>
-                    <Border x:Name="EditCustomCardHost" Visibility="Collapsed" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16">
-                        <Canvas x:Name="EditCustomCardCanvas" Background="#161A22" ClipToBounds="True"/>
+                    <Border x:Name="EditCustomCardHost" Visibility="Collapsed" Background="Transparent" BorderThickness="0" Padding="0">
+                        <Canvas x:Name="EditCustomCardCanvas" Background="Transparent" ClipToBounds="True"/>
                     </Border>
                     <StackPanel x:Name="EditAdvancedFields">
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>

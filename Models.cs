@@ -380,13 +380,13 @@ public sealed class CustomFieldDefinition
     public double Y { get; set; } = 24;
     public double Width { get; set; } = 220;
     public double Height { get; set; } = 72;
-    public double ExpandedX { get; set; } = 8;
-    public double ExpandedY { get; set; } = 8;
-    public double ExpandedWidth { get; set; } = 240;
-    public double ExpandedHeight { get; set; } = 54;
+    public double ExpandedX { get; set; } = 12;
+    public double ExpandedY { get; set; } = 12;
+    public double ExpandedWidth { get; set; } = 252;
+    public double ExpandedHeight { get; set; } = 60;
     public double CompactX { get; set; } = 12;
     public double CompactY { get; set; } = 12;
-    public double CompactWidth { get; set; } = 160;
+    public double CompactWidth { get; set; } = 168;
     public double CompactHeight { get; set; } = 48;
 }
 
@@ -402,7 +402,9 @@ public sealed class CustomFieldValue : INotifyPropertyChanged
 public sealed class CustomCompactField
 {
     public string Name { get; set; } = string.Empty;
+    public string Type { get; set; } = "text";
     public string Value { get; set; } = string.Empty;
+    public bool IsChecked => bool.TryParse(Value, out var value) && value;
     public double X { get; set; }
     public double Y { get; set; }
     public double Width { get; set; }

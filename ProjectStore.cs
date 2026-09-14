@@ -111,6 +111,26 @@ public sealed class ProjectStore
         {
             definition.Fields ??= [];
             foreach (var field in definition.Fields) field.Options ??= [];
+            if (definition.Fields.Count > 1 && definition.Fields.Select(field => (field.ExpandedX, field.ExpandedY)).Distinct().Count() == 1)
+            {
+                for (var index = 0; index < definition.Fields.Count; index++)
+                {
+                    definition.Fields[index].ExpandedX = 12;
+                    definition.Fields[index].ExpandedY = 12 + index * 72;
+                    definition.Fields[index].ExpandedWidth = 252;
+                    definition.Fields[index].ExpandedHeight = Math.Max(60, definition.Fields[index].ExpandedHeight);
+                }
+            }
+            if (definition.Fields.Count > 1 && definition.Fields.Select(field => (field.CompactX, field.CompactY)).Distinct().Count() == 1)
+            {
+                for (var index = 0; index < definition.Fields.Count; index++)
+                {
+                    definition.Fields[index].CompactX = 12;
+                    definition.Fields[index].CompactY = 12 + index * 60;
+                    definition.Fields[index].CompactWidth = 252;
+                    definition.Fields[index].CompactHeight = Math.Max(48, definition.Fields[index].CompactHeight);
+                }
+            }
         }
         var duplicateTags = document.TagCatalog.GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .SelectMany(group => group.Skip(1)).ToList();
@@ -256,9 +276,15 @@ public sealed class ProjectStore
             card.CustomExpandedFields.Clear();
             if (card.CustomTypeId is null || !definitions.TryGetValue(card.CustomTypeId, out var definition)) continue;
             foreach (var field in definition.Fields)
-                card.CustomExpandedFields.Add(new CustomCompactField { Name=field.Name, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=field.ExpandedX, Y=field.ExpandedY, Width=field.ExpandedWidth, Height=field.ExpandedHeight });
+            {
+                var width = Math.Min(276, Math.Max(60, field.ExpandedWidth));
+                card.CustomExpandedFields.Add(new CustomCompactField { Name=field.Name, Type=field.Type, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=Math.Clamp(field.ExpandedX, 0, 276-width), Y=Math.Max(0,field.ExpandedY), Width=width, Height=Math.Max(36,field.ExpandedHeight) });
+            }
             foreach (var field in definition.Fields.Where(field => field.ShowOnCollapsed))
-                card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=field.CompactX, Y=field.CompactY, Width=field.CompactWidth, Height=field.CompactHeight });
+            {
+                var width = Math.Min(276, Math.Max(60, field.CompactWidth));
+                card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Type=field.Type, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=Math.Clamp(field.CompactX, 0, 276-width), Y=Math.Max(0,field.CompactY), Width=width, Height=Math.Max(36,field.CompactHeight) });
+            }
             card.NotifyCustomCompactLayoutChanged();
         }
     }

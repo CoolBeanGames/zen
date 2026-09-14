@@ -1153,34 +1153,38 @@ public partial class MainWindow : Window
     {
         EditCustomCardCanvas.Children.Clear();
         EditCustomCardCanvas.Width = Math.Max(540, definition.Fields.Count == 0 ? 540 : definition.Fields.Max(item => item.X + item.Width) + 20);
-        EditCustomCardCanvas.Height = Math.Max(320, definition.Fields.Count == 0 ? 320 : definition.Fields.Max(item => item.Y + item.Height) + 20);
+        EditCustomCardCanvas.Height = definition.Fields.Count == 0 ? 80 : definition.Fields.Max(item => item.Y + item.Height) + 12;
         foreach (var field in definition.Fields)
         {
             var value = _editingCustomValues.First(item => item.FieldId == field.Id);
-            var stack = new StackPanel();
-            stack.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = (Brush)FindResource("MutedBrush"), FontSize = 9, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
+            var fieldLayout = new Grid();
+            fieldLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            fieldLayout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             FrameworkElement input;
             if (field.Type == "checkbox")
             {
-                var checkbox = new CheckBox { Content = field.Name, Foreground = (Brush)FindResource("TextBrush"), IsChecked = bool.TryParse(value.Value, out var selected) && selected };
+                var checkbox = new CheckBox { Content = field.Name, Foreground = (Brush)FindResource("TextBrush"), FontSize = 12, IsChecked = bool.TryParse(value.Value, out var selected) && selected };
                 checkbox.Checked += (_, _) => value.Value = bool.TrueString;
                 checkbox.Unchecked += (_, _) => value.Value = bool.FalseString;
                 input = checkbox;
             }
             else if (field.Type == "dropdown")
             {
-                var combo = new ComboBox { ItemsSource = field.Options, SelectedItem = value.Value, MinHeight = 34 };
+                var combo = new ComboBox { ItemsSource = field.Options, SelectedItem = value.Value, MinHeight = 36, FontSize = 13, VerticalAlignment = VerticalAlignment.Top };
                 combo.SelectionChanged += (_, _) => value.Value = combo.SelectedItem?.ToString() ?? string.Empty;
                 input = combo;
             }
             else
             {
-                var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 34 };
+                var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 36, FontSize = 13, AcceptsReturn = field.Type == "text", TextWrapping = TextWrapping.Wrap, VerticalContentAlignment = VerticalAlignment.Top, VerticalAlignment = VerticalAlignment.Stretch };
                 text.TextChanged += (_, _) => value.Value = text.Text;
                 input = text;
             }
-            stack.Children.Add(input);
-            var container = new Border { Width = field.Width, Height = field.Height, Background = new SolidColorBrush(Color.FromRgb(29, 34, 44)), BorderBrush = new SolidColorBrush(Color.FromRgb(52, 61, 76)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(8), Padding = new Thickness(10), Child = stack };
+            if (field.Type != "checkbox")
+                fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = (Brush)FindResource("MutedBrush"), FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
+            Grid.SetRow(input, field.Type == "checkbox" ? 0 : 1);
+            fieldLayout.Children.Add(input);
+            var container = new Border { Width = field.Width, Height = field.Height, Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
             Canvas.SetLeft(container, field.X);
             Canvas.SetTop(container, field.Y);
             EditCustomCardCanvas.Children.Add(container);
