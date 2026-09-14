@@ -21,7 +21,7 @@ public partial class CardStudioWindow : Window
     private static CustomCardDefinition Clone(CustomCardDefinition source) => new()
     {
         Id = source.Id, Name = source.Name, Instructions = source.Instructions,
-        Fields = new(source.Fields.Select(field => new CustomFieldDefinition { Id = field.Id, Name = field.Name, Type = field.Type, DefaultValue = field.DefaultValue, ShowOnCollapsed = field.ShowOnCollapsed, Options = new(field.Options) }))
+        Fields = new(source.Fields.Select(field => new CustomFieldDefinition { Id = field.Id, Name = field.Name, Type = field.Type, DefaultValue = field.DefaultValue, ShowOnCollapsed = field.ShowOnCollapsed, Options = new(field.Options), X = field.X, Y = field.Y, Width = field.Width, Height = field.Height }))
     };
 
     private void TypesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -46,6 +46,7 @@ public partial class CardStudioWindow : Window
     private void AddType_Click(object sender, RoutedEventArgs e) { var item = new CustomCardDefinition(); Definitions.Add(item); TypesList.SelectedItem = item; NameInput.Focus(); NameInput.SelectAll(); }
     private void DeleteType_Click(object sender, RoutedEventArgs e) { if (_selected is null) return; Definitions.Remove(_selected); TypesList.SelectedIndex = Definitions.Count > 0 ? 0 : -1; }
     private void AddField_Click(object sender, RoutedEventArgs e) { if (_selected is null) return; _selected.Fields.Add(new CustomFieldDefinition()); }
+    private void OpenDesigner_Click(object sender, RoutedEventArgs e) { if (_selected is null) return; var designer = new CardDesignerWindow(_selected) { Owner = this }; if (designer.ShowDialog() == true) FieldsList.Items.Refresh(); }
     private void RemoveField_Click(object sender, RoutedEventArgs e) { if (_selected is not null && sender is Button { Tag: CustomFieldDefinition field }) _selected.Fields.Remove(field); }
     private void Save_Click(object sender, RoutedEventArgs e) { if (Definitions.Any(item => string.IsNullOrWhiteSpace(item.Name))) { MessageBox.Show(this, "Every card type needs a name."); return; } DialogResult = true; }
     private void Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;

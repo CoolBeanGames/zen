@@ -361,6 +361,10 @@ public sealed class CustomFieldDefinition
     public string DefaultValue { get; set; } = string.Empty;
     public ObservableCollection<string> Options { get; set; } = [];
     public bool ShowOnCollapsed { get; set; } = true;
+    public double X { get; set; } = 24;
+    public double Y { get; set; } = 24;
+    public double Width { get; set; } = 220;
+    public double Height { get; set; } = 72;
 }
 
 public sealed class CustomFieldValue : INotifyPropertyChanged

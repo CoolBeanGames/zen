@@ -1462,7 +1462,11 @@ public partial class MainWindow : Window
             if (definition is not null)
             {
                 card.Tags.Add(definition.Name);
-                foreach (var field in definition.Fields) card.CustomValues[field.Id] = field.DefaultValue;
+                foreach (var field in definition.Fields)
+                {
+                    if (!card.Tags.Contains(field.Name, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(field.Name);
+                    card.CustomValues[field.Id] = field.DefaultValue;
+                }
             }
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
             target.Tasks.Add(card);

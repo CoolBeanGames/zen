@@ -12,6 +12,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel x:Name="Editor" IsEnabled="False">
                     <TextBlock Text="CARD TYPE NAME" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><TextBox x:Name="NameInput" TextChanged="DefinitionChanged" Margin="0,6,0,14" Padding="10"/>
                     <TextBlock Text="AGENT INSTRUCTIONS" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><TextBox x:Name="InstructionsInput" TextChanged="DefinitionChanged" AcceptsReturn="True" TextWrapping="Wrap" Height="90" Margin="0,6,0,14" Padding="10"/>
+                    <Button Content="Open Card Designer…" Click="OpenDesigner_Click" HorizontalAlignment="Left" Padding="12,7" Margin="0,0,0,14" Background="#29233F" Foreground="#D7D2FF"/>
                     <Grid Margin="0,0,0,8"><TextBlock Text="FIELDS" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><Button Content="＋ Add field" Click="AddField_Click" HorizontalAlignment="Right" Padding="9,5"/></Grid>
                     <ItemsControl x:Name="FieldsList"><ItemsControl.ItemTemplate><DataTemplate>
                         <Border Background="#1D222C" CornerRadius="8" Padding="10" Margin="0,0,0,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="130"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
