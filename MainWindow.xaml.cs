@@ -1170,6 +1170,10 @@ public partial class MainWindow : Window
                 combo.SelectionChanged += (_, _) => value.Value = combo.SelectedItem?.ToString() ?? string.Empty;
                 input = combo;
             }
+            else if (field.Type == "list")
+            {
+                input = new CustomListFieldEditor(value);
+            }
             else
             {
                 var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 34 };

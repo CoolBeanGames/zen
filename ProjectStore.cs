@@ -255,7 +255,14 @@ public sealed class ProjectStore
             card.CustomCompactFields.Clear();
             if (card.CustomTypeId is null || !definitions.TryGetValue(card.CustomTypeId, out var definition)) continue;
             foreach (var field in definition.Fields.Where(field => field.ShowOnCollapsed))
-                card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=field.CompactX, Y=field.CompactY, Width=field.CompactWidth, Height=field.CompactHeight });
+            {
+                var value = card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
+                if (field.Type == "list")
+                {
+                    try { value = string.Join(", ", JsonSerializer.Deserialize<List<string>>(value) ?? []); } catch { }
+                }
+                card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Value=value, X=field.CompactX, Y=field.CompactY, Width=field.CompactWidth, Height=field.CompactHeight });
+            }
             card.NotifyCustomCompactLayoutChanged();
         }
     }
