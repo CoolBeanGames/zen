@@ -3,7 +3,7 @@
   <Grid Margin="20"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel><TextBlock Text="CARD DESIGNER" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold" Margin="0,4,0,16"/></StackPanel>
     <TabControl Grid.Row="1" Background="#0B0D12" BorderThickness="0" SelectionChanged="DesignerTabs_SelectionChanged">
-    <TabItem Header="Full card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="14"/><ColumnDefinition Width="280"/></Grid.ColumnDefinitions>
+    <TabItem Header="Open card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="14"/><ColumnDefinition Width="280"/></Grid.ColumnDefinitions>
       <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
         <TextBlock Text="ELEMENTS" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,10"/>
         <Button Content="Text field" Tag="text" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
@@ -24,6 +24,15 @@
           <CheckBox x:Name="CollapsedVisible" Content="Visible on compact card" Checked="InspectorChanged" Unchecked="InspectorChanged" Margin="0,14,0,0"/>
           <Button Content="Remove element" Foreground="#FF7F91" Click="RemoveElement_Click" Margin="0,18,0,0" HorizontalAlignment="Left"/>
         </StackPanel>
+      </Border>
+    </Grid></TabItem>
+    <TabItem Header="Expanded card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="14"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
+        <TextBlock Text="EXPANDED CARD" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
+        <TextBlock Text="Arrange every field as it should appear on an expanded card on the board. Drag fields directly on the surface and resize them from an edge or corner." Foreground="#737D91" TextWrapping="Wrap" FontSize="10"/>
+      </StackPanel></Border>
+      <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
+        <Canvas x:Name="ExpandedCanvas" Background="#161A22" ClipToBounds="True"/>
       </Border>
     </Grid></TabItem>
     <TabItem Header="Compact card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="14"/><ColumnDefinition/></Grid.ColumnDefinitions>
