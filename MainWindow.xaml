@@ -492,7 +492,8 @@
                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                               PreviewMouseDown="EditorScroller_PreviewMouseDown" PreviewMouseMove="EditorScroller_PreviewMouseMove"
                               PreviewMouseUp="EditorScroller_PreviewMouseUp" LostMouseCapture="EditorScroller_LostMouseCapture">
-                <StackPanel Width="{Binding ViewportWidth, ElementName=EditorScroller}" Margin="0,0,6,0">
+                <Border Width="{Binding ViewportWidth, ElementName=EditorScroller}" Padding="0,0,12,0">
+                <StackPanel>
                     <Grid Margin="0,0,0,17">
                         <StackPanel>
                             <TextBlock x:Name="EditHeading" Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
@@ -602,6 +603,7 @@
                     </WrapPanel>
                     </StackPanel>
                 </StackPanel>
+                </Border>
                 </ScrollViewer>
                 <Border Grid.Row="1" Background="#171B23" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
                     <StackPanel>
