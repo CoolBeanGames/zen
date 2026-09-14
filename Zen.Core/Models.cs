@@ -59,6 +59,10 @@ public sealed class CustomFieldDefinition
     public double Y { get; set; } = 24;
     public double Width { get; set; } = 220;
     public double Height { get; set; } = 72;
+    public double CompactX { get; set; } = 12;
+    public double CompactY { get; set; } = 12;
+    public double CompactWidth { get; set; } = 160;
+    public double CompactHeight { get; set; } = 48;
 }
 
 public sealed class BoardColumn : INotifyPropertyChanged

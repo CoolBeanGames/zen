@@ -38,6 +38,7 @@ public sealed class ProjectStore
         Normalize(document);
         HydrateFiles(document);
         HydrateTags(document);
+        HydrateCustomCards(document);
         Save(document);
         return document;
     }
@@ -47,6 +48,7 @@ public sealed class ProjectStore
         Normalize(document);
         HydrateFiles(document);
         HydrateTags(document);
+        HydrateCustomCards(document);
         var temporaryPath = DataPath + ".tmp";
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(document, JsonOptions));
         File.Move(temporaryPath, DataPath, true);
@@ -242,6 +244,19 @@ public sealed class ProjectStore
                 var definition = catalog[tag];
                 card.TagViews.Add(new TagChip { Name = tag, Color = definition.Color });
             }
+        }
+    }
+
+    private static void HydrateCustomCards(ProjectDocument document)
+    {
+        var definitions = document.CustomCardTypes.ToDictionary(item => item.Id, StringComparer.OrdinalIgnoreCase);
+        foreach (var card in document.Branches.SelectMany(branch => branch.Tasks))
+        {
+            card.CustomCompactFields.Clear();
+            if (card.CustomTypeId is null || !definitions.TryGetValue(card.CustomTypeId, out var definition)) continue;
+            foreach (var field in definition.Fields.Where(field => field.ShowOnCollapsed))
+                card.CustomCompactFields.Add(new CustomCompactField { Name=field.Name, Value=card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue), X=field.CompactX, Y=field.CompactY, Width=field.CompactWidth, Height=field.CompactHeight });
+            card.NotifyCustomCompactLayoutChanged();
         }
     }
 

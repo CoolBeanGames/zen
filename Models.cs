@@ -151,6 +151,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public string Task { get => _task; set => SetField(ref _task, value); }
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
+    [JsonIgnore] public ObservableCollection<CustomCompactField> CustomCompactFields { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
     public string? CustomTypeId { get; set; }
     public Dictionary<string, string> CustomValues { get; set; } = [];
@@ -222,6 +223,8 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public double RequirementProgressFraction => Requirements.Count == 0 ? 0 : (double)Requirements.Count(r => r.IsDone) / Requirements.Count;
     [JsonIgnore] public bool HasNotes => Notes.Count > 0;
     [JsonIgnore] public string NotesCountLabel => Notes.Count == 1 ? "1 note" : $"{Notes.Count} notes";
+    [JsonIgnore] public bool HasCustomCompactFields => CustomCompactFields.Count > 0;
+    [JsonIgnore] public double CompactLayoutHeight => CustomCompactFields.Count == 0 ? 0 : CustomCompactFields.Max(item => item.Y + item.Height) + 8;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void AttachRequirements(ObservableCollection<TaskRequirement> requirements)
@@ -264,6 +267,11 @@ public sealed class TaskCard : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasNotes)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotesCountLabel)));
+    }
+    public void NotifyCustomCompactLayoutChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasCustomCompactFields)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CompactLayoutHeight)));
     }
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -365,6 +373,10 @@ public sealed class CustomFieldDefinition
     public double Y { get; set; } = 24;
     public double Width { get; set; } = 220;
     public double Height { get; set; } = 72;
+    public double CompactX { get; set; } = 12;
+    public double CompactY { get; set; } = 12;
+    public double CompactWidth { get; set; } = 160;
+    public double CompactHeight { get; set; } = 48;
 }
 
 public sealed class CustomFieldValue : INotifyPropertyChanged
@@ -374,4 +386,14 @@ public sealed class CustomFieldValue : INotifyPropertyChanged
     public string Name { get; set; } = string.Empty;
     public string Value { get => _value; set { if (_value == value) return; _value = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
     public event PropertyChangedEventHandler? PropertyChanged;
+}
+
+public sealed class CustomCompactField
+{
+    public string Name { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
 }
