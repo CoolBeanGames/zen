@@ -1,26 +1,10 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using System.Windows;
-using System.Windows.Data;
 
 namespace Zen;
-
-public sealed class FractionToStarConverter : IValueConverter
-{
-    public bool Invert { get; set; }
-
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        var fraction = value is double d ? Math.Clamp(d, 0, 1) : 0;
-        return new GridLength(Invert ? 1 - fraction : fraction, GridUnitType.Star);
-    }
-
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
-}
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ColumnKind { Work, Archive }
@@ -53,6 +37,24 @@ public sealed class ProjectDocument
             if (value is { Count: > 0 } && Branches.Count == 0) Branches = value;
         }
     }
+}
+
+public sealed class CustomCardDefinition
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Name { get; set; } = "Custom card";
+    public string Instructions { get; set; } = string.Empty;
+    public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
+}
+
+public sealed class CustomFieldDefinition
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Name { get; set; } = "Field";
+    public string Type { get; set; } = "text";
+    public string DefaultValue { get; set; } = string.Empty;
+    public ObservableCollection<string> Options { get; set; } = [];
+    public bool ShowOnCollapsed { get; set; } = true;
 }
 
 public sealed class BoardColumn : INotifyPropertyChanged
@@ -108,11 +110,7 @@ public sealed class BoardColumn : INotifyPropertyChanged
 
 public sealed class TaskCard : INotifyPropertyChanged
 {
-    public TaskCard()
-    {
-        AttachRequirements(_requirements);
-        AttachNotes(_notes);
-    }
+    public TaskCard() => AttachRequirements(_requirements);
 
     private string _title = string.Empty;
     private string _task = string.Empty;
@@ -152,8 +150,6 @@ public sealed class TaskCard : INotifyPropertyChanged
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
-    public string? CustomTypeId { get; set; }
-    public Dictionary<string, string> CustomValues { get; set; } = [];
     private ObservableCollection<TaskRequirement> _requirements = [];
     public ObservableCollection<TaskRequirement> Requirements
     {
@@ -165,19 +161,6 @@ public sealed class TaskCard : INotifyPropertyChanged
             _requirements = value ?? [];
             AttachRequirements(_requirements);
             RaiseRequirementProgressChanged();
-        }
-    }
-    private ObservableCollection<TaskNote> _notes = [];
-    public ObservableCollection<TaskNote> Notes
-    {
-        get => _notes;
-        set
-        {
-            if (ReferenceEquals(_notes, value)) return;
-            DetachNotes(_notes);
-            _notes = value ?? [];
-            AttachNotes(_notes);
-            RaiseNotesChanged();
         }
     }
     public CardFlags Flags { get; set; } = new();
@@ -220,8 +203,6 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public string RequirementProgress => $"{Requirements.Count(r => r.IsDone)}/{Requirements.Count}";
     [JsonIgnore] public bool HasRequirements => Requirements.Count > 0;
     [JsonIgnore] public double RequirementProgressFraction => Requirements.Count == 0 ? 0 : (double)Requirements.Count(r => r.IsDone) / Requirements.Count;
-    [JsonIgnore] public bool HasNotes => Notes.Count > 0;
-    [JsonIgnore] public string NotesCountLabel => Notes.Count == 1 ? "1 note" : $"{Notes.Count} notes";
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void AttachRequirements(ObservableCollection<TaskRequirement> requirements)
@@ -256,15 +237,6 @@ public sealed class TaskCard : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasRequirements)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequirementProgressFraction)));
     }
-
-    private void AttachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged += OnNotesCollectionChanged;
-    private void DetachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged -= OnNotesCollectionChanged;
-    private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RaiseNotesChanged();
-    private void RaiseNotesChanged()
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasNotes)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotesCountLabel)));
-    }
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -292,24 +264,8 @@ public sealed class TaskRequirement : INotifyPropertyChanged
     private string _text = string.Empty;
     private bool _isDone;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    public int Index { get; set; }
-    [JsonIgnore] public string IndexLabel => $"[{Index}]";
     public string Text { get => _text; set => SetField(ref _text, value); }
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-}
-
-public sealed class TaskNote : INotifyPropertyChanged
-{
-    private string _text = string.Empty;
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    public string Text { get => _text; set => SetField(ref _text, value); }
     public event PropertyChangedEventHandler? PropertyChanged;
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -343,31 +299,4 @@ public sealed class CardFlags : INotifyPropertyChanged
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-}
-
-public sealed class CustomCardDefinition
-{
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    public string Name { get; set; } = "Custom card";
-    public string Instructions { get; set; } = string.Empty;
-    public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
-}
-
-public sealed class CustomFieldDefinition
-{
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
-    public string Name { get; set; } = "Field";
-    public string Type { get; set; } = "text";
-    public string DefaultValue { get; set; } = string.Empty;
-    public ObservableCollection<string> Options { get; set; } = [];
-    public bool ShowOnCollapsed { get; set; } = true;
-}
-
-public sealed class CustomFieldValue : INotifyPropertyChanged
-{
-    private string _value = string.Empty;
-    public string FieldId { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Value { get => _value; set { if (_value == value) return; _value = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

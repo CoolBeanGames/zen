@@ -1,0 +1,29 @@
+<Window x:Class="Zen.CardStudioWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Card Studio" Width="980" Height="700" MinWidth="760" MinHeight="520" Background="#0B0D12" Foreground="#F4F6FA" WindowStartupLocation="CenterOwner">
+    <Grid Margin="22"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <StackPanel><TextBlock Text="CARD STUDIO" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock Text="Project card types" FontSize="25" FontWeight="SemiBold" Margin="0,4,0,18"/></StackPanel>
+        <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="250"/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+            <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="12">
+                <DockPanel><Button DockPanel.Dock="Bottom" Content="＋ New card type" Click="AddType_Click" Margin="0,10,0,0" Padding="10"/>
+                    <ListBox x:Name="TypesList" DisplayMemberPath="Name" SelectionChanged="TypesList_SelectionChanged" Background="#12151C" Foreground="#F4F6FA" BorderThickness="0"/>
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="2" Background="#161A22" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="18">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel x:Name="Editor" IsEnabled="False">
+                    <TextBlock Text="CARD TYPE NAME" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><TextBox x:Name="NameInput" TextChanged="DefinitionChanged" Margin="0,6,0,14" Padding="10"/>
+                    <TextBlock Text="AGENT INSTRUCTIONS" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><TextBox x:Name="InstructionsInput" TextChanged="DefinitionChanged" AcceptsReturn="True" TextWrapping="Wrap" Height="90" Margin="0,6,0,14" Padding="10"/>
+                    <Grid Margin="0,0,0,8"><TextBlock Text="FIELDS" Foreground="#8992A5" FontSize="10" FontWeight="Bold"/><Button Content="＋ Add field" Click="AddField_Click" HorizontalAlignment="Right" Padding="9,5"/></Grid>
+                    <ItemsControl x:Name="FieldsList"><ItemsControl.ItemTemplate><DataTemplate>
+                        <Border Background="#1D222C" CornerRadius="8" Padding="10" Margin="0,0,0,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="130"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <StackPanel><TextBlock Text="Name" Foreground="#8992A5" FontSize="9"/><TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Padding="7,5"/></StackPanel>
+                            <StackPanel Grid.Column="1" Margin="8,0"><TextBlock Text="Type" Foreground="#8992A5" FontSize="9"/><ComboBox SelectedValue="{Binding Type}" SelectedValuePath="Content"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/></ComboBox></StackPanel>
+                            <Button Grid.Column="2" Content="×" Tag="{Binding}" Click="RemoveField_Click" Padding="8,4" VerticalAlignment="Bottom"/>
+                        </Grid></Border>
+                    </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                    <Button Content="Delete card type" Foreground="#FF7F91" Click="DeleteType_Click" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                </StackPanel></ScrollViewer>
+            </Border>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0"><Button Content="Cancel" Click="Cancel_Click" Padding="14,8" Margin="0,0,8,0"/><Button Content="Save studio" Click="Save_Click" Padding="16,8" Background="#8B7CFF" Foreground="White"/></StackPanel>
+    </Grid>
+</Window>

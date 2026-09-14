@@ -7,10 +7,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Zen</AssemblyName>
     <RootNamespace>Zen</RootNamespace>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <ApplicationIcon>Assets\ZenIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Zen.Core\**" />
+    <Compile Remove="Zen.Operator\**" />
+    <EmbeddedResource Remove="Zen.Core\**" />
+    <EmbeddedResource Remove="Zen.Operator\**" />
+    <None Remove="Zen.Core\**" />
+    <None Remove="Zen.Operator\**" />
     <EmbeddedResource Include="prompt.txt" LogicalName="Zen.prompt.txt" />
     <Resource Include="Assets\ZenIcon.ico" />
   </ItemGroup>

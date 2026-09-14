@@ -105,11 +105,6 @@ public sealed class ProjectStore
         document.Branches ??= [];
         document.TagCatalog ??= [];
         document.CustomCardTypes ??= [];
-        foreach (var definition in document.CustomCardTypes)
-        {
-            definition.Fields ??= [];
-            foreach (var field in definition.Fields) field.Options ??= [];
-        }
         var duplicateTags = document.TagCatalog.GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .SelectMany(group => group.Skip(1)).ToList();
         foreach (var duplicate in duplicateTags) document.TagCatalog.Remove(duplicate);
@@ -148,16 +143,13 @@ public sealed class ProjectStore
                 if (!processedCardIds.Add(card.Id)) continue;
                 card.Tags ??= [];
                 card.Files ??= [];
-                card.CustomValues ??= [];
                 card.Requirements ??= [];
-                card.Notes ??= [];
                 card.Flags ??= new CardFlags();
                 if (card.Kind == CardKind.Note)
                 {
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
-                    card.Notes.Clear();
                     card.Flags = new CardFlags();
                     card.DueDate = null;
                     card.StartedDate = null;
@@ -170,14 +162,11 @@ public sealed class ProjectStore
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
-                    card.Notes.Clear();
                     card.Flags = new CardFlags();
                     card.DueDate = null;
                     card.StartedDate = null;
                     card.Priority = null;
                 }
-                for (var requirementIndex = 0; requirementIndex < card.Requirements.Count; requirementIndex++)
-                    card.Requirements[requirementIndex].Index = requirementIndex + 1;
                 var normalizedTags = card.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag))
                     .Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 card.Tags.Clear();

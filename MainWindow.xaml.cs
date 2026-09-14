@@ -41,6 +41,7 @@ public partial class MainWindow : Window
     private int _nextTaskIndex = 4;
     private readonly ObservableCollection<TaskRequirement> _editingRequirements = [];
     private readonly ObservableCollection<TaskNote> _editingNotes = [];
+    private readonly ObservableCollection<CustomFieldValue> _editingCustomValues = [];
     private readonly ObservableCollection<string> _editingFileNames = [];
     private readonly List<string> _pendingUploadPaths = [];
     private readonly List<string> _temporaryClipboardPaths = [];
@@ -51,6 +52,7 @@ public partial class MainWindow : Window
     private FileSystemWatcher? _projectWatcher;
     private DateTime _ignoreFileEventsUntil;
     private CardKind _newCardKind = CardKind.Task;
+    private string? _newCustomTypeId;
     private BoardColumn? _pressedColumn;
     private Point _columnDragStart;
     private bool _isColumnDragging;
@@ -347,6 +349,16 @@ public partial class MainWindow : Window
             _periodicReloadTimer.Interval = TimeSpan.FromSeconds(window.Settings.ReloadSeconds);
     }
 
+    private void CardStudio_Click(object sender, RoutedEventArgs e)
+    {
+        if (_document is null) { MessageBox.Show(this, "Choose a project first."); return; }
+        var window = new CardStudioWindow(_document.CustomCardTypes) { Owner = this };
+        if (window.ShowDialog() != true) return;
+        _document.CustomCardTypes.Clear();
+        foreach (var definition in window.Definitions) _document.CustomCardTypes.Add(definition);
+        SaveProject();
+    }
+
     private void OpenProjectFolder_Click(object sender, RoutedEventArgs e)
     {
         if (_store is null || !Directory.Exists(_store.RootDirectory)) return;
@@ -462,7 +474,20 @@ public partial class MainWindow : Window
         AddCardTypeItem(menu, "Break", CardKind.Break, column);
         AddCardTypeItem(menu, "Bug", CardKind.Task, column, true);
         AddCardTypeItem(menu, "Cleanup", CardKind.Cleanup, column);
+        AddCustomCardTypeItems(menu, column);
         menu.IsOpen = true;
+    }
+
+    private void AddCustomCardTypeItems(ItemsControl menu, BoardColumn column)
+    {
+        if (_document?.CustomCardTypes.Count is not > 0) return;
+        menu.Items.Add(new Separator());
+        foreach (var definition in _document.CustomCardTypes)
+        {
+            var item = new MenuItem { Header = definition.Name, Tag = new NewCardRequest(column, CardKind.Task, false, definition.Id) };
+            item.Click += NewCardType_Click;
+            menu.Items.Add(item);
+        }
     }
 
     private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false)
@@ -482,6 +507,7 @@ public partial class MainWindow : Window
         if (target is null) return;
         _taskTarget = target;
         _newCardKind = request.Kind;
+        _newCustomTypeId = request.CustomTypeId;
         if (request.Kind is CardKind.Break or CardKind.Cleanup)
         {
             target.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = request.Kind });
@@ -645,6 +671,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(add, "Break", CardKind.Break, column);
         AddCardTypeItem(add, "Bug", CardKind.Task, column, true);
         AddCardTypeItem(add, "Cleanup", CardKind.Cleanup, column);
+        AddCustomCardTypeItems(add, column);
         MakeSubmenuSticky(add);
         return add;
     }
@@ -1081,6 +1108,13 @@ public partial class MainWindow : Window
             _editingNotes.Add(new TaskNote { Id = note.Id, Text = note.Text });
         EditNotesList.ItemsSource = _editingNotes;
         NewNoteInput.Text = string.Empty;
+        _editingCustomValues.Clear();
+        var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == card.CustomTypeId);
+        if (customDefinition is not null)
+            foreach (var field in customDefinition.Fields)
+                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
+        EditCustomFieldsList.ItemsSource = _editingCustomValues;
+        EditCustomFieldsHost.Visibility = _editingCustomValues.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         _pendingUploadPaths.Clear();
         _editingFileNames.Clear();
         foreach (var file in card.Files) _editingFileNames.Add(file.Name);
@@ -1137,6 +1171,7 @@ public partial class MainWindow : Window
             _editingCard.Notes.Clear();
             foreach (var note in _editingNotes.Where(note => !string.IsNullOrWhiteSpace(note.Text)))
                 _editingCard.Notes.Add(new TaskNote { Id = note.Id, Text = note.Text.Trim() });
+            foreach (var field in _editingCustomValues) _editingCard.CustomValues[field.FieldId] = field.Value;
             _editingCard.Flags.Commit = EditCommitFlag.IsChecked == true;
             _editingCard.Flags.Build = EditBuildFlag.IsChecked == true;
             _editingCard.Flags.Release = EditReleaseFlag.IsChecked == true;
@@ -1422,6 +1457,13 @@ public partial class MainWindow : Window
                 Task = string.Empty,
                 Tags = _newCardKind switch { CardKind.Note => ["note"], CardKind.Break => ["break"], _ => ["task"] }
             };
+            card.CustomTypeId = _newCustomTypeId;
+            var definition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == _newCustomTypeId);
+            if (definition is not null)
+            {
+                card.Tags.Add(definition.Name);
+                foreach (var field in definition.Fields) card.CustomValues[field.Id] = field.DefaultValue;
+            }
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
             target.Tasks.Add(card);
             SaveProject();
@@ -1657,7 +1699,7 @@ public partial class MainWindow : Window
     private enum ModalMode { Column, Task }
 
     private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, int SourceIndex, Border SourceElement);
-    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug);
+    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug, string? CustomTypeId = null);
 
     [DllImport("user32.dll")]
     private static extern uint GetDoubleClickTime();

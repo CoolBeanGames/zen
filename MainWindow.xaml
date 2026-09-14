@@ -65,6 +65,7 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button x:Name="ReloadButton" Style="{StaticResource IconButton}" ToolTip="Reload task data" FontSize="17" Content="↻" Click="ReloadProject_Click" IsEnabled="False"/>
+                    <Button Style="{StaticResource IconButton}" ToolTip="Card Studio" FontSize="16" Content="▦" Click="CardStudio_Click"/>
                     <Button Style="{StaticResource IconButton}" ToolTip="Settings" FontSize="17" Content="⚙" Click="Settings_Click"/>
                     <Button Style="{StaticResource IconButton}" ToolTip="Search" FontSize="18" Content="⌕"/>
                     <Border Width="1" Height="24" Background="{StaticResource BorderBrush}" Margin="6,0,12,0"/>
@@ -503,6 +504,12 @@
                     <TextBlock Text="INFO" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <CheckBox x:Name="EditBugFlag" Content="Bug — priority defect" Foreground="{StaticResource TextBrush}"/>
                     <CheckBox x:Name="EditInProgressFlag" Content="In progress — agent is working" Foreground="{StaticResource TextBrush}" Margin="0,6,0,0"/>
+                    <StackPanel x:Name="EditCustomFieldsHost" Visibility="Collapsed">
+                        <TextBlock Text="CUSTOM FIELDS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
+                        <ItemsControl x:Name="EditCustomFieldsList"><ItemsControl.ItemTemplate><DataTemplate>
+                            <StackPanel Margin="0,0,0,8"><TextBlock Text="{Binding Name}" Foreground="#B7BECC" FontSize="10" Margin="0,0,0,4"/><TextBox Style="{StaticResource EditorField}" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/></StackPanel>
+                        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                    </StackPanel>
                     <TextBlock Text="REQUIREMENTS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <ItemsControl x:Name="EditRequirementsList">
                         <ItemsControl.ItemTemplate>
