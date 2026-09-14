@@ -14,6 +14,10 @@ public partial class CardDesignerWindow : Window
     private Point _dragOrigin;
     private double _fieldOriginX, _fieldOriginY;
     private bool _loading;
+    private bool _paletteDragArmed;
+    private Guid? _lastPaletteDropToken;
+
+    private sealed record PaletteDrag(string Type, Guid Token);
 
     public CardDesignerWindow(CustomCardDefinition definition)
     {
@@ -26,14 +30,21 @@ public partial class CardDesignerWindow : Window
 
     private static CustomFieldDefinition Clone(CustomFieldDefinition f) => new() { Id=f.Id, Name=f.Name, Type=f.Type, DefaultValue=f.DefaultValue, Options=new(f.Options), ShowOnCollapsed=f.ShowOnCollapsed, X=f.X, Y=f.Y, Width=f.Width, Height=f.Height, CompactX=f.CompactX, CompactY=f.CompactY, CompactWidth=f.CompactWidth, CompactHeight=f.CompactHeight };
 
+    private void Palette_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => _paletteDragArmed = true;
+
     private void Palette_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton == MouseButtonState.Pressed && sender is Button { Tag: string type }) DragDrop.DoDragDrop((DependencyObject)sender, type, DragDropEffects.Copy);
+        if (!_paletteDragArmed || e.LeftButton != MouseButtonState.Pressed || sender is not Button { Tag: string type }) return;
+        _paletteDragArmed = false;
+        DragDrop.DoDragDrop((DependencyObject)sender, new PaletteDrag(type, Guid.NewGuid()), DragDropEffects.Copy);
     }
-    private void DesignCanvas_DragOver(object sender, DragEventArgs e) { e.Effects = e.Data.GetDataPresent(typeof(string)) ? DragDropEffects.Copy : DragDropEffects.None; e.Handled=true; }
+    private void DesignCanvas_DragOver(object sender, DragEventArgs e) { e.Effects = e.Data.GetDataPresent(typeof(PaletteDrag)) ? DragDropEffects.Copy : DragDropEffects.None; e.Handled=true; }
     private void DesignCanvas_Drop(object sender, DragEventArgs e)
     {
-        if (e.Data.GetData(typeof(string)) is not string type) return;
+        e.Handled = true;
+        if (e.Data.GetData(typeof(PaletteDrag)) is not PaletteDrag drag || _lastPaletteDropToken == drag.Token) return;
+        _lastPaletteDropToken = drag.Token;
+        var type = drag.Type;
         var point=e.GetPosition(DesignCanvas);
         var field=new CustomFieldDefinition { Name=type == "dropdown" ? "Choice" : type == "checkbox" ? "Option" : "Field", Type=type, X=Math.Max(0,point.X-110), Y=Math.Max(0,point.Y-36) };
         if (type=="dropdown") { field.Options.Add("Option 1"); field.Options.Add("Option 2"); }

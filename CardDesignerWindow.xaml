@@ -6,10 +6,10 @@
     <TabItem Header="Full card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="14"/><ColumnDefinition Width="280"/></Grid.ColumnDefinitions>
       <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
         <TextBlock Text="ELEMENTS" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,10"/>
-        <Button Content="Text field" Tag="text" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
-        <Button Content="Number" Tag="number" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
-        <Button Content="Checkbox" Tag="checkbox" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
-        <Button Content="Dropdown" Tag="dropdown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10"/>
+        <Button Content="Text field" Tag="text" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
+        <Button Content="Number" Tag="number" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
+        <Button Content="Checkbox" Tag="checkbox" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10" Margin="0,0,0,7"/>
+        <Button Content="Dropdown" Tag="dropdown" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Padding="10"/>
         <TextBlock Text="Drag an element onto the card." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,14,0,0"/>
       </StackPanel></Border>
       <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
