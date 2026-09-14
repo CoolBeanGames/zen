@@ -29,6 +29,9 @@ public partial class MainWindow : Window
     private Point _panStart;
     private double _panStartOffset;
     private double _panStartVerticalOffset;
+    private bool _isEditorPanning;
+    private Point _editorPanStart;
+    private double _editorPanStartVerticalOffset;
     private readonly DispatcherTimer _edgeScrollTimer;
     private readonly DispatcherTimer _cardClickTimer;
     private readonly DispatcherTimer _projectReloadTimer;
@@ -1635,6 +1638,44 @@ public partial class MainWindow : Window
         _isBoardPanning = false;
         BoardScroller.Cursor = Cursors.Arrow;
         if (Mouse.Captured == BoardScroller) BoardScroller.ReleaseMouseCapture();
+    }
+
+    private void EditorScroller_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Middle) return;
+        _isEditorPanning = true;
+        _editorPanStart = e.GetPosition(EditorScroller);
+        _editorPanStartVerticalOffset = EditorScroller.VerticalOffset;
+        EditorScroller.Cursor = Cursors.SizeAll;
+        EditorScroller.CaptureMouse();
+        e.Handled = true;
+    }
+
+    private void EditorScroller_PreviewMouseMove(object sender, MouseEventArgs e)
+    {
+        if (!_isEditorPanning || e.MiddleButton != MouseButtonState.Pressed) return;
+        var current = e.GetPosition(EditorScroller);
+        EditorScroller.ScrollToVerticalOffset(_editorPanStartVerticalOffset - (current.Y - _editorPanStart.Y));
+        e.Handled = true;
+    }
+
+    private void EditorScroller_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_isEditorPanning || e.ChangedButton != MouseButton.Middle) return;
+        EndEditorPan();
+        e.Handled = true;
+    }
+
+    private void EditorScroller_LostMouseCapture(object sender, MouseEventArgs e)
+    {
+        if (_isEditorPanning) EndEditorPan();
+    }
+
+    private void EndEditorPan()
+    {
+        _isEditorPanning = false;
+        EditorScroller.Cursor = Cursors.Arrow;
+        if (Mouse.Captured == EditorScroller) EditorScroller.ReleaseMouseCapture();
     }
 
     // Keep each column's "Add" tab visible while the column itself is on screen:

@@ -488,7 +488,10 @@
                 </Border.Effect>
                 <Grid>
                 <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                <ScrollViewer x:Name="EditorScroller" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer x:Name="EditorScroller" Grid.Row="0"
+                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              PreviewMouseDown="EditorScroller_PreviewMouseDown" PreviewMouseMove="EditorScroller_PreviewMouseMove"
+                              PreviewMouseUp="EditorScroller_PreviewMouseUp" LostMouseCapture="EditorScroller_LostMouseCapture">
                 <StackPanel Width="{Binding ViewportWidth, ElementName=EditorScroller}" Margin="0,0,6,0">
                     <Grid Margin="0,0,0,17">
                         <StackPanel>
