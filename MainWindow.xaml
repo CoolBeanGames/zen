@@ -488,8 +488,8 @@
                 </Border.Effect>
                 <Grid>
                 <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Margin="0,0,6,0">
+                <ScrollViewer x:Name="EditorScroller" Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Width="{Binding ViewportWidth, ElementName=EditorScroller}" Margin="0,0,6,0">
                     <Grid Margin="0,0,0,17">
                         <StackPanel>
                             <TextBlock Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
