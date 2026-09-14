@@ -545,13 +545,12 @@
                             <DataTemplate>
                                 <Border Background="#20252F" CornerRadius="7" Padding="9" Margin="0,0,0,7">
                                     <Grid>
-                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <TextBox Style="{StaticResource EditorField}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48" Padding="8,6"/>
+                                        <local:RequirementReferenceEditor NoteText="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                            AcceptsReturn="True" MinHeight="48" Padding="8,6" Background="#0E1117"
+                                                                            Foreground="#F4F6FA" BorderBrush="#262C38" BorderThickness="1"
+                                                                            VerticalScrollBarVisibility="Auto"/>
                                         <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveNote_Click" Padding="6,2" MinHeight="24" VerticalAlignment="Top"/>
-                                        <local:RequirementReferenceTextBlock Grid.Row="1" Grid.ColumnSpan="2" NoteText="{Binding Text}"
-                                                                             Foreground="#B7BECC" TextWrapping="Wrap" FontSize="11" Margin="3,6,3,0"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
