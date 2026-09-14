@@ -21,6 +21,7 @@ public partial class CardStudioWindow : Window
     private static CustomCardDefinition Clone(CustomCardDefinition source) => new()
     {
         Id = source.Id, Name = source.Name, Instructions = source.Instructions,
+        CardColor = source.CardColor, OutlineColor = source.OutlineColor, OutlineWidth = source.OutlineWidth,
         Fields = new(source.Fields.Select(field => new CustomFieldDefinition { Id = field.Id, Name = field.Name, Type = field.Type, DefaultValue = field.DefaultValue, ShowOnCollapsed = field.ShowOnCollapsed, Options = new(field.Options), X = field.X, Y = field.Y, Width = field.Width, Height = field.Height, ExpandedX = field.ExpandedX, ExpandedY = field.ExpandedY, ExpandedWidth = field.ExpandedWidth, ExpandedHeight = field.ExpandedHeight, CompactX = field.CompactX, CompactY = field.CompactY, CompactWidth = field.CompactWidth, CompactHeight = field.CompactHeight }))
     };
 

@@ -229,6 +229,9 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool IsCustomCard => !string.IsNullOrWhiteSpace(CustomTypeId);
     [JsonIgnore] public bool HasCustomExpandedFields => CustomExpandedFields.Count > 0;
     [JsonIgnore] public double ExpandedLayoutHeight => CustomExpandedFields.Count == 0 ? 0 : CustomExpandedFields.Max(item => item.Y + item.Height) + 8;
+    [JsonIgnore] public string CustomBackground { get; internal set; } = "#1D222C";
+    [JsonIgnore] public string CustomBorderColor { get; internal set; } = "#2A303D";
+    [JsonIgnore] public Thickness CustomBorderThickness { get; internal set; } = new(1);
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void AttachRequirements(ObservableCollection<TaskRequirement> requirements)
@@ -279,6 +282,9 @@ public sealed class TaskCard : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCustomCard)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasCustomExpandedFields)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExpandedLayoutHeight)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomBackground)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomBorderColor)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomBorderThickness)));
     }
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -365,6 +371,9 @@ public sealed class CustomCardDefinition
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get; set; } = "Custom card";
     public string Instructions { get; set; } = string.Empty;
+    public string CardColor { get; set; } = "#1D222C";
+    public string OutlineColor { get; set; } = "#2A303D";
+    public double OutlineWidth { get; set; } = 1;
     public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
 }
 
@@ -405,6 +414,13 @@ public sealed class CustomCompactField
     public string Type { get; set; } = "text";
     public string Value { get; set; } = string.Empty;
     public bool IsChecked => bool.TryParse(Value, out var value) && value;
+    public string DisplayValue => Type switch
+    {
+        "list" => string.Join(Environment.NewLine, Value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(item => $"• {item}")),
+        "files" => string.IsNullOrWhiteSpace(Value) ? "No files attached" : Value,
+        "tags" => string.IsNullOrWhiteSpace(Value) ? "No tags" : Value,
+        _ => Value
+    };
     public double X { get; set; }
     public double Y { get; set; }
     public double Width { get; set; }

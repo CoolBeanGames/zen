@@ -18,6 +18,7 @@ public partial class CardDesignerWindow : Window
     private bool _loading;
     private bool _paletteDragArmed;
     private Guid? _lastPaletteDropToken;
+    private static readonly string[] FieldTypes = ["text", "number", "checkbox", "dropdown", "list", "tags", "files"];
 
     private sealed record PaletteDrag(string Type, Guid Token);
     private enum DesignerSurface { Open, Expanded, Compact }
@@ -29,7 +30,12 @@ public partial class CardDesignerWindow : Window
         _definition = definition;
         Heading.Text = $"Design {definition.Name}";
         _fields = new(definition.Fields.Select(Clone));
-        Loaded += (_, _) => { RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); };
+        _loading = true;
+        CardFillInput.Text = definition.CardColor;
+        CardOutlineInput.Text = definition.OutlineColor;
+        OutlineWidthInput.SelectedIndex = Math.Clamp((int)Math.Round(definition.OutlineWidth), 0, 4);
+        _loading = false;
+        Loaded += (_, _) => { ApplyAppearancePreview(); RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); };
     }
 
     private static CustomFieldDefinition Clone(CustomFieldDefinition f) => new() { Id=f.Id, Name=f.Name, Type=f.Type, DefaultValue=f.DefaultValue, Options=new(f.Options), ShowOnCollapsed=f.ShowOnCollapsed, X=f.X, Y=f.Y, Width=f.Width, Height=f.Height, ExpandedX=f.ExpandedX, ExpandedY=f.ExpandedY, ExpandedWidth=f.ExpandedWidth, ExpandedHeight=f.ExpandedHeight, CompactX=f.CompactX, CompactY=f.CompactY, CompactWidth=f.CompactWidth, CompactHeight=f.CompactHeight };
@@ -51,8 +57,9 @@ public partial class CardDesignerWindow : Window
         var type = drag.Type;
         var point=e.GetPosition(DesignCanvas);
         var order = _fields.Count;
-        var field=new CustomFieldDefinition { Name=type == "dropdown" ? "Choice" : type == "checkbox" ? "Option" : "Field", Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
+        var field=new CustomFieldDefinition { Name=type switch { "dropdown" => "Choice", "checkbox" => "Option", "list" => "Items", "tags" => "Tags", "files" => "Files", _ => "Field" }, Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
         if (type=="dropdown") { field.Options.Add("Option 1"); field.Options.Add("Option 2"); }
+        if (type=="list") field.DefaultValue="List item\nAnother item";
         _fields.Add(field); RenderFields(); SelectField(field);
     }
 
@@ -75,6 +82,20 @@ public partial class CardDesignerWindow : Window
         if (field.Type == "checkbox")
             return new CheckBox { Content=field.Name, IsChecked=bool.TryParse(field.DefaultValue, out var selected) && selected, FontSize=12, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
 
+        if (field.Type == "list")
+            return BuildLabeledPreview(field.Name, new Border { Background=new SolidColorBrush(Color.FromRgb(29,34,44)), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Text=string.Join(Environment.NewLine, field.DefaultValue.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).DefaultIfEmpty("List item").Select(item => $"• {item}")), FontSize=11, TextWrapping=TextWrapping.Wrap } });
+
+        if (field.Type == "tags")
+        {
+            var tags = new WrapPanel();
+            foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).DefaultIfEmpty("tag"))
+                tags.Children.Add(new Border { Background=new SolidColorBrush(Color.FromRgb(81,72,144)), CornerRadius=new CornerRadius(4), Padding=new Thickness(7,3,7,3), Margin=new Thickness(0,0,5,4), Child=new TextBlock { Text=tag, FontSize=9, FontWeight=FontWeights.Bold } });
+            return BuildLabeledPreview(field.Name, tags);
+        }
+
+        if (field.Type == "files")
+            return BuildLabeledPreview(field.Name, new Button { Content="＋ Attach files", HorizontalAlignment=HorizontalAlignment.Stretch, Padding=new Thickness(8,5,8,5), IsHitTestVisible=false });
+
         var grid = new Grid { IsHitTestVisible=false };
         grid.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
         grid.RowDefinitions.Add(new RowDefinition { Height=new GridLength(1, GridUnitType.Star) });
@@ -86,6 +107,16 @@ public partial class CardDesignerWindow : Window
             input = new TextBox { Text=field.DefaultValue, MinHeight=36, FontSize=13, Padding=new Thickness(9,7,9,7), AcceptsReturn=field.Type=="text", TextWrapping=TextWrapping.Wrap, VerticalContentAlignment=VerticalAlignment.Top, VerticalAlignment=VerticalAlignment.Stretch };
         Grid.SetRow(input, 1);
         grid.Children.Add(input);
+        return grid;
+    }
+    private static FrameworkElement BuildLabeledPreview(string name, FrameworkElement content)
+    {
+        var grid = new Grid { IsHitTestVisible=false };
+        grid.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
+        grid.RowDefinitions.Add(new RowDefinition { Height=new GridLength(1, GridUnitType.Star) });
+        grid.Children.Add(new TextBlock { Text=name.ToUpperInvariant(), Foreground=new SolidColorBrush(Color.FromRgb(137,146,165)), FontSize=10, FontWeight=FontWeights.Bold, Margin=new Thickness(0,0,0,5) });
+        Grid.SetRow(content, 1);
+        grid.Children.Add(content);
         return grid;
     }
     private void AddResizeHandles(Grid host, CustomFieldDefinition field, DesignerSurface surface)
@@ -157,7 +188,7 @@ public partial class CardDesignerWindow : Window
     private void Field_MouseDown(object sender, MouseButtonEventArgs e) { if(IsResizeHandle(e)||sender is not FrameworkElement {Tag:CustomFieldDefinition f} element)return; _selected=f; _dragOrigin=e.GetPosition(DesignCanvas); _fieldOriginX=f.X; _fieldOriginY=f.Y; element.CaptureMouse(); }
     private void Field_MouseMove(object sender, MouseEventArgs e) { if(e.LeftButton!=MouseButtonState.Pressed||sender is not FrameworkElement {Tag:CustomFieldDefinition f}||Mouse.Captured is Thumb)return; var p=e.GetPosition(DesignCanvas); var d=p-_dragOrigin; f.X=Math.Max(0,Snap(_fieldOriginX+d.X)); f.Y=Math.Max(0,Snap(_fieldOriginY+d.Y)); Canvas.SetLeft((UIElement)sender,f.X); Canvas.SetTop((UIElement)sender,f.Y); }
     private void Field_MouseUp(object sender, MouseButtonEventArgs e) { if(sender is FrameworkElement element && Mouse.Captured==element)element.ReleaseMouseCapture(); if(_selected is not null)SelectField(_selected); }
-    private void SelectField(CustomFieldDefinition field) { _selected=field; _loading=true; Inspector.Visibility=Visibility.Visible; FieldName.Text=field.Name; FieldType.SelectedIndex=Math.Max(0,new[]{"text","number","checkbox","dropdown"}.ToList().IndexOf(field.Type)); DefaultValue.Text=field.DefaultValue; OptionsInput.Text=string.Join(", ",field.Options); OptionsHost.Visibility=field.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; CollapsedVisible.IsChecked=field.ShowOnCollapsed; _loading=false; RenderFields(); }
+    private void SelectField(CustomFieldDefinition field) { _selected=field; _loading=true; Inspector.Visibility=Visibility.Visible; FieldName.Text=field.Name; FieldType.SelectedIndex=Math.Max(0,FieldTypes.ToList().IndexOf(field.Type)); DefaultValue.Text=field.DefaultValue; OptionsInput.Text=string.Join(", ",field.Options); OptionsHost.Visibility=field.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; CollapsedVisible.IsChecked=field.ShowOnCollapsed; _loading=false; RenderFields(); }
     private void InspectorChanged(object sender, RoutedEventArgs e) { if(_loading||_selected is null)return; _selected.Name=FieldName.Text; _selected.Type=(FieldType.SelectedItem as ComboBoxItem)?.Content?.ToString()??"text"; _selected.DefaultValue=DefaultValue.Text; _selected.ShowOnCollapsed=CollapsedVisible.IsChecked==true; _selected.Options.Clear(); foreach(var item in OptionsInput.Text.Split(',',StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries))_selected.Options.Add(item); OptionsHost.Visibility=_selected.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); }
     private void RemoveElement_Click(object sender, RoutedEventArgs e) { if(_selected is null)return; _fields.Remove(_selected); _selected=null; Inspector.Visibility=Visibility.Collapsed; RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); }
     private void DesignerTabs_SelectionChanged(object sender, SelectionChangedEventArgs e) { if (IsLoaded) { RefreshExpandedDesigner(); RefreshCompactDesigner(); } }
@@ -206,6 +237,27 @@ public partial class CardDesignerWindow : Window
     private void CompactField_MouseDown(object sender, MouseButtonEventArgs e) { if(IsResizeHandle(e)||sender is not FrameworkElement {Tag:CustomFieldDefinition f} element)return; _selected=f; _dragOrigin=e.GetPosition(CompactCanvas); _fieldOriginX=f.CompactX; _fieldOriginY=f.CompactY; element.CaptureMouse(); }
     private void CompactField_MouseMove(object sender, MouseEventArgs e) { if(e.LeftButton!=MouseButtonState.Pressed||sender is not FrameworkElement {Tag:CustomFieldDefinition f}||Mouse.Captured is Thumb)return; var p=e.GetPosition(CompactCanvas); var d=p-_dragOrigin; f.CompactX=Math.Clamp(Snap(_fieldOriginX+d.X),0,Math.Max(0,CompactCanvas.ActualWidth-f.CompactWidth)); f.CompactY=Math.Clamp(Snap(_fieldOriginY+d.Y),0,Math.Max(0,CompactCanvas.ActualHeight-f.CompactHeight)); Canvas.SetLeft((UIElement)sender,f.CompactX); Canvas.SetTop((UIElement)sender,f.CompactY); }
     private void CompactField_MouseUp(object sender, MouseButtonEventArgs e) { if(sender is FrameworkElement element && Mouse.Captured==element)element.ReleaseMouseCapture(); }
-    private void Save_Click(object sender, RoutedEventArgs e) { _definition.Fields.Clear(); foreach(var field in _fields)_definition.Fields.Add(field); DialogResult=true; }
+    private void AppearanceChanged(object sender, RoutedEventArgs e) { if (!_loading) ApplyAppearancePreview(); }
+    private void ApplyAppearancePreview()
+    {
+        if (OpenSurface is null || ExpandedSurface is null || CompactSurface is null) return;
+        var fill = TryBrush(CardFillInput.Text, out var fillBrush) ? fillBrush : new SolidColorBrush(Color.FromRgb(29,34,44));
+        var outline = TryBrush(CardOutlineInput.Text, out var outlineBrush) ? outlineBrush : new SolidColorBrush(Color.FromRgb(42,48,61));
+        var width = OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var parsed) ? parsed : 1;
+        foreach (var surface in new[] { OpenSurface, ExpandedSurface, CompactSurface }) { surface.Background=fill; surface.BorderBrush=outline; surface.BorderThickness=new Thickness(width); }
+    }
+    private static bool TryBrush(string value, out Brush brush)
+    {
+        try { brush=(Brush)new BrushConverter().ConvertFromString(value)!; return brush is not null; }
+        catch { brush=Brushes.Transparent; return false; }
+    }
+    private void Save_Click(object sender, RoutedEventArgs e)
+    {
+        if (!TryBrush(CardFillInput.Text, out _) || !TryBrush(CardOutlineInput.Text, out _)) { MessageBox.Show(this, "Use a valid color such as #1D222C.", "Invalid card color", MessageBoxButton.OK, MessageBoxImage.Information); return; }
+        _definition.CardColor=CardFillInput.Text.Trim();
+        _definition.OutlineColor=CardOutlineInput.Text.Trim();
+        _definition.OutlineWidth=OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var width) ? width : 1;
+        _definition.Fields.Clear(); foreach(var field in _fields)_definition.Fields.Add(field); DialogResult=true;
+    }
     private void Cancel_Click(object sender, RoutedEventArgs e)=>DialogResult=false;
 }

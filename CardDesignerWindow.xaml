@@ -3,13 +3,20 @@
   <Window.Resources>
     <DrawingBrush x:Key="DotGridBrush" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,12,12">
       <DrawingBrush.Drawing><DrawingGroup>
-        <GeometryDrawing Brush="#161A22"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,12,12"/></GeometryDrawing.Geometry></GeometryDrawing>
+        <GeometryDrawing Brush="Transparent"><GeometryDrawing.Geometry><RectangleGeometry Rect="0,0,12,12"/></GeometryDrawing.Geometry></GeometryDrawing>
         <GeometryDrawing Brush="#465064"><GeometryDrawing.Geometry><EllipseGeometry Center="1,1" RadiusX="1" RadiusY="1"/></GeometryDrawing.Geometry></GeometryDrawing>
       </DrawingGroup></DrawingBrush.Drawing>
     </DrawingBrush>
   </Window.Resources>
   <Grid Margin="20"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <StackPanel><TextBlock Text="CARD DESIGNER" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold" Margin="0,4,0,16"/></StackPanel>
+    <Grid Margin="0,0,0,16"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <StackPanel><TextBlock Text="CARD DESIGNER" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold" Margin="0,4,0,0"/></StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+        <StackPanel Margin="0,0,12,0"><TextBlock Text="CARD COLOR" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardFillInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
+        <StackPanel Margin="0,0,12,0"><TextBlock Text="OUTLINE" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardOutlineInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
+        <StackPanel><TextBlock Text="WIDTH" Foreground="#8992A5" FontSize="9"/><ComboBox x:Name="OutlineWidthInput" Width="64" SelectionChanged="AppearanceChanged"><ComboBoxItem Content="0"/><ComboBoxItem Content="1"/><ComboBoxItem Content="2"/><ComboBoxItem Content="3"/><ComboBoxItem Content="4"/></ComboBox></StackPanel>
+      </StackPanel>
+    </Grid>
     <TabControl Grid.Row="1" Background="#0B0D12" BorderThickness="0" SelectionChanged="DesignerTabs_SelectionChanged">
     <TabItem Header="Open card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="14"/><ColumnDefinition Width="280"/></Grid.ColumnDefinitions>
       <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
@@ -26,15 +33,24 @@
         <Button Tag="dropdown" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" HorizontalContentAlignment="Stretch">
           <StackPanel IsHitTestVisible="False"><TextBlock Text="DROPDOWN" Foreground="#8992A5" FontSize="9" Margin="0,0,0,4"/><ComboBox SelectedIndex="0"><ComboBoxItem Content="Choice"/></ComboBox></StackPanel>
         </Button>
+        <Button Tag="list" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Stretch">
+          <StackPanel IsHitTestVisible="False"><TextBlock Text="LIST" Foreground="#8992A5" FontSize="9" Margin="0,0,0,4"/><Border Background="#1D222C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="5" Padding="7,5"><TextBlock Text="• List item&#x0a;• Another item" FontSize="11"/></Border></StackPanel>
+        </Button>
+        <Button Tag="tags" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Left">
+          <Border IsHitTestVisible="False" Background="#514890" CornerRadius="4" Padding="7,3"><TextBlock Text="TAG" FontSize="9" FontWeight="Bold"/></Border>
+        </Button>
+        <Button Tag="files" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Stretch">
+          <Border IsHitTestVisible="False" Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="5" Padding="8,5"><TextBlock Text="＋ Attach files" FontSize="11"/></Border>
+        </Button>
         <TextBlock Text="Drag a real control onto the card." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,14,0,0"/>
       </StackPanel></Border>
-      <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
+      <Border x:Name="OpenSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
         <Canvas x:Name="DesignCanvas" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="DesignCanvas_Drop" DragOver="DesignCanvas_DragOver" ClipToBounds="True"/>
       </Border>
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">
         <StackPanel><TextBlock Text="INSPECTOR" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
           <TextBlock Text="NAME" Foreground="#8992A5" FontSize="9" Margin="0,15,0,4"/><TextBox x:Name="FieldName" TextChanged="InspectorChanged" Padding="8"/>
-          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/></ComboBox>
+          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="files"/></ComboBox>
           <TextBlock Text="DEFAULT VALUE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="DefaultValue" TextChanged="InspectorChanged" Padding="8"/>
           <StackPanel x:Name="OptionsHost"><TextBlock Text="DROPDOWN OPTIONS (comma separated)" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="OptionsInput" TextChanged="InspectorChanged" Padding="8"/></StackPanel>
           <CheckBox x:Name="CollapsedVisible" Content="Visible on compact card" Checked="InspectorChanged" Unchecked="InspectorChanged" Margin="0,14,0,0"/>
@@ -47,7 +63,7 @@
         <TextBlock Text="EXPANDED CARD" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
         <TextBlock Text="Arrange every field as it should appear on an expanded card on the board. Drag fields directly on the surface and resize them from an edge or corner." Foreground="#737D91" TextWrapping="Wrap" FontSize="10"/>
       </StackPanel></Border>
-      <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
+      <Border x:Name="ExpandedSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
         <Canvas x:Name="ExpandedCanvas" Width="276" Height="360" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" ClipToBounds="True"/>
       </Border>
     </Grid></TabItem>
@@ -57,7 +73,7 @@
         <TextBlock Text="Only fields enabled for compact cards appear here. Drag them onto the compact surface." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,0,0,12"/>
         <ItemsControl x:Name="CompactPalette"><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Name}" Tag="{Binding}" PreviewMouseMove="CompactPalette_PreviewMouseMove" Padding="9" Margin="0,0,0,6"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
       </StackPanel></Border>
-      <Border Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
+      <Border x:Name="CompactSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
         <Canvas x:Name="CompactCanvas" Width="276" Height="180" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="CompactCanvas_Drop" DragOver="CompactCanvas_DragOver" ClipToBounds="True"/>
       </Border>
     </Grid></TabItem>

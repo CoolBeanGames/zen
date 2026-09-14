@@ -44,6 +44,9 @@ public sealed class CustomCardDefinition
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get; set; } = "Custom card";
     public string Instructions { get; set; } = string.Empty;
+    public string CardColor { get; set; } = "#1D222C";
+    public string OutlineColor { get; set; } = "#2A303D";
+    public double OutlineWidth { get; set; } = 1;
     public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
 }
 
@@ -59,9 +62,13 @@ public sealed class CustomFieldDefinition
     public double Y { get; set; } = 24;
     public double Width { get; set; } = 220;
     public double Height { get; set; } = 72;
+    public double ExpandedX { get; set; } = 12;
+    public double ExpandedY { get; set; } = 12;
+    public double ExpandedWidth { get; set; } = 252;
+    public double ExpandedHeight { get; set; } = 60;
     public double CompactX { get; set; } = 12;
     public double CompactY { get; set; } = 12;
-    public double CompactWidth { get; set; } = 160;
+    public double CompactWidth { get; set; } = 168;
     public double CompactHeight { get; set; } = 48;
 }
 

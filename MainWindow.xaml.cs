@@ -1114,7 +1114,7 @@ public partial class MainWindow : Window
         var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == card.CustomTypeId);
         if (customDefinition is not null)
             foreach (var field in customDefinition.Fields)
-                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
+                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
         EditCustomFieldsList.ItemsSource = _editingCustomValues;
         EditCustomFieldsHost.Visibility = Visibility.Collapsed;
         var isCustomCard = customDefinition is not null;
@@ -1122,7 +1122,14 @@ public partial class MainWindow : Window
         EditStandardFields.Visibility = isCustomCard ? Visibility.Collapsed : Visibility.Visible;
         EditAdvancedFields.Visibility = card.IsNote || isCustomCard ? Visibility.Collapsed : Visibility.Visible;
         EditCustomCardHost.Visibility = isCustomCard ? Visibility.Visible : Visibility.Collapsed;
-        if (customDefinition is not null) RenderCustomCardEditor(customDefinition);
+        if (customDefinition is not null)
+        {
+            EditCustomCardHost.Background = TryCreateBrush(customDefinition.CardColor, "#1D222C");
+            EditCustomCardHost.BorderBrush = TryCreateBrush(customDefinition.OutlineColor, "#2A303D");
+            EditCustomCardHost.BorderThickness = new Thickness(Math.Clamp(customDefinition.OutlineWidth, 0, 6));
+            EditCustomCardHost.Padding = new Thickness(12);
+            RenderCustomCardEditor(customDefinition);
+        }
         _pendingUploadPaths.Clear();
         _editingFileNames.Clear();
         foreach (var file in card.Files) _editingFileNames.Add(file.Name);
@@ -1174,6 +1181,12 @@ public partial class MainWindow : Window
                 combo.SelectionChanged += (_, _) => value.Value = combo.SelectedItem?.ToString() ?? string.Empty;
                 input = combo;
             }
+            else if (field.Type == "list")
+                input = BuildCustomListEditor(value);
+            else if (field.Type == "tags")
+                input = BuildCustomTagEditor(value);
+            else if (field.Type == "files")
+                input = BuildCustomFileEditor();
             else
             {
                 var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 36, FontSize = 13, AcceptsReturn = field.Type == "text", TextWrapping = TextWrapping.Wrap, VerticalContentAlignment = VerticalAlignment.Top, VerticalAlignment = VerticalAlignment.Stretch };
@@ -1189,6 +1202,70 @@ public partial class MainWindow : Window
             Canvas.SetTop(container, field.Y);
             EditCustomCardCanvas.Children.Add(container);
         }
+    }
+
+    private FrameworkElement BuildCustomListEditor(CustomFieldValue value)
+    {
+        var entries = value.Value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+        var root = new StackPanel();
+        var items = new StackPanel();
+        var addInput = new TextBox { Style=(Style)FindResource("Field"), MinHeight=32, Margin=new Thickness(0,5,6,0) };
+        Action render = null!;
+        render = () =>
+        {
+            items.Children.Clear();
+            for (var index=0; index<entries.Count; index++)
+            {
+                var itemIndex=index;
+                var row=new Grid { Margin=new Thickness(0,0,0,5) };
+                row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Auto });
+                var text=new TextBox { Text=entries[index], Style=(Style)FindResource("Field"), MinHeight=32, Padding=new Thickness(8,5,8,5) };
+                text.TextChanged += (_, _) => { entries[itemIndex]=text.Text; value.Value=string.Join(Environment.NewLine, entries); };
+                var remove=new Button { Content="×", Style=(Style)FindResource("IconButton"), Padding=new Thickness(7,3,7,3), Margin=new Thickness(6,0,0,0), Tag=itemIndex };
+                remove.Click += (_, _) => { entries.RemoveAt(itemIndex); value.Value=string.Join(Environment.NewLine, entries); render(); };
+                Grid.SetColumn(remove,1); row.Children.Add(text); row.Children.Add(remove); items.Children.Add(row);
+            }
+        };
+        render(); root.Children.Add(items);
+        var addRow=new Grid(); addRow.ColumnDefinitions.Add(new ColumnDefinition()); addRow.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Auto });
+        var add=new Button { Content="Add", Style=(Style)FindResource("IconButton"), Padding=new Thickness(9,5,9,5), Margin=new Thickness(0,5,0,0) };
+        add.Click += (_, _) => { var text=addInput.Text.Trim(); if (text.Length==0) return; entries.Add(text); value.Value=string.Join(Environment.NewLine, entries); addInput.Clear(); render(); };
+        Grid.SetColumn(add,1); addRow.Children.Add(addInput); addRow.Children.Add(add); root.Children.Add(addRow);
+        return root;
+    }
+
+    private FrameworkElement BuildCustomTagEditor(CustomFieldValue value)
+    {
+        var root=new StackPanel();
+        var text=new TextBox { Text=value.Value, Style=(Style)FindResource("Field"), MinHeight=36, ToolTip="Comma-separated project tags" };
+        text.TextChanged += (_, _) => value.Value=text.Text;
+        root.Children.Add(text);
+        var picker=new ComboBox { ItemsSource=_document?.TagCatalog.Select(tag => tag.Name).OrderBy(name => name).ToList(), IsEditable=true, IsTextSearchEnabled=true, Margin=new Thickness(0,6,0,0), MinHeight=32 };
+        picker.SelectionChanged += (_, _) =>
+        {
+            if (picker.SelectedItem is not string selected) return;
+            var tags=text.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            if (!tags.Contains(selected, StringComparer.OrdinalIgnoreCase)) tags.Add(selected);
+            text.Text=string.Join(", ", tags); text.CaretIndex=text.Text.Length; picker.SelectedIndex=-1;
+        };
+        root.Children.Add(picker);
+        return root;
+    }
+
+    private FrameworkElement BuildCustomFileEditor()
+    {
+        var root=new StackPanel();
+        var attach=new Button { Content="＋ Attach files", Style=(Style)FindResource("IconButton"), HorizontalAlignment=HorizontalAlignment.Left, Padding=new Thickness(9,5,9,5) };
+        attach.Click += AttachFiles_Click;
+        root.Children.Add(attach);
+        root.Children.Add(new ItemsControl { ItemsSource=_editingFileNames, Margin=new Thickness(0,6,0,0) });
+        return root;
+    }
+
+    private static Brush TryCreateBrush(string value, string fallback)
+    {
+        try { return (Brush)new BrushConverter().ConvertFromString(value)!; }
+        catch { return (Brush)new BrushConverter().ConvertFromString(fallback)!; }
     }
 
     private void ApplyCardEdit_Click(object sender, RoutedEventArgs e)
@@ -1234,6 +1311,19 @@ public partial class MainWindow : Window
             _editingCard.Priority = EditPriority.SelectedIndex > 0 ? (CardPriority?)(EditPriority.SelectedIndex - 1) : null;
         }
         foreach (var field in _editingCustomValues) _editingCard.CustomValues[field.FieldId] = field.Value;
+        var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == _editingCard.CustomTypeId);
+        if (customDefinition?.Fields.Any(field => field.Type == "tags") == true)
+        {
+            var systemTags = _editingCard.Tags.Where(tag => tag.Equals("bug", StringComparison.OrdinalIgnoreCase) || tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)).ToList();
+            _editingCard.Tags.Clear();
+            foreach (var tag in systemTags) _editingCard.Tags.Add(tag);
+            foreach (var tagField in customDefinition.Fields.Where(field => field.Type == "tags"))
+            {
+                var tagValue = _editingCustomValues.First(value => value.FieldId == tagField.Id).Value;
+                foreach (var tag in tagValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase))
+                    if (!_editingCard.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) _editingCard.Tags.Add(tag);
+            }
+        }
 
         if (_store is not null)
         {
@@ -1515,11 +1605,13 @@ public partial class MainWindow : Window
             var definition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == _newCustomTypeId);
             if (definition is not null)
             {
-                card.Tags.Add(definition.Name);
+                card.Tags.Clear();
                 foreach (var field in definition.Fields)
                 {
-                    if (!card.Tags.Contains(field.Name, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(field.Name);
                     card.CustomValues[field.Id] = field.DefaultValue;
+                    if (field.Type != "tags") continue;
+                    foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                        if (!card.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(tag);
                 }
             }
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
