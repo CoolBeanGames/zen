@@ -145,6 +145,7 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="CaretBrush" Value="{StaticResource AccentBrush}"/>
         </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource Field}"/>
 
         <Style TargetType="ContextMenu">
             <Setter Property="Background" Value="#181D26"/>
