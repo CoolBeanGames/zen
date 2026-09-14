@@ -107,7 +107,11 @@ public sealed class BoardColumn : INotifyPropertyChanged
 
 public sealed class TaskCard : INotifyPropertyChanged
 {
-    public TaskCard() => AttachRequirements(_requirements);
+    public TaskCard()
+    {
+        AttachRequirements(_requirements);
+        AttachNotes(_notes);
+    }
 
     private string _title = string.Empty;
     private string _task = string.Empty;
@@ -160,6 +164,19 @@ public sealed class TaskCard : INotifyPropertyChanged
             RaiseRequirementProgressChanged();
         }
     }
+    private ObservableCollection<TaskNote> _notes = [];
+    public ObservableCollection<TaskNote> Notes
+    {
+        get => _notes;
+        set
+        {
+            if (ReferenceEquals(_notes, value)) return;
+            DetachNotes(_notes);
+            _notes = value ?? [];
+            AttachNotes(_notes);
+            RaiseNotesChanged();
+        }
+    }
     public CardFlags Flags { get; set; } = new();
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
     public bool IsLocked { get => _isLocked; set => SetField(ref _isLocked, value); }
@@ -200,6 +217,8 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public string RequirementProgress => $"{Requirements.Count(r => r.IsDone)}/{Requirements.Count}";
     [JsonIgnore] public bool HasRequirements => Requirements.Count > 0;
     [JsonIgnore] public double RequirementProgressFraction => Requirements.Count == 0 ? 0 : (double)Requirements.Count(r => r.IsDone) / Requirements.Count;
+    [JsonIgnore] public bool HasNotes => Notes.Count > 0;
+    [JsonIgnore] public string NotesCountLabel => Notes.Count == 1 ? "1 note" : $"{Notes.Count} notes";
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void AttachRequirements(ObservableCollection<TaskRequirement> requirements)
@@ -234,6 +253,15 @@ public sealed class TaskCard : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasRequirements)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequirementProgressFraction)));
     }
+
+    private void AttachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged += OnNotesCollectionChanged;
+    private void DetachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged -= OnNotesCollectionChanged;
+    private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RaiseNotesChanged();
+    private void RaiseNotesChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasNotes)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotesCountLabel)));
+    }
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -261,8 +289,24 @@ public sealed class TaskRequirement : INotifyPropertyChanged
     private string _text = string.Empty;
     private bool _isDone;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public int Index { get; set; }
+    [JsonIgnore] public string IndexLabel => $"[{Index}]";
     public string Text { get => _text; set => SetField(ref _text, value); }
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        field = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+}
+
+public sealed class TaskNote : INotifyPropertyChanged
+{
+    private string _text = string.Empty;
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Text { get => _text; set => SetField(ref _text, value); }
     public event PropertyChangedEventHandler? PropertyChanged;
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {

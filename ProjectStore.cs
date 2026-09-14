@@ -143,12 +143,14 @@ public sealed class ProjectStore
                 card.Tags ??= [];
                 card.Files ??= [];
                 card.Requirements ??= [];
+                card.Notes ??= [];
                 card.Flags ??= new CardFlags();
                 if (card.Kind == CardKind.Note)
                 {
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
+                    card.Notes.Clear();
                     card.Flags = new CardFlags();
                     card.DueDate = null;
                     card.StartedDate = null;
@@ -161,11 +163,14 @@ public sealed class ProjectStore
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
+                    card.Notes.Clear();
                     card.Flags = new CardFlags();
                     card.DueDate = null;
                     card.StartedDate = null;
                     card.Priority = null;
                 }
+                for (var requirementIndex = 0; requirementIndex < card.Requirements.Count; requirementIndex++)
+                    card.Requirements[requirementIndex].Index = requirementIndex + 1;
                 var normalizedTags = card.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag))
                     .Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 card.Tags.Clear();

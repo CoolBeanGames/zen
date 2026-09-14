@@ -40,6 +40,7 @@ public partial class MainWindow : Window
     private TaskCard? _editingCard;
     private int _nextTaskIndex = 4;
     private readonly ObservableCollection<TaskRequirement> _editingRequirements = [];
+    private readonly ObservableCollection<TaskNote> _editingNotes = [];
     private readonly ObservableCollection<string> _editingFileNames = [];
     private readonly List<string> _pendingUploadPaths = [];
     private readonly List<string> _temporaryClipboardPaths = [];
@@ -1072,9 +1073,14 @@ public partial class MainWindow : Window
         EditAdvancedFields.Visibility = card.IsNote ? Visibility.Collapsed : Visibility.Visible;
         _editingRequirements.Clear();
         foreach (var requirement in card.Requirements)
-            _editingRequirements.Add(new TaskRequirement { Id = requirement.Id, Text = requirement.Text, IsDone = requirement.IsDone });
+            _editingRequirements.Add(new TaskRequirement { Id = requirement.Id, Index = requirement.Index, Text = requirement.Text, IsDone = requirement.IsDone });
         EditRequirementsList.ItemsSource = _editingRequirements;
         NewRequirementInput.Text = string.Empty;
+        _editingNotes.Clear();
+        foreach (var note in card.Notes)
+            _editingNotes.Add(new TaskNote { Id = note.Id, Text = note.Text });
+        EditNotesList.ItemsSource = _editingNotes;
+        NewNoteInput.Text = string.Empty;
         _pendingUploadPaths.Clear();
         _editingFileNames.Clear();
         foreach (var file in card.Files) _editingFileNames.Add(file.Name);
@@ -1127,7 +1133,10 @@ public partial class MainWindow : Window
                 _editingCard.Tags.Add(tag);
             _editingCard.Requirements.Clear();
             foreach (var requirement in _editingRequirements)
-                _editingCard.Requirements.Add(new TaskRequirement { Id = requirement.Id, Text = requirement.Text, IsDone = requirement.IsDone });
+                _editingCard.Requirements.Add(new TaskRequirement { Id = requirement.Id, Index = requirement.Index, Text = requirement.Text, IsDone = requirement.IsDone });
+            _editingCard.Notes.Clear();
+            foreach (var note in _editingNotes.Where(note => !string.IsNullOrWhiteSpace(note.Text)))
+                _editingCard.Notes.Add(new TaskNote { Id = note.Id, Text = note.Text.Trim() });
             _editingCard.Flags.Commit = EditCommitFlag.IsChecked == true;
             _editingCard.Flags.Build = EditBuildFlag.IsChecked == true;
             _editingCard.Flags.Release = EditReleaseFlag.IsChecked == true;
@@ -1169,7 +1178,7 @@ public partial class MainWindow : Window
     {
         var text = NewRequirementInput.Text.Trim();
         if (string.IsNullOrWhiteSpace(text)) return;
-        _editingRequirements.Add(new TaskRequirement { Text = text });
+        _editingRequirements.Add(new TaskRequirement { Index = _editingRequirements.Count + 1, Text = text });
         NewRequirementInput.Text = string.Empty;
         NewRequirementInput.Focus();
     }
@@ -1177,7 +1186,40 @@ public partial class MainWindow : Window
     private void RemoveRequirement_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button { Tag: TaskRequirement requirement })
+        {
             _editingRequirements.Remove(requirement);
+            ReindexEditingRequirements();
+        }
+    }
+
+    private void ReindexEditingRequirements()
+    {
+        for (var index = 0; index < _editingRequirements.Count; index++)
+            _editingRequirements[index].Index = index + 1;
+        EditRequirementsList.Items.Refresh();
+    }
+
+    private void AddNote_Click(object sender, RoutedEventArgs e) => AddPendingNote();
+
+    private void NewNoteInput_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter || Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) return;
+        AddPendingNote();
+        e.Handled = true;
+    }
+
+    private void AddPendingNote()
+    {
+        var text = NewNoteInput.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text)) return;
+        _editingNotes.Add(new TaskNote { Text = text });
+        NewNoteInput.Text = string.Empty;
+        NewNoteInput.Focus();
+    }
+
+    private void RemoveNote_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: TaskNote note }) _editingNotes.Remove(note);
     }
 
     private void AttachFiles_Click(object sender, RoutedEventArgs e)

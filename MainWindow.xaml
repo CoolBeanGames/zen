@@ -508,10 +508,13 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,5">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                     <CheckBox IsChecked="{Binding IsDone, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <TextBox Grid.Column="1" Style="{StaticResource EditorField}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="8,5"/>
-                                    <Button Grid.Column="2" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveRequirement_Click" Padding="6,2" MinHeight="24"/>
+                                    <Border Grid.Column="1" Background="#292335" CornerRadius="5" Padding="7,5" Margin="0,0,7,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding IndexLabel}" Foreground="#FF6070" FontSize="11" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <TextBox Grid.Column="2" Style="{StaticResource EditorField}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="8,5"/>
+                                    <Button Grid.Column="3" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveRequirement_Click" Padding="6,2" MinHeight="24"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -520,6 +523,32 @@
                         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <TextBox x:Name="NewRequirementInput" Style="{StaticResource EditorField}" KeyDown="NewRequirementInput_KeyDown"/>
                         <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="Add" Click="AddRequirement_Click" Margin="7,0,0,0"/>
+                    </Grid>
+
+                    <TextBlock Text="NOTES" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,16,0,6"/>
+                    <TextBlock Text="Reference a requirement with [1], [2], and so on." Foreground="#737D91" FontSize="10" Margin="0,0,0,7"/>
+                    <ItemsControl x:Name="EditNotesList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#20252F" CornerRadius="7" Padding="9" Margin="0,0,0,7">
+                                    <Grid>
+                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <TextBox Style="{StaticResource EditorField}" Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48" Padding="8,6"/>
+                                        <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="×" Tag="{Binding}" Click="RemoveNote_Click" Padding="6,2" MinHeight="24" VerticalAlignment="Top"/>
+                                        <local:RequirementReferenceTextBlock Grid.Row="1" Grid.ColumnSpan="2" NoteText="{Binding Text}"
+                                                                             Foreground="#B7BECC" TextWrapping="Wrap" FontSize="11" Margin="3,6,3,0"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBox x:Name="NewNoteInput" Style="{StaticResource EditorField}" KeyDown="NewNoteInput_KeyDown"
+                                 ToolTip="Enter adds the note; Shift+Enter starts a new line"/>
+                        <Button Grid.Column="1" Style="{StaticResource IconButton}" Content="Add" Click="AddNote_Click" Margin="7,0,0,0"/>
                     </Grid>
 
                     <Grid Margin="0,14,0,6">
