@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json.Nodes;
 using Zen;
 
@@ -40,6 +41,134 @@ public static class OperationApplier
                     var requirement = card.Requirements.FirstOrDefault(r => r.Id.Equals(requirementId, StringComparison.OrdinalIgnoreCase))
                         ?? throw new InvalidOperationException($"Requirement '{requirementId}' not found on task '{card.Id}'.");
                     requirement.IsDone = isDone;
+                });
+                break;
+            case "addRequirement":
+                WithCard(document, operation, card =>
+                {
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A requirement cannot be empty.");
+                    card.Requirements.Add(new TaskRequirement { Index = card.Requirements.Count + 1, Text = text });
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "editRequirement":
+                WithCard(document, operation, card =>
+                {
+                    var requirement = RequireRequirement(card, Require(operation, "requirementId"));
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A requirement cannot be empty.");
+                    requirement.Text = text;
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "removeRequirement":
+                WithCard(document, operation, card =>
+                {
+                    var requirement = RequireRequirement(card, Require(operation, "requirementId"));
+                    card.Requirements.Remove(requirement);
+                    for (var index = 0; index < card.Requirements.Count; index++) card.Requirements[index].Index = index + 1;
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "setCustomField":
+                WithCard(document, operation, card =>
+                {
+                    var field = RequireCustomField(document, card, Require(operation, "fieldId"));
+                    var value = Require(operation, "value");
+                    if (field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("File fields must be changed with a file operation.");
+                    if (field.Type.Equals("dropdown", StringComparison.OrdinalIgnoreCase) &&
+                        field.Options.Count > 0 && !field.Options.Contains(value, StringComparer.OrdinalIgnoreCase))
+                        throw new InvalidOperationException($"'{value}' is not an option for custom field '{field.Name}'.");
+                    if (field.Type.Equals("tags", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var systemTags = card.Tags.Where(IsSystemTag).ToList();
+                        var requestedTags = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                            .Where(tag => !IsSystemTag(tag)).Distinct(StringComparer.OrdinalIgnoreCase);
+                        card.Tags.Clear();
+                        foreach (var tag in systemTags.Concat(requestedTags)) card.Tags.Add(tag);
+                    }
+                    else if (field.Type.Equals("list", StringComparison.OrdinalIgnoreCase))
+                    {
+                        card.CustomValues[field.Id] = CustomListCodec.Serialize(CustomListCodec.Parse(value));
+                    }
+                    else if (field.Type.Equals("checkbox", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!bool.TryParse(value, out var checkedValue))
+                            throw new InvalidOperationException($"Custom checkbox field '{field.Name}' requires true or false.");
+                        card.CustomValues[field.Id] = checkedValue ? "true" : "false";
+                    }
+                    else if (field.Type.Equals("number", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+                            throw new InvalidOperationException($"Custom number field '{field.Name}' requires an invariant numeric value.");
+                        card.CustomValues[field.Id] = value;
+                    }
+                    else
+                    {
+                        card.CustomValues[field.Id] = value;
+                    }
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "addCardFile":
+                WithCard(document, operation, card =>
+                {
+                    if (operation.Payload["fieldId"] is JsonNode fieldNode)
+                        RequireFileField(document, card, fieldNode.GetValue<string>());
+                    card.Files.Add(new CardFile
+                    {
+                        Id = Require(operation, "id"),
+                        Name = Require(operation, "name"),
+                        RelativePath = Require(operation, "relativePath"),
+                        Size = operation.Payload["size"]?.GetValue<long>() ?? 0
+                    });
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "removeCardFile":
+                WithCard(document, operation, card =>
+                {
+                    if (operation.Payload["fieldId"] is JsonNode fieldNode)
+                        RequireFileField(document, card, fieldNode.GetValue<string>());
+                    var fileId = Require(operation, "fileId");
+                    var file = card.Files.FirstOrDefault(item => item.Id.Equals(fileId, StringComparison.OrdinalIgnoreCase) ||
+                                                                  item.Name.Equals(fileId, StringComparison.OrdinalIgnoreCase))
+                        ?? throw new InvalidOperationException($"Attachment '{fileId}' was not found on task '{card.Id}'.");
+                    card.Files.Remove(file);
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "addCardNote":
+                WithCard(document, operation, card =>
+                {
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A note cannot be empty.");
+                    card.Notes.Add(new TaskNote { Text = text });
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "removeCardNote":
+                WithCard(document, operation, card =>
+                {
+                    var noteId = Require(operation, "noteId");
+                    var note = card.Notes.FirstOrDefault(item => item.Id.Equals(noteId, StringComparison.OrdinalIgnoreCase))
+                        ?? throw new InvalidOperationException($"Note '{noteId}' was not found on task '{card.Id}'.");
+                    card.Notes.Remove(note);
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "editCardNote":
+                WithCard(document, operation, card =>
+                {
+                    var noteId = Require(operation, "noteId");
+                    var note = card.Notes.FirstOrDefault(item => item.Id.Equals(noteId, StringComparison.OrdinalIgnoreCase))
+                        ?? throw new InvalidOperationException($"Note '{noteId}' was not found on task '{card.Id}'.");
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A note cannot be empty.");
+                    note.Text = text;
+                    card.UpdatedAt = DateTimeOffset.UtcNow;
                 });
                 break;
             case "setDone":
@@ -190,6 +319,31 @@ public static class OperationApplier
         if (byId is not null) return byId;
         return int.TryParse(idOrIndex, out var index) ? cards.FirstOrDefault(card => card.Index == index) : null;
     }
+
+    private static CustomFieldDefinition RequireCustomField(ProjectDocument document, TaskCard card, string fieldId)
+    {
+        if (string.IsNullOrWhiteSpace(card.CustomTypeId))
+            throw new InvalidOperationException($"Task '{card.Id}' is not a custom card.");
+        var definition = document.CustomCardTypes.FirstOrDefault(item => item.Id.Equals(card.CustomTypeId, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Custom card definition '{card.CustomTypeId}' was not found.");
+        return definition.Fields.FirstOrDefault(field => field.Id.Equals(fieldId, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Custom field '{fieldId}' was not found on task '{card.Id}'.");
+    }
+
+    private static TaskRequirement RequireRequirement(TaskCard card, string idOrIndex) =>
+        card.Requirements.FirstOrDefault(requirement => requirement.Id.Equals(idOrIndex, StringComparison.OrdinalIgnoreCase) ||
+                                                        (int.TryParse(idOrIndex, out var index) && requirement.Index == index))
+        ?? throw new InvalidOperationException($"Requirement '{idOrIndex}' was not found on task '{card.Id}'.");
+
+    private static void RequireFileField(ProjectDocument document, TaskCard card, string fieldId)
+    {
+        var field = RequireCustomField(document, card, fieldId);
+        if (!field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException($"Custom field '{field.Name}' is type '{field.Type}', not 'files'.");
+    }
+
+    private static bool IsSystemTag(string tag) => tag.Equals("bug", StringComparison.OrdinalIgnoreCase) ||
+                                                    tag.Equals("in progress", StringComparison.OrdinalIgnoreCase);
 
     private static void AddTask(ProjectDocument document, QueuedWrite operation)
     {

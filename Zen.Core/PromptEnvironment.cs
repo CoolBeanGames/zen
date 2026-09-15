@@ -26,6 +26,8 @@ public static class PromptEnvironment
     {
         var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
         updatedPrompt = EnsureOperatorPathFallbackInstructions(updatedPrompt);
+        updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
+        updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
         settings.GlobalPrompt = updatedPrompt;
         Materialize(settings.GlobalPrompt);
@@ -131,6 +133,37 @@ public static class PromptEnvironment
         return insertionPoint >= 0
             ? prompt.Insert(insertionPoint, instructions)
             : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureCustomCardOperatorInstructions(string prompt)
+    {
+        const string heading = "CUSTOM CARDS AND OPERATOR FIELD ACCESS";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "CUSTOM CARDS AND OPERATOR FIELD ACCESS\r\n" +
+            "- `task`, `tasks`, and `eligible` explicitly return `isCustomCard`, the custom card type id/name, its `agentInstructions`, and every resolved `customFields` entry with immutable id, name, type, and current value. A custom field may contain the real work description even when the ordinary `task` property is empty.\r\n" +
+            "- Discover schemas with `zen-operator custom types`. Read a custom card with `zen-operator custom pull <id-or-index>` (or `custom fields`); read one field with `zen-operator custom get <id-or-index> <fieldId|name>`. Follow the returned `agentInstructions` when using that card type.\r\n" +
+            "- Write a non-file field with `zen-operator custom set <id-or-index> <fieldId|name> --value <value>`. Field ids are the stable automation contract; names are convenience aliases and must be unambiguous. List values use the card's serialized list text. Tag-field writes synchronize user tags while preserving the system `bug` and `in progress` tags.\r\n" +
+            "- Write a file field with `zen-operator custom file add <id-or-index> <fieldId|name> --path <sourcePath>` or detach one with `custom file remove <id-or-index> <fieldId|name> --file <fileId|name>`. Detaching never deletes the managed file from disk.\r\n" +
+            "- Add an opened-card note with `zen-operator note add <id-or-index> --text <text>` and remove one with `zen-operator note remove <id-or-index> <noteId>`.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureBuiltInCardOperatorInstructions(string prompt)
+    {
+        const string heading = "BUILT-IN CARD OPERATOR ACCESS";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "BUILT-IN CARD OPERATOR ACCESS\r\n" +
+            "- `task`, `tasks`, and `eligible` return every built-in field: title/task text, tags, requirements, notes, files, action flags, schedule/priority, lock/done state, and timestamps. Use `task edit` for title, task text, dates, priority, and action flags; use the focused commands below for collections.\r\n" +
+            "- Tags: `tag add|remove <task> <tag>` changes one tag; `tags set <task> <comma-separated-tags>` replaces user and system tags exactly. Use `progress <task> start|stop` for the managed `in progress` tag.\r\n" +
+            "- Requirements: `requirement add <task> --text <text>`, `requirement edit <task> <requirementId> --text <text>`, `requirement remove <task> <requirementId>`, and `requirement <task> <requirementId> done|undone`.\r\n" +
+            "- Opened-card notes: `note add <task> --text <text>`, `note edit <task> <noteId> --text <text>`, and `note remove <task> <noteId>`. The plural `notes [--branch <id>]` command lists note-type cards; it is different from notes attached to a task.\r\n" +
+            "- Attachments: `file add <task> --path <sourcePath>` imports a managed copy; `file remove <task> <fileId|name>` detaches it but intentionally leaves the managed file on disk.\r\n\r\n";
+        const string nextHeading = "CUSTOM CARDS AND OPERATOR FIELD ACCESS";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        if (insertionPoint < 0) insertionPoint = prompt.IndexOf("DATA SHAPE AND OWNERSHIP", StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
 
     private static bool SamePath(string a, string b)

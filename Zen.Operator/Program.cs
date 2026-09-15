@@ -110,7 +110,7 @@ int Run(string[] arguments)
             var tasks = eligibleOnly
                 ? branches.SelectMany(EligibilityEngine.GetEligible)
                 : branches.SelectMany(b => b.Tasks);
-            PrintJson(tasks);
+            PrintJson(tasks.Select(card => DescribeTask(document, card)));
             return 0;
         }
 
@@ -188,7 +188,86 @@ int Run(string[] arguments)
             var document = store.OpenOrCreate();
             var card = OperationApplier.FindCard(document, arguments[1]);
             if (card is null) return Fail($"task '{arguments[1]}' not found");
-            PrintJson(card);
+            PrintJson(DescribeTask(document, card));
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 3 && arguments[1] is "pull" or "fields":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[2]);
+            PrintJson(DescribeTask(document, card));
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 2 && arguments[1] == "types":
+        {
+            var document = store.OpenOrCreate();
+            PrintJson(document.CustomCardTypes.Select(definition => new
+            {
+                definition.Id,
+                definition.Name,
+                AgentInstructions = definition.Instructions,
+                definition.Fields
+            }));
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 4 && arguments[1] == "get":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[2]);
+            var field = RequireCustomField(document, card, arguments[3]);
+            PrintJson(DescribeCustomField(card, field));
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 4 && arguments[1] == "set":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[2]);
+            var field = RequireCustomField(document, card, arguments[3]);
+            if (field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
+                return Fail("file fields use 'custom file add|remove', not 'custom set'");
+            var value = OptionValue(arguments, "--value") ?? throw new InvalidOperationException("--value is required");
+            Enqueue(root, "setCustomField", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id, ["value"] = value });
+            Console.WriteLine($"ok: set custom field '{field.Name}' on {card.Id}");
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 5 && arguments[1] == "file" && arguments[2] == "add":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[3]);
+            var field = RequireCustomField(document, card, arguments[4]);
+            if (!field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
+                return Fail($"custom field '{field.Name}' is type '{field.Type}', not 'files'");
+            var sourcePath = OptionValue(arguments, "--path") ?? throw new InvalidOperationException("--path is required");
+            if (!File.Exists(sourcePath)) return Fail($"source file '{sourcePath}' does not exist");
+            var imported = store.ImportFile(sourcePath);
+            Enqueue(root, "addCardFile", new JsonObject
+            {
+                ["taskId"] = card.Id,
+                ["fieldId"] = field.Id,
+                ["id"] = imported.Id,
+                ["name"] = imported.Name,
+                ["relativePath"] = imported.RelativePath,
+                ["size"] = imported.Size
+            });
+            Console.WriteLine($"ok: attached '{imported.Name}' to custom file field '{field.Name}' on {card.Id}");
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 5 && arguments[1] == "file" && arguments[2] == "remove":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[3]);
+            var field = RequireCustomField(document, card, arguments[4]);
+            if (!field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
+                return Fail($"custom field '{field.Name}' is type '{field.Type}', not 'files'");
+            var fileId = OptionValue(arguments, "--file") ?? throw new InvalidOperationException("--file is required");
+            Enqueue(root, "removeCardFile", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id, ["fileId"] = fileId });
+            Console.WriteLine($"ok: removed attachment '{fileId}' from {card.Id} (managed file retained on disk)");
             return 0;
         }
 
@@ -200,12 +279,12 @@ int Run(string[] arguments)
             {
                 var branch = document.Branches.FirstOrDefault(b => b.Id.Equals(branchFilter, StringComparison.OrdinalIgnoreCase));
                 if (branch is null) return Fail($"branch '{branchFilter}' not found");
-                PrintJson(EligibilityEngine.GetEligible(branch));
+                PrintJson(EligibilityEngine.GetEligible(branch).Select(card => DescribeTask(document, card)));
             }
             else
             {
                 PrintJson(EligibilityEngine.GetEligibleProject(document)
-                    .Select(entry => new { Branch = entry.Branch.Id, Tasks = entry.Tasks }));
+                    .Select(entry => new { Branch = entry.Branch.Id, Tasks = entry.Tasks.Select(card => DescribeTask(document, card)) }));
             }
             return 0;
         }
@@ -216,6 +295,55 @@ int Run(string[] arguments)
             var branchFilter = OptionValue(arguments, "--branch");
             var branches = document.Branches.Where(b => branchFilter is null || b.Id.Equals(branchFilter, StringComparison.OrdinalIgnoreCase));
             PrintJson(branches.SelectMany(b => b.Tasks).Where(card => card.Kind == CardKind.Note));
+            return 0;
+        }
+
+        case "note" when arguments.Length >= 3 && arguments[1] == "add":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "addCardNote", new JsonObject { ["taskId"] = arguments[2], ["text"] = text });
+            Console.WriteLine($"ok: added note to {arguments[2]}");
+            return 0;
+        }
+
+        case "note" when arguments.Length >= 4 && arguments[1] == "remove":
+        {
+            Enqueue(root, "removeCardNote", new JsonObject { ["taskId"] = arguments[2], ["noteId"] = arguments[3] });
+            Console.WriteLine($"ok: removed note {arguments[3]} from {arguments[2]}");
+            return 0;
+        }
+
+        case "note" when arguments.Length >= 4 && arguments[1] == "edit":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "editCardNote", new JsonObject { ["taskId"] = arguments[2], ["noteId"] = arguments[3], ["text"] = text });
+            Console.WriteLine($"ok: edited note {arguments[3]} on {arguments[2]}");
+            return 0;
+        }
+
+        case "file" when arguments.Length >= 3 && arguments[1] == "add":
+        {
+            var sourcePath = OptionValue(arguments, "--path") ?? throw new InvalidOperationException("--path is required");
+            if (!File.Exists(sourcePath)) return Fail($"source file '{sourcePath}' does not exist");
+            var document = store.OpenOrCreate();
+            var card = OperationApplier.FindCard(document, arguments[2]) ?? throw new InvalidOperationException($"task '{arguments[2]}' not found");
+            var imported = store.ImportFile(sourcePath);
+            Enqueue(root, "addCardFile", new JsonObject
+            {
+                ["taskId"] = card.Id,
+                ["id"] = imported.Id,
+                ["name"] = imported.Name,
+                ["relativePath"] = imported.RelativePath,
+                ["size"] = imported.Size
+            });
+            Console.WriteLine($"ok: attached '{imported.Name}' to {card.Id}");
+            return 0;
+        }
+
+        case "file" when arguments.Length >= 4 && arguments[1] == "remove":
+        {
+            Enqueue(root, "removeCardFile", new JsonObject { ["taskId"] = arguments[2], ["fileId"] = arguments[3] });
+            Console.WriteLine($"ok: detached attachment '{arguments[3]}' from {arguments[2]} (managed file retained on disk)");
             return 0;
         }
 
@@ -239,6 +367,29 @@ int Run(string[] arguments)
             var payload = new JsonObject { ["taskId"] = id, ["tags"] = new JsonArray(tags.Select(t => (JsonNode)t).ToArray()) };
             Enqueue(root, "setTags", payload);
             Console.WriteLine($"ok: set tags on {id} to [{string.Join(", ", tags)}]");
+            return 0;
+        }
+
+        case "requirement" when arguments.Length >= 3 && arguments[1] == "add":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "addRequirement", new JsonObject { ["taskId"] = arguments[2], ["text"] = text });
+            Console.WriteLine($"ok: added requirement to {arguments[2]}");
+            return 0;
+        }
+
+        case "requirement" when arguments.Length >= 4 && arguments[1] == "edit":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "editRequirement", new JsonObject { ["taskId"] = arguments[2], ["requirementId"] = arguments[3], ["text"] = text });
+            Console.WriteLine($"ok: edited requirement {arguments[3]} on {arguments[2]}");
+            return 0;
+        }
+
+        case "requirement" when arguments.Length >= 4 && arguments[1] == "remove":
+        {
+            Enqueue(root, "removeRequirement", new JsonObject { ["taskId"] = arguments[2], ["requirementId"] = arguments[3] });
+            Console.WriteLine($"ok: removed requirement {arguments[3]} from {arguments[2]}");
             return 0;
         }
 
@@ -350,10 +501,97 @@ IEnumerable<string> OptionValues(string[] arguments, string name)
         if (arguments[i] == name) yield return arguments[i + 1];
 }
 
+TaskCard RequireCustomCard(ProjectDocument document, string idOrIndex)
+{
+    var card = OperationApplier.FindCard(document, idOrIndex)
+        ?? throw new InvalidOperationException($"task '{idOrIndex}' not found");
+    if (string.IsNullOrWhiteSpace(card.CustomTypeId))
+        throw new InvalidOperationException($"task '{idOrIndex}' is not a custom card");
+    if (!document.CustomCardTypes.Any(definition => definition.Id.Equals(card.CustomTypeId, StringComparison.OrdinalIgnoreCase)))
+        throw new InvalidOperationException($"custom card definition '{card.CustomTypeId}' was not found");
+    return card;
+}
+
+CustomFieldDefinition RequireCustomField(ProjectDocument document, TaskCard card, string idOrName)
+{
+    var definition = document.CustomCardTypes.First(item => item.Id.Equals(card.CustomTypeId, StringComparison.OrdinalIgnoreCase));
+    var byId = definition.Fields.FirstOrDefault(field => field.Id.Equals(idOrName, StringComparison.OrdinalIgnoreCase));
+    if (byId is not null) return byId;
+    var byName = definition.Fields.Where(field => field.Name.Equals(idOrName, StringComparison.OrdinalIgnoreCase)).ToList();
+    return byName.Count switch
+    {
+        1 => byName[0],
+        > 1 => throw new InvalidOperationException($"custom field name '{idOrName}' is ambiguous; use its immutable field id"),
+        _ => throw new InvalidOperationException($"custom field '{idOrName}' was not found on task '{card.Id}'")
+    };
+}
+
+object DescribeTask(ProjectDocument document, TaskCard card)
+{
+    var definition = string.IsNullOrWhiteSpace(card.CustomTypeId)
+        ? null
+        : document.CustomCardTypes.FirstOrDefault(item => item.Id.Equals(card.CustomTypeId, StringComparison.OrdinalIgnoreCase));
+    return new
+    {
+        card.Id,
+        card.Index,
+        card.Kind,
+        card.Title,
+        card.Task,
+        card.Tags,
+        card.Files,
+        card.Requirements,
+        card.Notes,
+        card.Flags,
+        card.IsDone,
+        card.IsLocked,
+        card.IsCollapsed,
+        card.DueDate,
+        card.StartedDate,
+        card.Priority,
+        card.CreatedAt,
+        card.UpdatedAt,
+        IsCustomCard = !string.IsNullOrWhiteSpace(card.CustomTypeId),
+        CustomCardType = string.IsNullOrWhiteSpace(card.CustomTypeId) ? null : new
+        {
+            Id = card.CustomTypeId,
+            Name = definition?.Name,
+            AgentInstructions = definition?.Instructions
+        },
+        CustomFields = definition?.Fields.Select(field => DescribeCustomField(card, field)).ToList()
+    };
+}
+
+object DescribeCustomField(TaskCard card, CustomFieldDefinition field)
+{
+    object value = field.Type.Equals("files", StringComparison.OrdinalIgnoreCase)
+        ? card.Files.Select(file => new { file.Id, file.Name, file.RelativePath, file.Size }).ToList()
+        : field.Type.Equals("tags", StringComparison.OrdinalIgnoreCase)
+            ? card.Tags.Where(tag => !IsSystemTag(tag)).ToList()
+            : field.Type.Equals("list", StringComparison.OrdinalIgnoreCase)
+                ? CustomListCodec.Parse(card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue))
+                : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
+    return new
+    {
+        field.Id,
+        field.Name,
+        field.Type,
+        Value = value,
+        field.DefaultValue,
+        field.Options,
+        field.ShowOnCollapsed
+    };
+}
+
+bool IsSystemTag(string tag) => tag.Equals("bug", StringComparison.OrdinalIgnoreCase) ||
+                                tag.Equals("in progress", StringComparison.OrdinalIgnoreCase);
+
 string ReadCanonicalPrompt(ProjectStore store)
 {
     var settings = new SettingsStore().Load();
-    var prompt = string.IsNullOrWhiteSpace(settings.GlobalPrompt) ? ProjectStore.ReadEmbeddedPrompt() : settings.GlobalPrompt;
+    var prompt = File.Exists(PromptEnvironment.PromptPath)
+        ? File.ReadAllText(PromptEnvironment.PromptPath)
+        : string.IsNullOrWhiteSpace(settings.GlobalPrompt) ? ProjectStore.ReadEmbeddedPrompt() : settings.GlobalPrompt;
     var customCards = store.OpenOrCreate().CustomCardTypes.Where(card => !string.IsNullOrWhiteSpace(card.Instructions)).ToList();
     if (customCards.Count == 0) return prompt;
     var instructions = string.Join(Environment.NewLine + Environment.NewLine, customCards.Select(card => $"CUSTOM CARD: {card.Name}{Environment.NewLine}{card.Instructions.Trim()}"));
@@ -390,9 +628,28 @@ void PrintUsage()
       task move <id-or-index> --to <branchId>   move a task to another branch
       eligible [--branch <id>]                  list eligible tasks (locks/breaks/bug-priority applied)
       notes [--branch <id>]                     list note cards
+      note add <id-or-index> --text <text>      add a note to an opened task card
+      note edit <id-or-index> <noteId> --text <text>
+                                                 edit an opened-card note
+      note remove <id-or-index> <noteId>        remove a task-card note
+      file add <id-or-index> --path <sourcePath>
+                                                 import and attach a managed file
+      file remove <id-or-index> <fileId|name>   detach it without deleting the managed file
+      custom pull|fields <id-or-index>          print custom type, agent instructions, and all fields
+      custom types                              list custom card definitions and field schemas
+      custom get <id-or-index> <fieldId|name>   print one resolved custom field
+      custom set <id-or-index> <fieldId|name> --value <value>
+                                                 set a non-file custom field (tags synchronize card tags)
+      custom file add <id-or-index> <fieldId|name> --path <sourcePath>
+                                                 import and attach a managed file
+      custom file remove <id-or-index> <fieldId|name> --file <fileId|name>
+                                                 detach a managed file without deleting it from disk
       tag add|remove <id-or-index> <tag>        add or remove a single tag
       tags set <id-or-index> <t1,t2,...>        replace a task's whole tag list
       requirement <id-or-index> <reqId> done|undone
+      requirement add <id-or-index> --text <text>
+      requirement edit <id-or-index> <reqId> --text <text>
+      requirement remove <id-or-index> <reqId> add, edit, or remove checklist items
       progress <id-or-index> start|stop         shortcut for the 'in progress' tag
       archive <id-or-index>                     mark a task done (moves it into Archived)
       archive <id-or-index> --undo [--to <branchId>]

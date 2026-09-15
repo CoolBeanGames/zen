@@ -1122,6 +1122,11 @@ public partial class MainWindow : Window
         EditStandardFields.Visibility = isCustomCard ? Visibility.Collapsed : Visibility.Visible;
         EditAdvancedFields.Visibility = card.IsNote || isCustomCard ? Visibility.Collapsed : Visibility.Visible;
         EditCustomCardHost.Visibility = isCustomCard ? Visibility.Visible : Visibility.Collapsed;
+        EditCustomCardTypeButton.Visibility = isCustomCard ? Visibility.Visible : Visibility.Collapsed;
+        EditCustomAgentInstructionsText.Text = customDefinition?.Instructions ?? string.Empty;
+        EditCustomAgentInstructionsText.Visibility = isCustomCard && !string.IsNullOrWhiteSpace(customDefinition?.Instructions)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         if (customDefinition is not null)
         {
             EditCustomCardHost.Background = TryCreateBrush(customDefinition.CardColor, "#1D222C");
@@ -1294,6 +1299,22 @@ public partial class MainWindow : Window
     {
         try { return (Brush)new BrushConverter().ConvertFromString(value)!; }
         catch { return (Brush)new BrushConverter().ConvertFromString(fallback)!; }
+    }
+
+    private void EditCustomCardType_Click(object sender, RoutedEventArgs e)
+    {
+        if (_editingCard is null || _document?.CustomCardTypes.FirstOrDefault(item => item.Id == _editingCard.CustomTypeId) is not { } definition) return;
+        var pendingValues = _editingCustomValues.ToDictionary(field => field.FieldId, field => field.Value, StringComparer.OrdinalIgnoreCase);
+        var designer=new CardDesignerWindow(definition) { Owner=this };
+        if (designer.ShowDialog()!=true) return;
+
+        var activeFieldIds=definition.Fields.Select(field => field.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var staleFieldId in _editingCard.CustomValues.Keys.Where(id => !activeFieldIds.Contains(id)).ToList())
+            _editingCard.CustomValues.Remove(staleFieldId);
+        foreach (var field in definition.Fields)
+            _editingCard.CustomValues[field.Id] = pendingValues.GetValueOrDefault(field.Id, _editingCard.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue));
+        SaveProject();
+        OpenCardEditor(_editingCard, new Border());
     }
 
     private void ApplyCardEdit_Click(object sender, RoutedEventArgs e)

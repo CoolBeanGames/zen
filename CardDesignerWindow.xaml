@@ -10,7 +10,11 @@
   </Window.Resources>
   <Grid Margin="20"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Grid Margin="0,0,0,16"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-      <StackPanel><TextBlock Text="CARD DESIGNER" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold" Margin="0,4,0,0"/></StackPanel>
+      <StackPanel Margin="0,0,330,0"><TextBlock Text="CARD DESIGNER" Foreground="#8B7CFF" FontSize="11" FontWeight="Bold"/><TextBlock x:Name="Heading" FontSize="24" FontWeight="SemiBold" Margin="0,4,0,0"/>
+        <TextBlock Text="AGENT INSTRUCTIONS" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,10,0,4"/>
+        <TextBox x:Name="AgentInstructionsInput" AcceptsReturn="True" TextWrapping="Wrap" Height="54" Padding="8,6"
+                 ToolTip="These instructions are returned with every card of this type by zen-operator."/>
+      </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
         <StackPanel Margin="0,0,12,0"><TextBlock Text="CARD COLOR" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardFillInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
         <StackPanel Margin="0,0,12,0"><TextBlock Text="OUTLINE" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardOutlineInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>

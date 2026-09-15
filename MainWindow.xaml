@@ -520,11 +520,16 @@
                 <Border Width="{Binding ViewportWidth, ElementName=EditorScroller}" Padding="0,0,12,0">
                 <StackPanel>
                     <Grid Margin="0,0,0,17">
-                        <StackPanel>
+                        <StackPanel Margin="0,0,170,0">
                             <TextBlock x:Name="EditHeading" Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
                             <TextBlock x:Name="EditIdentityText" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,4,0,0"/>
+                            <TextBlock x:Name="EditCustomAgentInstructionsText" Visibility="Collapsed" Foreground="#AEB6C7" FontSize="11"
+                                       TextWrapping="Wrap" Margin="0,8,0,0" MaxHeight="72" ToolTip="Instructions given to agents when they read this custom card"/>
                         </StackPanel>
-                        <Button Style="{StaticResource IconButton}" Content="×" HorizontalAlignment="Right" Click="CancelCardEdit_Click" FontSize="19" Padding="6,1"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <Button x:Name="EditCustomCardTypeButton" Style="{StaticResource IconButton}" Content="Edit card type…" Click="EditCustomCardType_Click" Padding="9,5" Margin="0,0,6,0" Visibility="Collapsed"/>
+                            <Button Style="{StaticResource IconButton}" Content="×" Click="CancelCardEdit_Click" FontSize="19" Padding="6,1"/>
+                        </StackPanel>
                     </Grid>
                     <StackPanel x:Name="EditStandardFields">
                         <TextBlock Text="TITLE" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>

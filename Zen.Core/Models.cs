@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Zen;
@@ -127,7 +128,11 @@ public sealed class BoardColumn : INotifyPropertyChanged
 
 public sealed class TaskCard : INotifyPropertyChanged
 {
-    public TaskCard() => AttachRequirements(_requirements);
+    public TaskCard()
+    {
+        AttachRequirements(_requirements);
+        AttachNotes(_notes);
+    }
 
     private string _title = string.Empty;
     private string _task = string.Empty;
@@ -167,6 +172,8 @@ public sealed class TaskCard : INotifyPropertyChanged
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
+    public string? CustomTypeId { get; set; }
+    public Dictionary<string, string> CustomValues { get; set; } = [];
     private ObservableCollection<TaskRequirement> _requirements = [];
     public ObservableCollection<TaskRequirement> Requirements
     {
@@ -178,6 +185,18 @@ public sealed class TaskCard : INotifyPropertyChanged
             _requirements = value ?? [];
             AttachRequirements(_requirements);
             RaiseRequirementProgressChanged();
+        }
+    }
+    private ObservableCollection<TaskNote> _notes = [];
+    public ObservableCollection<TaskNote> Notes
+    {
+        get => _notes;
+        set
+        {
+            if (ReferenceEquals(_notes, value)) return;
+            DetachNotes(_notes);
+            _notes = value ?? [];
+            AttachNotes(_notes);
         }
     }
     public CardFlags Flags { get; set; } = new();
@@ -254,6 +273,10 @@ public sealed class TaskCard : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasRequirements)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequirementProgressFraction)));
     }
+    private void AttachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged += OnNotesCollectionChanged;
+    private void DetachNotes(ObservableCollection<TaskNote> notes) => notes.CollectionChanged -= OnNotesCollectionChanged;
+    private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notes)));
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -281,8 +304,23 @@ public sealed class TaskRequirement : INotifyPropertyChanged
     private string _text = string.Empty;
     private bool _isDone;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public int Index { get; set; }
     public string Text { get => _text; set => SetField(ref _text, value); }
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        field = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+}
+
+public sealed class TaskNote : INotifyPropertyChanged
+{
+    private string _text = string.Empty;
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Text { get => _text; set => SetField(ref _text, value); }
     public event PropertyChangedEventHandler? PropertyChanged;
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -316,4 +354,20 @@ public sealed class CardFlags : INotifyPropertyChanged
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+}
+
+public static class CustomListCodec
+{
+    public static List<string> Parse(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return [];
+        if (value.TrimStart().StartsWith('['))
+        {
+            try { return JsonSerializer.Deserialize<List<string>>(value) ?? []; }
+            catch (JsonException) { }
+        }
+        return value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+    }
+
+    public static string Serialize(IEnumerable<string> items) => JsonSerializer.Serialize(items);
 }

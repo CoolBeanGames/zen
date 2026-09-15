@@ -31,6 +31,7 @@ public partial class CardDesignerWindow : Window
         Heading.Text = $"Design {definition.Name}";
         _fields = new(definition.Fields.Select(Clone));
         _loading = true;
+        AgentInstructionsInput.Text = definition.Instructions;
         CardFillInput.Text = definition.CardColor;
         CardOutlineInput.Text = definition.OutlineColor;
         OutlineWidthInput.SelectedIndex = Math.Clamp((int)Math.Round(definition.OutlineWidth), 0, 4);
@@ -257,6 +258,7 @@ public partial class CardDesignerWindow : Window
     {
         if (!TryBrush(CardFillInput.Text, out _) || !TryBrush(CardOutlineInput.Text, out _)) { MessageBox.Show(this, "Use a valid color such as #1D222C.", "Invalid card color", MessageBoxButton.OK, MessageBoxImage.Information); return; }
         _definition.CardColor=CardFillInput.Text.Trim();
+        _definition.Instructions=AgentInstructionsInput.Text.Trim();
         _definition.OutlineColor=CardOutlineInput.Text.Trim();
         _definition.OutlineWidth=OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var width) ? width : 1;
         _definition.ShrinkExpandedToContent=ShrinkExpandedHeight.IsChecked==true;
