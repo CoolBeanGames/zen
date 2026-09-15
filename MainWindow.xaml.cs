@@ -1170,11 +1170,12 @@ public partial class MainWindow : Window
 
     private void RenderCustomCardEditor(CustomCardDefinition definition)
     {
+        const double editorSurfaceWidth = 420;
         EditCustomCardCanvas.Children.Clear();
         var headerBrush = TryCreateBrush(definition.HeaderTextColor, "#8992A5");
         var mainBrush = TryCreateBrush(definition.MainTextColor, "#F4F6FA");
         var textBoxBrush = TryCreateBrush(definition.TextBoxColor, "#0E1117");
-        EditCustomCardCanvas.Width = Math.Max(540, definition.Fields.Count == 0 ? 540 : definition.Fields.Max(item => item.X + item.Width) + 20);
+        EditCustomCardCanvas.Width = editorSurfaceWidth;
         EditCustomCardCanvas.Height = definition.Fields.Count == 0 ? 120 : definition.Fields.Max(field => field.Y + GetOpenFieldHeight(field)) + 12;
         foreach (var field in definition.Fields)
         {
@@ -1216,8 +1217,10 @@ public partial class MainWindow : Window
                 fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = headerBrush, FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
             Grid.SetRow(input, field.Type is "checkbox" or "label" ? 0 : 1);
             fieldLayout.Children.Add(input);
-            var container = new Border { Tag=field, Width = field.Width, Height = GetOpenFieldHeight(field), Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
-            Canvas.SetLeft(container, field.X);
+            var containerWidth=Math.Min(field.Width, editorSurfaceWidth);
+            var containerX=Math.Clamp(field.X, 0, editorSurfaceWidth-containerWidth);
+            var container = new Border { Tag=field, Width = containerWidth, Height = GetOpenFieldHeight(field), Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
+            Canvas.SetLeft(container, containerX);
             Canvas.SetTop(container, field.Y);
             EditCustomCardCanvas.Children.Add(container);
         }
