@@ -18,7 +18,7 @@ public partial class CardDesignerWindow : Window
     private bool _loading;
     private bool _paletteDragArmed;
     private Guid? _lastPaletteDropToken;
-    private static readonly string[] FieldTypes = ["text", "number", "checkbox", "dropdown", "list", "tags", "files"];
+    private static readonly string[] FieldTypes = ["text", "label", "number", "checkbox", "dropdown", "list", "tags", "files"];
 
     private sealed record PaletteDrag(string Type, Guid Token);
     private enum DesignerSurface { Open, Expanded, Compact }
@@ -63,7 +63,8 @@ public partial class CardDesignerWindow : Window
         var type = drag.Type;
         var point=e.GetPosition(DesignCanvas);
         var order = _fields.Count;
-        var field=new CustomFieldDefinition { Name=type switch { "dropdown" => "Choice", "checkbox" => "Option", "list" => "Items", "tags" => "Tags", "files" => "Files", _ => "Field" }, Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
+        var field=new CustomFieldDefinition { Name=type switch { "label" => "Label", "dropdown" => "Choice", "checkbox" => "Option", "list" => "Items", "tags" => "Tags", "files" => "Files", _ => "Field" }, Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
+        if (type=="label") field.DefaultValue="Informational text";
         if (type=="dropdown") { field.Options.Add("Option 1"); field.Options.Add("Option 2"); }
         if (type=="list") field.DefaultValue="List item\nAnother item";
         _fields.Add(field); RenderFields(); SelectField(field);
@@ -83,16 +84,22 @@ public partial class CardDesignerWindow : Window
             Canvas.SetLeft(host,field.X); Canvas.SetTop(host,field.Y); DesignCanvas.Children.Add(host);
         }
     }
-    private FrameworkElement BuildFieldPreview(CustomFieldDefinition field)
+    private FrameworkElement BuildFieldPreview(CustomFieldDefinition field, bool compactView=false)
     {
         var headerBrush = ReadAppearanceBrush(HeaderTextColorInput, "#8992A5");
         var mainBrush = ReadAppearanceBrush(MainTextColorInput, "#F4F6FA");
         var textBoxBrush = ReadAppearanceBrush(TextBoxColorInput, "#0E1117");
+        if (field.Type == "label")
+            return new TextBlock { Text=string.IsNullOrWhiteSpace(field.DefaultValue) ? field.Name : field.DefaultValue, Foreground=mainBrush, FontSize=13, TextWrapping=TextWrapping.Wrap, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
         if (field.Type == "checkbox")
             return new CheckBox { Content=field.Name, Foreground=mainBrush, IsChecked=bool.TryParse(field.DefaultValue, out var selected) && selected, FontSize=12, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
 
         if (field.Type == "list")
-            return BuildLabeledPreview(field.Name, new Border { Background=textBoxBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Foreground=mainBrush, Text=string.Join(Environment.NewLine, CustomListCodec.Parse(field.DefaultValue).DefaultIfEmpty("List item").Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")), FontSize=11, TextWrapping=TextWrapping.Wrap } }, headerBrush);
+        {
+            var entries=CustomListCodec.Parse(field.DefaultValue);
+            var listSurface=new Border { Background=textBoxBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Foreground=mainBrush, Text=compactView ? $"{field.Name}: {entries.Count}" : string.Join(Environment.NewLine, entries.DefaultIfEmpty("List item").Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")), FontSize=11, TextWrapping=TextWrapping.Wrap } };
+            return compactView ? listSurface : BuildLabeledPreview(field.Name, listSurface, headerBrush);
+        }
 
         if (field.Type == "tags")
         {
@@ -234,7 +241,7 @@ public partial class CardDesignerWindow : Window
             field.CompactX=Math.Clamp(Snap(field.CompactX),0,CompactCanvas.Width-field.CompactWidth);
             field.CompactY=Math.Clamp(Snap(field.CompactY),0,CompactCanvas.Height-field.CompactHeight);
             var host = new Grid { Tag=field, Width=field.CompactWidth, Height=field.CompactHeight, Cursor=Cursors.SizeAll };
-            var border = new Border { Background=Brushes.Transparent, BorderThickness=new Thickness(0), Padding=new Thickness(0), Child=BuildFieldPreview(field) };
+            var border = new Border { Background=Brushes.Transparent, BorderThickness=new Thickness(0), Padding=new Thickness(0), Child=BuildFieldPreview(field, true) };
             host.Children.Add(border); AddResizeHandles(host, field, DesignerSurface.Compact);
             host.PreviewMouseLeftButtonDown += CompactField_MouseDown; host.PreviewMouseMove += CompactField_MouseMove; host.PreviewMouseLeftButtonUp += CompactField_MouseUp;
             Canvas.SetLeft(host,field.CompactX); Canvas.SetTop(host,field.CompactY); CompactCanvas.Children.Add(host);

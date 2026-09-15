@@ -78,6 +78,8 @@ public static class OperationApplier
                     var value = Require(operation, "value");
                     if (field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
                         throw new InvalidOperationException("File fields must be changed with a file operation.");
+                    if (field.Type.Equals("label", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("Label fields are informational and read-only.");
                     if (field.Type.Equals("dropdown", StringComparison.OrdinalIgnoreCase) &&
                         field.Options.Count > 0 && !field.Options.Contains(value, StringComparer.OrdinalIgnoreCase))
                         throw new InvalidOperationException($"'{value}' is not an option for custom field '{field.Name}'.");

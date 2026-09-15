@@ -35,6 +35,9 @@
         <Button Tag="text" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,0,0,9" HorizontalContentAlignment="Stretch">
           <StackPanel IsHitTestVisible="False"><TextBlock Text="TEXT" Foreground="#8992A5" FontSize="9" Margin="0,0,0,4"/><TextBox Text="Text field" Padding="8,5"/></StackPanel>
         </Button>
+        <Button Tag="label" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,0,0,9" HorizontalContentAlignment="Stretch">
+          <StackPanel IsHitTestVisible="False"><TextBlock Text="LABEL" Foreground="#8992A5" FontSize="9" Margin="0,0,0,4"/><TextBlock Text="Informational text" TextWrapping="Wrap"/></StackPanel>
+        </Button>
         <Button Tag="number" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,0,0,9" HorizontalContentAlignment="Stretch">
           <StackPanel IsHitTestVisible="False"><TextBlock Text="NUMBER" Foreground="#8992A5" FontSize="9" Margin="0,0,0,4"/><TextBox Text="0" Padding="8,5"/></StackPanel>
         </Button>
@@ -63,7 +66,7 @@
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">
         <StackPanel><TextBlock Text="INSPECTOR" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
           <TextBlock Text="NAME" Foreground="#8992A5" FontSize="9" Margin="0,15,0,4"/><TextBox x:Name="FieldName" TextChanged="InspectorChanged" Padding="8"/>
-          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="files"/></ComboBox>
+          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="label"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="files"/></ComboBox>
           <TextBlock Text="DEFAULT VALUE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="DefaultValue" TextChanged="InspectorChanged" Padding="8"/>
           <StackPanel x:Name="OptionsHost"><TextBlock Text="DROPDOWN OPTIONS (comma separated)" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="OptionsInput" TextChanged="InspectorChanged" Padding="8"/></StackPanel>
           <CheckBox x:Name="ExpandedVisible" Content="Visible on expanded card" Checked="InspectorChanged" Unchecked="InspectorChanged" Margin="0,14,0,0"/>

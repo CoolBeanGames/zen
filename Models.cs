@@ -434,9 +434,15 @@ public sealed class CustomCompactField
     public string HeaderTextColor { get; set; } = "#8992A5";
     public string MainTextColor { get; set; } = "#F4F6FA";
     public string TextBoxColor { get; set; } = "#0E1117";
+    public bool IsCompactView { get; set; }
+    public string ImagePath { get; set; } = string.Empty;
+    public bool HasImagePreview => !string.IsNullOrWhiteSpace(ImagePath);
+    public bool HideHeader => Type == "label" || (Type == "list" && IsCompactView);
     public bool IsChecked => bool.TryParse(Value, out var value) && value;
     public string DisplayValue => Type switch
     {
+        "label" => Value,
+        "list" when IsCompactView => $"{Name}: {CustomListCodec.Parse(Value).Count}",
         "list" => string.Join(Environment.NewLine, CustomListCodec.Parse(Value).Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")),
         "files" => string.IsNullOrWhiteSpace(Value) ? "No files attached" : Value,
         "tags" => string.IsNullOrWhiteSpace(Value) ? "No tags" : Value,

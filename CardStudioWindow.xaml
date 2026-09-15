@@ -17,7 +17,7 @@
                     <ItemsControl x:Name="FieldsList"><ItemsControl.ItemTemplate><DataTemplate>
                         <Border Background="#1D222C" CornerRadius="8" Padding="10" Margin="0,0,0,8"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="130"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <StackPanel><TextBlock Text="Name" Foreground="#8992A5" FontSize="9"/><TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Padding="7,5"/></StackPanel>
-                            <StackPanel Grid.Column="1" Margin="8,0"><TextBlock Text="Type" Foreground="#8992A5" FontSize="9"/><ComboBox SelectedValue="{Binding Type}" SelectedValuePath="Content"><ComboBoxItem Content="text"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="files"/></ComboBox></StackPanel>
+                            <StackPanel Grid.Column="1" Margin="8,0"><TextBlock Text="Type" Foreground="#8992A5" FontSize="9"/><ComboBox SelectedValue="{Binding Type}" SelectedValuePath="Content"><ComboBoxItem Content="text"/><ComboBoxItem Content="label"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="files"/></ComboBox></StackPanel>
                             <Button Grid.Column="2" Content="×" Tag="{Binding}" Click="RemoveField_Click" Padding="8,4" VerticalAlignment="Bottom"/>
                         </Grid></Border>
                     </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>

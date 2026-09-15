@@ -1115,7 +1115,7 @@ public partial class MainWindow : Window
         var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == card.CustomTypeId);
         if (customDefinition is not null)
             foreach (var field in customDefinition.Fields)
-                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
+                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "label" ? field.DefaultValue : field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
         EditCustomFieldsList.ItemsSource = _editingCustomValues;
         EditCustomFieldsHost.Visibility = Visibility.Collapsed;
         var isCustomCard = customDefinition is not null;
@@ -1179,7 +1179,11 @@ public partial class MainWindow : Window
             fieldLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             fieldLayout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             FrameworkElement input;
-            if (field.Type == "checkbox")
+            if (field.Type == "label")
+            {
+                input = new TextBlock { Text=field.DefaultValue, Foreground=mainBrush, FontSize=13, TextWrapping=TextWrapping.Wrap, VerticalAlignment=VerticalAlignment.Center, IsHitTestVisible=false };
+            }
+            else if (field.Type == "checkbox")
             {
                 var checkbox = new CheckBox { Content = field.Name, Foreground = mainBrush, FontSize = 12, IsChecked = bool.TryParse(value.Value, out var selected) && selected };
                 checkbox.Checked += (_, _) => value.Value = bool.TrueString;
@@ -1204,9 +1208,9 @@ public partial class MainWindow : Window
                 text.TextChanged += (_, _) => value.Value = text.Text;
                 input = text;
             }
-            if (field.Type != "checkbox")
+            if (field.Type is not ("checkbox" or "label"))
                 fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = headerBrush, FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
-            Grid.SetRow(input, field.Type == "checkbox" ? 0 : 1);
+            Grid.SetRow(input, field.Type is "checkbox" or "label" ? 0 : 1);
             fieldLayout.Children.Add(input);
             var container = new Border { Tag=field, Width = field.Width, Height = GetOpenFieldHeight(field), Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
             Canvas.SetLeft(container, field.X);

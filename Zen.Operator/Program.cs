@@ -229,6 +229,8 @@ int Run(string[] arguments)
             var field = RequireCustomField(document, card, arguments[3]);
             if (field.Type.Equals("files", StringComparison.OrdinalIgnoreCase))
                 return Fail("file fields use 'custom file add|remove', not 'custom set'");
+            if (field.Type.Equals("label", StringComparison.OrdinalIgnoreCase))
+                return Fail("label fields are informational and read-only");
             var value = OptionValue(arguments, "--value") ?? throw new InvalidOperationException("--value is required");
             Enqueue(root, "setCustomField", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id, ["value"] = value });
             Console.WriteLine($"ok: set custom field '{field.Name}' on {card.Id}");
@@ -621,6 +623,8 @@ object DescribeCustomField(TaskCard card, CustomFieldDefinition field)
             ? card.Tags.Where(tag => !IsSystemTag(tag)).ToList()
             : field.Type.Equals("list", StringComparison.OrdinalIgnoreCase)
                 ? CustomListCodec.Parse(card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue))
+                : field.Type.Equals("label", StringComparison.OrdinalIgnoreCase)
+                    ? field.DefaultValue
                 : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
     return new
     {
@@ -690,7 +694,7 @@ void PrintUsage()
       custom types                              list custom card definitions and field schemas
       custom get <id-or-index> <fieldId|name>   print one resolved custom field
       custom set <id-or-index> <fieldId|name> --value <value>
-                                                 set a non-file custom field (tags synchronize card tags)
+                                                 set a writable custom field (file commands are separate; labels are read-only)
       custom list add <id-or-index> <fieldId|name> --item <text>
       custom list remove <id-or-index> <fieldId|name> --index <one-based-index>
       custom list clear <id-or-index> <fieldId|name>
