@@ -141,6 +141,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     private bool _isLocked;
     private bool _isBug;
     private bool _isInProgress;
+    private bool _isAwaitingFeedback;
     private DateTime? _dueDate;
     private DateTime? _startedDate;
     private CardPriority? _priority;
@@ -202,6 +203,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public CardFlags Flags { get; set; } = new();
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
     public bool IsLocked { get => _isLocked; set => SetField(ref _isLocked, value); }
+    public bool IsAwaitingFeedback { get => _isAwaitingFeedback; set => SetField(ref _isAwaitingFeedback, value); }
     public bool IsCollapsed { get => _isCollapsed; set => SetField(ref _isCollapsed, value); }
     [JsonIgnore]
     public bool IsBug

@@ -263,6 +263,13 @@
                                                                         <Setter Property="Background" Value="#232C3D"/>
                                                                         <Setter Property="BorderBrush" Value="#4C8DFF"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsAwaitingFeedback}" Value="True">
+                                                                        <Setter Property="BorderBrush" Value="#53D68A"/>
+                                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                                        <Setter Property="Effect">
+                                                                            <Setter.Value><DropShadowEffect Color="#53D68A" BlurRadius="18" ShadowDepth="0" Opacity="0.8"/></Setter.Value>
+                                                                        </Setter>
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
@@ -521,7 +528,11 @@
                 <StackPanel>
                     <Grid Margin="0,0,0,17">
                         <StackPanel Margin="0,0,170,0">
-                            <TextBlock x:Name="EditHeading" Text="Edit card" FontSize="18" FontWeight="SemiBold"/>
+                            <WrapPanel>
+                                <TextBlock x:Name="EditHeading" Text="Edit card" FontSize="18" FontWeight="SemiBold" Margin="0,0,12,0"/>
+                                <CheckBox x:Name="EditAwaitingFeedbackFlag" Content="Awaiting feedback" Foreground="#72E5A2"
+                                          VerticalAlignment="Center" ToolTip="The agent has left a note and needs user feedback before continuing this card."/>
+                            </WrapPanel>
                             <TextBlock x:Name="EditIdentityText" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,4,0,0"/>
                             <TextBlock x:Name="EditCustomAgentInstructionsText" Visibility="Collapsed" Foreground="#AEB6C7" FontSize="11"
                                        TextWrapping="Wrap" Margin="0,8,0,0" MaxHeight="72" ToolTip="Instructions given to agents when they read this custom card"/>

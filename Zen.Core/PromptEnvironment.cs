@@ -28,6 +28,7 @@ public static class PromptEnvironment
         updatedPrompt = EnsureOperatorPathFallbackInstructions(updatedPrompt);
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
+        updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
         settings.GlobalPrompt = updatedPrompt;
         Materialize(settings.GlobalPrompt);
@@ -163,6 +164,18 @@ public static class PromptEnvironment
         const string nextHeading = "CUSTOM CARDS AND OPERATOR FIELD ACCESS";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         if (insertionPoint < 0) insertionPoint = prompt.IndexOf("DATA SHAPE AND OWNERSHIP", StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureAwaitingFeedbackInstructions(string prompt)
+    {
+        const string heading = "AWAITING FEEDBACK";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "AWAITING FEEDBACK\r\n" +
+            "- Every card has a global `isAwaitingFeedback` state. Set it with `zen-operator feedback <task> waiting` only after adding a clear note that explains what user input is needed. Then run `progress <task> stop` and do not continue that card until the user responds and the state is cleared with `feedback <task> clear`.\r\n" +
+            "- Awaiting-feedback cards glow green in Zen and are excluded from the eligible queue. When processing a branch or project, continue with other eligible cards if their work does not depend on the pending answer; otherwise stop and report the dependency.\r\n\r\n";
+        const string nextHeading = "LOCKS AND ELIGIBILITY";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
 

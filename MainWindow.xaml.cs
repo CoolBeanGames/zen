@@ -1098,6 +1098,7 @@ public partial class MainWindow : Window
             !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
         EditBugFlag.IsChecked = card.IsBug;
         EditInProgressFlag.IsChecked = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
+        EditAwaitingFeedbackFlag.IsChecked = card.IsAwaitingFeedback;
         EditTaskInput.Text = card.Task;
         EditPromptLabel.Text = card.IsNote ? "NOTE" : "TASK PROMPT";
         _editingRequirements.Clear();
@@ -1335,6 +1336,7 @@ public partial class MainWindow : Window
 
         _editingCard.Title = title;
         _editingCard.Task = EditTaskInput.Text.Trim();
+        _editingCard.IsAwaitingFeedback = EditAwaitingFeedbackFlag.IsChecked == true;
         if (!_editingCard.IsNote && _editingCard.CustomTypeId is null)
         {
             _editingCard.Tags.Clear();

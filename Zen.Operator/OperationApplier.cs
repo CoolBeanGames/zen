@@ -174,6 +174,9 @@ public static class OperationApplier
             case "setDone":
                 WithCard(document, operation, card => card.IsDone = operation.Payload["isDone"]!.GetValue<bool>());
                 break;
+            case "setAwaitingFeedback":
+                WithCard(document, operation, card => card.IsAwaitingFeedback = operation.Payload["isAwaitingFeedback"]!.GetValue<bool>());
+                break;
             case "setPaths":
                 if (operation.Payload["latestExePath"] is JsonNode exeNode) document.LatestExePath = exeNode.GetValue<string>();
                 if (operation.Payload["latestReleasePath"] is JsonNode releaseNode) document.LatestReleasePath = releaseNode.GetValue<string>();

@@ -414,6 +414,20 @@ int Run(string[] arguments)
             return 0;
         }
 
+        case "feedback":
+        {
+            if (arguments.Length < 3) return Fail("usage: feedback <id-or-index> <waiting|clear>");
+            var isAwaitingFeedback = arguments[2] switch
+            {
+                "waiting" => true,
+                "clear" => false,
+                _ => throw new InvalidOperationException("state must be 'waiting' or 'clear'")
+            };
+            Enqueue(root, "setAwaitingFeedback", new JsonObject { ["taskId"] = arguments[1], ["isAwaitingFeedback"] = isAwaitingFeedback });
+            Console.WriteLine($"ok: awaiting feedback {(isAwaitingFeedback ? "set" : "cleared")} on {arguments[1]}");
+            return 0;
+        }
+
         case "archive":
         case "complete":
         {
@@ -545,6 +559,7 @@ object DescribeTask(ProjectDocument document, TaskCard card)
         card.Flags,
         card.IsDone,
         card.IsLocked,
+        card.IsAwaitingFeedback,
         card.IsCollapsed,
         card.DueDate,
         card.StartedDate,
@@ -651,6 +666,7 @@ void PrintUsage()
       requirement edit <id-or-index> <reqId> --text <text>
       requirement remove <id-or-index> <reqId> add, edit, or remove checklist items
       progress <id-or-index> start|stop         shortcut for the 'in progress' tag
+      feedback <id-or-index> waiting|clear      set or clear the global awaiting-feedback state
       archive <id-or-index>                     mark a task done (moves it into Archived)
       archive <id-or-index> --undo [--to <branchId>]
                                                  move a task out of Archived and mark it not done (defaults to 'main')

@@ -13,7 +13,7 @@ public static class EligibilityEngine
         foreach (var card in branch.Tasks)
         {
             if (card.Kind == CardKind.Break) break;
-            if (card.IsLocked || card.IsDone) continue;
+            if (card.IsLocked || card.IsDone || card.IsAwaitingFeedback) continue;
             if (card.Kind == CardKind.Note) continue;
             eligible.Add(card);
         }
