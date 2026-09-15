@@ -26,6 +26,7 @@ public static class PromptEnvironment
     {
         var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
+        updatedPrompt = EnsureMergePresetInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
@@ -88,6 +89,29 @@ public static class PromptEnvironment
         const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureMergePresetInstructions(string prompt)
+    {
+        const string current = "- Zen's add menu and `zen-operator merge --branch <id>` create a quick merge task preset with `flags.commit`, `flags.build`, and `flags.merge` enabled. Its task text requires a safe merge into `main`, a push to `origin/main`, and archiving the merge task only after the remote update succeeds. On `main`, verify and push without trying to merge main into itself.";
+        if (prompt.Contains(current, StringComparison.Ordinal)) return prompt;
+
+        var newline = prompt.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
+        var lines = prompt.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n').ToList();
+        var legacyIndex = lines.FindIndex(line => line.Contains("add menu", StringComparison.OrdinalIgnoreCase) && line.Contains("Merge", StringComparison.Ordinal));
+        if (legacyIndex >= 0)
+            lines[legacyIndex] = current;
+        else
+        {
+            var releaseIndex = lines.FindIndex(line => line.Equals("RELEASE TASKS", StringComparison.Ordinal));
+            if (releaseIndex < 0) lines.Add(current);
+            else
+            {
+                lines.Insert(releaseIndex, current);
+                lines.Insert(releaseIndex + 1, string.Empty);
+            }
+        }
+        return string.Join(newline, lines);
     }
 
     private static string EnsureBuiltInCardOperatorInstructions(string prompt)

@@ -95,7 +95,7 @@ When `flags.commit` is true:
 
 MERGE TASKS
 When a task with `flags.merge: true` is reached:
-1. Confirm its containing entry has a non-null branch and that it is not `main`.
+1. Confirm its containing entry has a non-null Git branch. For a non-main branch, merge it into `main`; for a merge preset on `main`, verify and push `main` to origin without trying to merge it into itself.
 2. Confirm all earlier tasks in that branch are done or explicitly excluded by the user. Never bypass a locked or unfinished earlier task.
 3. Confirm every requirement on the merge task is done.
 4. Run the requested build/test verification and confirm the branch is in a mergeable state.
@@ -103,6 +103,8 @@ When a task with `flags.merge: true` is reached:
 6. Merge the containing branch into `main` using a safe, non-destructive workflow. Never discard conflicts or unrelated changes.
 7. Push only when requested or required by an enabled release workflow and authorized by the user.
 8. Set the merge task `isDone: true` only after the merge succeeds. If it fails or conflicts, leave it incomplete and report the blocker.
+
+- Zen's add menu and `zen-operator merge --branch <id>` create this as a quick task preset: `flags.commit`, `flags.build`, and `flags.merge` are already true, and the task text says to merge safely, push `origin/main`, and archive the merge task after the remote update succeeds. A human added it because they want the branch synchronized—treat its title as the only customized input and follow the steps above.
 
 RELEASE TASKS
 When `flags.release` is true, create the requested release build and publish a GitHub release only after successful verification and with the required authorization. Record failure honestly and leave the task incomplete if publishing does not succeed.

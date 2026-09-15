@@ -511,6 +511,22 @@ int Run(string[] arguments)
             return 0;
         }
 
+        case "merge":
+        {
+            var branchId = OptionValue(arguments, "--branch") ?? throw new InvalidOperationException("--branch is required");
+            Enqueue(root, "addTask", new JsonObject
+            {
+                ["branchId"] = branchId,
+                ["title"] = "Merge to origin",
+                ["task"] = "Merge this branch safely into main, push origin/main, then archive this merge task after the remote update succeeds.",
+                ["commit"] = true,
+                ["build"] = true,
+                ["merge"] = true
+            });
+            Console.WriteLine($"ok: created merge task preset on branch {branchId}");
+            return 0;
+        }
+
         case "paths":
         {
             var exePath = OptionValue(arguments, "--exe") ?? throw new InvalidOperationException("--exe is required");
@@ -717,6 +733,7 @@ void PrintUsage()
       bug --branch <id> --title <t> --task <t> [--tag <t>]* [--requirement <r>]*
           [--commit] [--build] [--release] [--merge]
                                                  file a new bug task with correct id/index/ordering
+      merge --branch <id>                       create the built-in merge task preset
       paths --exe <relative-path> [--release]   update latestExePath (and latestReleasePath)
     """);
 }
