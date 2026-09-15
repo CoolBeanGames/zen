@@ -48,8 +48,10 @@
         </Button>
         <TextBlock Text="Drag a real control onto the card." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,14,0,0"/>
       </StackPanel></Border>
-      <Border x:Name="OpenSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Canvas x:Name="DesignCanvas" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="DesignCanvas_Drop" DragOver="DesignCanvas_DragOver" ClipToBounds="True"/>
+      <Border Grid.Column="2" Background="#0E1117" BorderBrush="#262C38" BorderThickness="1" CornerRadius="14" Padding="18">
+        <Border x:Name="OpenSurface" Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+          <Canvas x:Name="DesignCanvas" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="DesignCanvas_Drop" DragOver="DesignCanvas_DragOver" ClipToBounds="True"/>
+        </Border>
       </Border>
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">
         <StackPanel><TextBlock Text="INSPECTOR" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
@@ -69,8 +71,11 @@
         <TextBlock Text="Arrange fields inside this fixed 228 × 168 surface. Content never makes the board card grow." Foreground="#737D91" TextWrapping="Wrap" FontSize="10"/>
         <CheckBox x:Name="ShrinkExpandedHeight" Content="Shrink height to content" Foreground="#D8DCE5" Margin="0,14,0,0" ToolTip="May make expanded cards shorter, but never taller than the designed surface."/>
       </StackPanel></Border>
-      <Border x:Name="ExpandedSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Canvas x:Name="ExpandedCanvas" Width="228" Height="168" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" ClipToBounds="True"/>
+      <Border Grid.Column="2" Background="#0E1117" BorderBrush="#262C38" BorderThickness="1" CornerRadius="14" Padding="24">
+        <Border x:Name="ExpandedSurface" Width="228" Height="168" HorizontalAlignment="Center" VerticalAlignment="Top"
+                Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+          <Canvas x:Name="ExpandedCanvas" Width="228" Height="168" Background="{StaticResource DotGridBrush}" ClipToBounds="True"/>
+        </Border>
       </Border>
     </Grid></TabItem>
     <TabItem Header="Compact card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="14"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -80,8 +85,11 @@
         <CheckBox x:Name="ShrinkCompactHeight" Content="Shrink height to content" Foreground="#D8DCE5" Margin="0,0,0,12" ToolTip="May make compact cards shorter, but never taller than the designed surface."/>
         <ItemsControl x:Name="CompactPalette"><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Name}" Tag="{Binding}" PreviewMouseMove="CompactPalette_PreviewMouseMove" Padding="9" Margin="0,0,0,6"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
       </StackPanel></Border>
-      <Border x:Name="CompactSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Canvas x:Name="CompactCanvas" Width="192" Height="96" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="CompactCanvas_Drop" DragOver="CompactCanvas_DragOver" ClipToBounds="True"/>
+      <Border Grid.Column="2" Background="#0E1117" BorderBrush="#262C38" BorderThickness="1" CornerRadius="14" Padding="24">
+        <Border x:Name="CompactSurface" Width="192" Height="96" HorizontalAlignment="Center" VerticalAlignment="Top"
+                Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+          <Canvas x:Name="CompactCanvas" Width="192" Height="96" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="CompactCanvas_Drop" DragOver="CompactCanvas_DragOver" ClipToBounds="True"/>
+        </Border>
       </Border>
     </Grid></TabItem>
     </TabControl>
