@@ -112,6 +112,20 @@ public static class OperationApplier
                     card.UpdatedAt = DateTimeOffset.UtcNow;
                 });
                 break;
+            case "addCustomListItem":
+                WithCustomList(document, operation, items => items.Add(Require(operation, "item")));
+                break;
+            case "removeCustomListItem":
+                WithCustomList(document, operation, items =>
+                {
+                    var index = operation.Payload["index"]?.GetValue<int>() ?? -1;
+                    if (index < 0 || index >= items.Count) throw new InvalidOperationException($"List index {index + 1} is out of range.");
+                    items.RemoveAt(index);
+                });
+                break;
+            case "clearCustomList":
+                WithCustomList(document, operation, items => items.Clear());
+                break;
             case "addCardFile":
                 WithCard(document, operation, card =>
                 {
@@ -331,6 +345,20 @@ public static class OperationApplier
             ?? throw new InvalidOperationException($"Custom card definition '{card.CustomTypeId}' was not found.");
         return definition.Fields.FirstOrDefault(field => field.Id.Equals(fieldId, StringComparison.OrdinalIgnoreCase))
             ?? throw new InvalidOperationException($"Custom field '{fieldId}' was not found on task '{card.Id}'.");
+    }
+
+    private static void WithCustomList(ProjectDocument document, QueuedWrite operation, Action<List<string>> mutate)
+    {
+        WithCard(document, operation, card =>
+        {
+            var field = RequireCustomField(document, card, Require(operation, "fieldId"));
+            if (!field.Type.Equals("list", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"Custom field '{field.Name}' is not a list.");
+            var items = CustomListCodec.Parse(card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue));
+            mutate(items);
+            card.CustomValues[field.Id] = CustomListCodec.Serialize(items);
+            card.UpdatedAt = DateTimeOffset.UtcNow;
+        });
     }
 
     private static TaskRequirement RequireRequirement(TaskCard card, string idOrIndex) =>

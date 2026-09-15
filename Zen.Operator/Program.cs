@@ -235,6 +235,42 @@ int Run(string[] arguments)
             return 0;
         }
 
+        case "custom" when arguments.Length >= 5 && arguments[1] == "list" && arguments[2] == "add":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[3]);
+            var field = RequireCustomField(document, card, arguments[4]);
+            if (!field.Type.Equals("list", StringComparison.OrdinalIgnoreCase)) return Fail($"custom field '{field.Name}' is not a list");
+            var item = OptionValue(arguments, "--item") ?? throw new InvalidOperationException("--item is required");
+            Enqueue(root, "addCustomListItem", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id, ["item"] = item });
+            Console.WriteLine($"ok: added item to custom list '{field.Name}' on {card.Id}");
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 5 && arguments[1] == "list" && arguments[2] == "remove":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[3]);
+            var field = RequireCustomField(document, card, arguments[4]);
+            if (!field.Type.Equals("list", StringComparison.OrdinalIgnoreCase)) return Fail($"custom field '{field.Name}' is not a list");
+            var indexText = OptionValue(arguments, "--index") ?? throw new InvalidOperationException("--index is required");
+            if (!int.TryParse(indexText, out var index) || index < 1) return Fail("--index must be a one-based positive integer");
+            Enqueue(root, "removeCustomListItem", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id, ["index"] = index - 1 });
+            Console.WriteLine($"ok: removed item {index} from custom list '{field.Name}' on {card.Id}");
+            return 0;
+        }
+
+        case "custom" when arguments.Length >= 5 && arguments[1] == "list" && arguments[2] == "clear":
+        {
+            var document = store.OpenOrCreate();
+            var card = RequireCustomCard(document, arguments[3]);
+            var field = RequireCustomField(document, card, arguments[4]);
+            if (!field.Type.Equals("list", StringComparison.OrdinalIgnoreCase)) return Fail($"custom field '{field.Name}' is not a list");
+            Enqueue(root, "clearCustomList", new JsonObject { ["taskId"] = card.Id, ["fieldId"] = field.Id });
+            Console.WriteLine($"ok: cleared custom list '{field.Name}' on {card.Id}");
+            return 0;
+        }
+
         case "custom" when arguments.Length >= 5 && arguments[1] == "file" && arguments[2] == "add":
         {
             var document = store.OpenOrCreate();
@@ -655,6 +691,10 @@ void PrintUsage()
       custom get <id-or-index> <fieldId|name>   print one resolved custom field
       custom set <id-or-index> <fieldId|name> --value <value>
                                                  set a non-file custom field (tags synchronize card tags)
+      custom list add <id-or-index> <fieldId|name> --item <text>
+      custom list remove <id-or-index> <fieldId|name> --index <one-based-index>
+      custom list clear <id-or-index> <fieldId|name>
+                                                 mutate list fields atomically without rewriting the list
       custom file add <id-or-index> <fieldId|name> --path <sourcePath>
                                                  import and attach a managed file
       custom file remove <id-or-index> <fieldId|name> --file <fileId|name>
