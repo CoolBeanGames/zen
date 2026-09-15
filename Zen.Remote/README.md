@@ -8,7 +8,9 @@
 .\zen-remote.exe
 ```
 
-Tailscale is required. The server validates that this machine is online, starts its backend only on `127.0.0.1`, and automatically configures private Tailscale Serve to provide the machine's word-based MagicDNS HTTPS URL. It never binds the backend to LAN or public interfaces. The console prints the exact phone-accessible URL. Access remains limited by the tailnet's ACLs/grants.
+Tailscale is required. The server validates that this machine is online, starts its backend only on `127.0.0.1`, and automatically configures Tailscale Funnel to provide the machine's word-based HTTPS URL. This matches the original Zen remote-server setup and works from a phone without installing the Tailscale app. The console prints the exact phone-accessible URL.
+
+Tailscale Funnel is internet-facing: anyone who knows the URL can reach the read-only dashboard. The backend itself remains loopback-only and no task-writing endpoints are exposed.
 
 Use `--port 4777` to select another port. Windows may ask for firewall permission the first time the server listens on the Tailscale interface.
 

@@ -21,7 +21,7 @@ builder.Services.AddSingleton<OperatorClient>();
 
 var app = builder.Build();
 app.MapGet("/", () => Results.Content(DashboardPage.Html, "text/html; charset=utf-8"));
-app.MapGet("/health", () => Results.Ok(new { status = "ok", mode = "tailscale-serve", tailnetUrl = tailnet.Url }));
+app.MapGet("/health", () => Results.Ok(new { status = "ok", mode = "tailscale-funnel", tailnetUrl = tailnet.Url }));
 app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry registry, CancellationToken cancellationToken) =>
 {
     var projects = registry.Discover();
@@ -40,10 +40,11 @@ app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry regist
 await app.StartAsync();
 try
 {
-    await NetworkHelpers.ConfigureServeAsync(options.Port);
+    await NetworkHelpers.ConfigureFunnelAsync(options.Port);
     Console.WriteLine($"Zen Remote dashboard: {tailnet.Url}");
     Console.WriteLine($"Loopback backend: http://127.0.0.1:{options.Port}");
-    Console.WriteLine("The dashboard is exposed only through private Tailscale Serve.");
+    Console.WriteLine("The dashboard is exposed through Tailscale Funnel for phone access without the Tailscale app.");
+    Console.WriteLine("Anyone who knows this URL can reach the read-only dashboard.");
     Console.WriteLine($"Operator: {options.OperatorPath}");
     await app.WaitForShutdownAsync();
 }
@@ -237,9 +238,9 @@ internal static class NetworkHelpers
         return new TailnetIdentity(dnsProperty.GetString()!.TrimEnd('.'));
     }
 
-    public static async Task ConfigureServeAsync(int port)
+    public static async Task ConfigureFunnelAsync(int port)
     {
-        await RunTailscaleAsync("serve", "--bg", "--yes", $"http://127.0.0.1:{port}");
+        await RunTailscaleAsync("funnel", "--bg", "--yes", $"http://127.0.0.1:{port}");
     }
 
     private static async Task<string> RunTailscaleAsync(params string[] arguments)
