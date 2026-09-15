@@ -20,7 +20,9 @@ builder.Services.AddSingleton<ProjectRegistry>();
 builder.Services.AddSingleton<OperatorClient>();
 
 var app = builder.Build();
-app.MapGet("/", () => Results.Content(DashboardPage.Html, "text/html; charset=utf-8"));
+app.MapGet("/", () => Results.Content(DashboardPageV2.Html, "text/html; charset=utf-8"));
+app.MapGet("/project/{projectId}", () => Results.Content(DashboardPageV2.Html, "text/html; charset=utf-8"));
+app.MapGet("/project/{projectId}/task/{taskId}", () => Results.Content(DashboardPageV2.Html, "text/html; charset=utf-8"));
 app.MapGet("/health", () => Results.Ok(new { status = "ok", mode = "tailscale-funnel", tailnetUrl = tailnet.Url }));
 app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry registry, CancellationToken cancellationToken) =>
 {
@@ -270,7 +272,7 @@ internal static class NetworkHelpers
     }
 }
 
-internal static class DashboardPage
+internal static class LegacyDashboardPage
 {
     public const string Html = """
 <!doctype html>
