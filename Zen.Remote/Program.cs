@@ -18,6 +18,8 @@ builder.WebHost.ConfigureKestrel(server => server.Listen(listenAddress, options.
 builder.Services.AddSingleton(options);
 builder.Services.AddSingleton<ProjectRegistry>();
 builder.Services.AddSingleton<OperatorClient>();
+builder.Services.AddSingleton<AccessTokenProvider>();
+builder.Services.AddSingleton<TaskMutationService>();
 
 var app = builder.Build();
 app.MapGet("/", () => Results.Content(DashboardPageV2.Html, "text/html; charset=utf-8"));
@@ -38,6 +40,18 @@ app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry regist
         ["projects"] = results
     });
 });
+app.MapPost("/api/projects/{projectId}/tasks", async (string projectId, CreateTaskRequest request, HttpRequest httpRequest, AccessTokenProvider auth, TaskMutationService mutations, CancellationToken cancellationToken) =>
+{
+    if (!auth.IsAuthorized(httpRequest)) return Results.Unauthorized();
+    try { await mutations.CreateTaskAsync(projectId, request, cancellationToken); return Results.Ok(new { ok = true }); }
+    catch (MutationException exception) { return Results.BadRequest(new { error = exception.Message }); }
+});
+app.MapPut("/api/projects/{projectId}/tasks/{taskId}", async (string projectId, string taskId, EditTaskRequest request, HttpRequest httpRequest, AccessTokenProvider auth, TaskMutationService mutations, CancellationToken cancellationToken) =>
+{
+    if (!auth.IsAuthorized(httpRequest)) return Results.Unauthorized();
+    try { await mutations.EditTaskAsync(projectId, taskId, request, cancellationToken); return Results.Ok(new { ok = true }); }
+    catch (MutationException exception) { return Results.BadRequest(new { error = exception.Message }); }
+});
 
 await app.StartAsync();
 try
@@ -48,6 +62,7 @@ try
     Console.WriteLine("The dashboard is exposed through Tailscale Funnel for phone access without the Tailscale app.");
     Console.WriteLine("Anyone who knows this URL can reach the read-only dashboard.");
     Console.WriteLine($"Operator: {options.OperatorPath}");
+    Console.WriteLine($"Write access token file: {app.Services.GetRequiredService<AccessTokenProvider>().TokenPath}");
     await app.WaitForShutdownAsync();
 }
 finally
@@ -184,7 +199,13 @@ internal sealed class OperatorClient(ServerOptions options)
         }
     }
 
-    private async Task<JsonNode> RunJsonAsync(string workingDirectory, CancellationToken cancellationToken, params string[] arguments)
+    public async Task<JsonNode> RunJsonAsync(string workingDirectory, CancellationToken cancellationToken, params string[] arguments)
+    {
+        var output = await RunAsync(workingDirectory, cancellationToken, arguments);
+        return JsonNode.Parse(output) ?? throw new InvalidOperationException("zen-operator returned empty JSON.");
+    }
+
+    public async Task<string> RunAsync(string workingDirectory, CancellationToken cancellationToken, params string[] arguments)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -216,7 +237,7 @@ internal sealed class OperatorClient(ServerOptions options)
         var error = await stderr;
         if (process.ExitCode != 0)
             throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? $"zen-operator exited with code {process.ExitCode}." : error.Trim());
-        return JsonNode.Parse(output) ?? throw new InvalidOperationException("zen-operator returned empty JSON.");
+        return output;
     }
 }
 
