@@ -105,6 +105,17 @@ public sealed class ProjectStore
         document.Branches ??= [];
         document.TagCatalog ??= [];
         document.CustomCardTypes ??= [];
+        foreach (var definition in document.CustomCardTypes)
+        {
+            if (!IsHexColor(definition.CardColor)) definition.CardColor = "#1D222C";
+            if (!IsHexColor(definition.OutlineColor)) definition.OutlineColor = "#2A303D";
+            if (!IsHexColor(definition.HeaderTextColor)) definition.HeaderTextColor = "#8992A5";
+            if (!IsHexColor(definition.MainTextColor)) definition.MainTextColor = "#F4F6FA";
+            if (!IsHexColor(definition.TextBoxColor)) definition.TextBoxColor = "#0E1117";
+            definition.OutlineWidth = Math.Clamp(definition.OutlineWidth, 0, 6);
+            definition.Fields ??= [];
+            foreach (var field in definition.Fields) field.Options ??= [];
+        }
         var duplicateTags = document.TagCatalog.GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .SelectMany(group => group.Skip(1)).ToList();
         foreach (var duplicate in duplicateTags) document.TagCatalog.Remove(duplicate);
@@ -213,6 +224,12 @@ public sealed class ProjectStore
             }
         }
         document.NextCardIndex = Math.Max(document.NextCardIndex, maximumIndex + 1);
+    }
+
+    private static bool IsHexColor(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value[0] != '#') return false;
+        return value.Length is 4 or 5 or 7 or 9 && value[1..].All(Uri.IsHexDigit);
     }
 
     private void HydrateFiles(ProjectDocument document)

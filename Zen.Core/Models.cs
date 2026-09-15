@@ -47,6 +47,9 @@ public sealed class CustomCardDefinition
     public string Instructions { get; set; } = string.Empty;
     public string CardColor { get; set; } = "#1D222C";
     public string OutlineColor { get; set; } = "#2A303D";
+    public string HeaderTextColor { get; set; } = "#8992A5";
+    public string MainTextColor { get; set; } = "#F4F6FA";
+    public string TextBoxColor { get; set; } = "#0E1117";
     public double OutlineWidth { get; set; } = 1;
     public bool ShrinkExpandedToContent { get; set; }
     public bool ShrinkCompactToContent { get; set; }

@@ -1167,6 +1167,9 @@ public partial class MainWindow : Window
     private void RenderCustomCardEditor(CustomCardDefinition definition)
     {
         EditCustomCardCanvas.Children.Clear();
+        var headerBrush = TryCreateBrush(definition.HeaderTextColor, "#8992A5");
+        var mainBrush = TryCreateBrush(definition.MainTextColor, "#F4F6FA");
+        var textBoxBrush = TryCreateBrush(definition.TextBoxColor, "#0E1117");
         EditCustomCardCanvas.Width = Math.Max(540, definition.Fields.Count == 0 ? 540 : definition.Fields.Max(item => item.X + item.Width) + 20);
         EditCustomCardCanvas.Height = definition.Fields.Count == 0 ? 120 : definition.Fields.Max(field => field.Y + GetOpenFieldHeight(field)) + 12;
         foreach (var field in definition.Fields)
@@ -1178,31 +1181,31 @@ public partial class MainWindow : Window
             FrameworkElement input;
             if (field.Type == "checkbox")
             {
-                var checkbox = new CheckBox { Content = field.Name, Foreground = (Brush)FindResource("TextBrush"), FontSize = 12, IsChecked = bool.TryParse(value.Value, out var selected) && selected };
+                var checkbox = new CheckBox { Content = field.Name, Foreground = mainBrush, FontSize = 12, IsChecked = bool.TryParse(value.Value, out var selected) && selected };
                 checkbox.Checked += (_, _) => value.Value = bool.TrueString;
                 checkbox.Unchecked += (_, _) => value.Value = bool.FalseString;
                 input = checkbox;
             }
             else if (field.Type == "dropdown")
             {
-                var combo = new ComboBox { ItemsSource = field.Options, SelectedItem = value.Value, MinHeight = 36, FontSize = 13, VerticalAlignment = VerticalAlignment.Top };
+                var combo = new ComboBox { ItemsSource = field.Options, SelectedItem = value.Value, Foreground=mainBrush, Background=textBoxBrush, MinHeight = 36, FontSize = 13, VerticalAlignment = VerticalAlignment.Top };
                 combo.SelectionChanged += (_, _) => value.Value = combo.SelectedItem?.ToString() ?? string.Empty;
                 input = combo;
             }
             else if (field.Type == "list")
-                input = BuildCustomListEditor(value, () => ResizeCustomEditorForContent(definition));
+                input = BuildCustomListEditor(value, () => ResizeCustomEditorForContent(definition), mainBrush, textBoxBrush);
             else if (field.Type == "tags")
-                input = BuildCustomTagEditor(value);
+                input = BuildCustomTagEditor(value, mainBrush, textBoxBrush);
             else if (field.Type == "files")
-                input = BuildCustomFileEditor();
+                input = BuildCustomFileEditor(mainBrush, textBoxBrush);
             else
             {
-                var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), MinHeight = 36, FontSize = 13, AcceptsReturn = field.Type == "text", TextWrapping = TextWrapping.Wrap, VerticalContentAlignment = VerticalAlignment.Top, VerticalAlignment = VerticalAlignment.Stretch };
+                var text = new TextBox { Text = value.Value, Style = (Style)FindResource("Field"), Foreground=mainBrush, Background=textBoxBrush, MinHeight = 36, FontSize = 13, AcceptsReturn = field.Type == "text", TextWrapping = TextWrapping.Wrap, VerticalContentAlignment = VerticalAlignment.Top, VerticalAlignment = VerticalAlignment.Stretch };
                 text.TextChanged += (_, _) => value.Value = text.Text;
                 input = text;
             }
             if (field.Type != "checkbox")
-                fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = (Brush)FindResource("MutedBrush"), FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
+                fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = headerBrush, FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
             Grid.SetRow(input, field.Type == "checkbox" ? 0 : 1);
             fieldLayout.Children.Add(input);
             var container = new Border { Tag=field, Width = field.Width, Height = GetOpenFieldHeight(field), Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
@@ -1230,7 +1233,7 @@ public partial class MainWindow : Window
         EditorShell.Height=available;
     }
 
-    private FrameworkElement BuildCustomListEditor(CustomFieldValue value, Action contentChanged)
+    private FrameworkElement BuildCustomListEditor(CustomFieldValue value, Action contentChanged, Brush mainBrush, Brush textBoxBrush)
     {
         var entries = CustomListCodec.Parse(value.Value);
         var root = new Grid();
@@ -1239,7 +1242,7 @@ public partial class MainWindow : Window
         var items = new StackPanel();
         var scroller = new ScrollViewer { VerticalScrollBarVisibility=ScrollBarVisibility.Auto, HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled, Content=items, Padding=new Thickness(0,0,5,0) };
         root.Children.Add(scroller);
-        var addInput = new TextBox { Style=(Style)FindResource("Field"), MinHeight=40, AcceptsReturn=false, Margin=new Thickness(0,8,8,0), Padding=new Thickness(10,7,10,7) };
+        var addInput = new TextBox { Style=(Style)FindResource("Field"), Foreground=mainBrush, Background=textBoxBrush, MinHeight=40, AcceptsReturn=false, Margin=new Thickness(0,8,8,0), Padding=new Thickness(10,7,10,7) };
         Action render = null!;
         render = () =>
         {
@@ -1250,7 +1253,7 @@ public partial class MainWindow : Window
                 var shell=new Border { Background=new SolidColorBrush(Color.FromRgb(32,37,47)), CornerRadius=new CornerRadius(7), Padding=new Thickness(9), Margin=new Thickness(0,0,0,7) };
                 var row=new Grid();
                 row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Auto });
-                var text=new TextBox { Text=entries[index], AcceptsReturn=true, TextWrapping=TextWrapping.Wrap, MinHeight=48, Padding=new Thickness(12,9,12,9), Background=new SolidColorBrush(Color.FromRgb(14,17,23)), Foreground=(Brush)FindResource("TextBrush"), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), VerticalScrollBarVisibility=ScrollBarVisibility.Auto };
+                var text=new TextBox { Text=entries[index], AcceptsReturn=true, TextWrapping=TextWrapping.Wrap, MinHeight=48, Padding=new Thickness(12,9,12,9), Background=textBoxBrush, Foreground=mainBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), VerticalScrollBarVisibility=ScrollBarVisibility.Auto };
                 text.TextChanged += (_, _) => { entries[itemIndex]=text.Text; value.Value=CustomListCodec.Serialize(entries); };
                 var remove=new Button { Content="×", Style=(Style)FindResource("IconButton"), Padding=new Thickness(7,3,7,3), Margin=new Thickness(6,0,0,0), Tag=itemIndex, VerticalAlignment=VerticalAlignment.Top };
                 remove.Click += (_, _) => { entries.RemoveAt(itemIndex); value.Value=CustomListCodec.Serialize(entries); render(); contentChanged(); };
@@ -1268,13 +1271,13 @@ public partial class MainWindow : Window
         return root;
     }
 
-    private FrameworkElement BuildCustomTagEditor(CustomFieldValue value)
+    private FrameworkElement BuildCustomTagEditor(CustomFieldValue value, Brush mainBrush, Brush textBoxBrush)
     {
         var root=new StackPanel();
-        var text=new TextBox { Text=value.Value, Style=(Style)FindResource("Field"), MinHeight=36, ToolTip="Comma-separated project tags" };
+        var text=new TextBox { Text=value.Value, Style=(Style)FindResource("Field"), Foreground=mainBrush, Background=textBoxBrush, MinHeight=36, ToolTip="Comma-separated project tags" };
         text.TextChanged += (_, _) => value.Value=text.Text;
         root.Children.Add(text);
-        var picker=new ComboBox { ItemsSource=_document?.TagCatalog.Select(tag => tag.Name).OrderBy(name => name).ToList(), IsEditable=true, IsTextSearchEnabled=true, Margin=new Thickness(0,6,0,0), MinHeight=32 };
+        var picker=new ComboBox { ItemsSource=_document?.TagCatalog.Select(tag => tag.Name).OrderBy(name => name).ToList(), IsEditable=true, IsTextSearchEnabled=true, Foreground=mainBrush, Background=textBoxBrush, Margin=new Thickness(0,6,0,0), MinHeight=32 };
         picker.SelectionChanged += (_, _) =>
         {
             if (picker.SelectedItem is not string selected) return;
@@ -1286,10 +1289,10 @@ public partial class MainWindow : Window
         return root;
     }
 
-    private FrameworkElement BuildCustomFileEditor()
+    private FrameworkElement BuildCustomFileEditor(Brush mainBrush, Brush textBoxBrush)
     {
         var root=new StackPanel();
-        var attach=new Button { Content="＋ Attach files", Style=(Style)FindResource("IconButton"), HorizontalAlignment=HorizontalAlignment.Left, Padding=new Thickness(9,5,9,5) };
+        var attach=new Button { Content="＋ Attach files", Style=(Style)FindResource("IconButton"), Foreground=mainBrush, Background=textBoxBrush, HorizontalAlignment=HorizontalAlignment.Left, Padding=new Thickness(9,5,9,5) };
         attach.Click += AttachFiles_Click;
         root.Children.Add(attach);
         root.Children.Add(new ItemsControl { ItemsSource=_editingFileNames, Margin=new Thickness(0,6,0,0) });

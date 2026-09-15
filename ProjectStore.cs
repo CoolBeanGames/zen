@@ -115,6 +115,9 @@ public sealed class ProjectStore
         {
             if (!IsHexColor(definition.CardColor)) definition.CardColor = "#1D222C";
             if (!IsHexColor(definition.OutlineColor)) definition.OutlineColor = "#2A303D";
+            if (!IsHexColor(definition.HeaderTextColor)) definition.HeaderTextColor = "#8992A5";
+            if (!IsHexColor(definition.MainTextColor)) definition.MainTextColor = "#F4F6FA";
+            if (!IsHexColor(definition.TextBoxColor)) definition.TextBoxColor = "#0E1117";
             definition.OutlineWidth = Math.Clamp(definition.OutlineWidth, 0, 6);
             definition.Fields ??= [];
             foreach (var field in definition.Fields) field.Options ??= [];
@@ -294,13 +297,13 @@ public sealed class ProjectStore
             {
                 var width = Math.Min(ExpandedSurfaceWidth, Math.Max(60, field.ExpandedWidth));
                 var height = Math.Min(ExpandedSurfaceHeight, Math.Max(36, field.ExpandedHeight));
-                card.CustomExpandedFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.ExpandedX, 0, ExpandedSurfaceWidth-width), Math.Clamp(field.ExpandedY, 0, ExpandedSurfaceHeight-height), width, height));
+                card.CustomExpandedFields.Add(CreateCustomFieldView(card, definition, field, Math.Clamp(field.ExpandedX, 0, ExpandedSurfaceWidth-width), Math.Clamp(field.ExpandedY, 0, ExpandedSurfaceHeight-height), width, height));
             }
             foreach (var field in definition.Fields.Where(field => field.ShowOnCollapsed))
             {
                 var width = Math.Min(CompactSurfaceWidth, Math.Max(60, field.CompactWidth));
                 var height = Math.Min(CompactSurfaceHeight, Math.Max(36, field.CompactHeight));
-                card.CustomCompactFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.CompactX, 0, CompactSurfaceWidth-width), Math.Clamp(field.CompactY, 0, CompactSurfaceHeight-height), width, height));
+                card.CustomCompactFields.Add(CreateCustomFieldView(card, definition, field, Math.Clamp(field.CompactX, 0, CompactSurfaceWidth-width), Math.Clamp(field.CompactY, 0, CompactSurfaceHeight-height), width, height));
             }
             var expandedContentHeight = card.CustomExpandedFields.Count == 0 ? 36 : card.CustomExpandedFields.Max(field => field.Y + field.Height);
             var compactContentHeight = card.CustomCompactFields.Count == 0 ? 36 : card.CustomCompactFields.Max(field => field.Y + field.Height);
@@ -310,14 +313,19 @@ public sealed class ProjectStore
         }
     }
 
-    private static CustomCompactField CreateCustomFieldView(TaskCard card, CustomFieldDefinition field, double x, double y, double width, double height)
+    private static CustomCompactField CreateCustomFieldView(TaskCard card, CustomCardDefinition definition, CustomFieldDefinition field, double x, double y, double width, double height)
     {
         var value = card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
         if (field.Type == "files")
             value = string.Join(Environment.NewLine, card.Files.Select(file => $"📎 {file.Name}"));
         else if (field.Type == "tags")
             value = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
-        return new CustomCompactField { Name=field.Name, Type=field.Type, Value=value, X=x, Y=y, Width=width, Height=height };
+        return new CustomCompactField
+        {
+            Name=field.Name, Type=field.Type, Value=value,
+            HeaderTextColor=definition.HeaderTextColor, MainTextColor=definition.MainTextColor, TextBoxColor=definition.TextBoxColor,
+            X=x, Y=y, Width=width, Height=height
+        };
     }
 
     private static bool IsHexColor(string? value)

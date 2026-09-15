@@ -34,6 +34,9 @@ public partial class CardDesignerWindow : Window
         AgentInstructionsInput.Text = definition.Instructions;
         CardFillInput.Text = definition.CardColor;
         CardOutlineInput.Text = definition.OutlineColor;
+        HeaderTextColorInput.Text = definition.HeaderTextColor;
+        MainTextColorInput.Text = definition.MainTextColor;
+        TextBoxColorInput.Text = definition.TextBoxColor;
         OutlineWidthInput.SelectedIndex = Math.Clamp((int)Math.Round(definition.OutlineWidth), 0, 4);
         ShrinkExpandedHeight.IsChecked = definition.ShrinkExpandedToContent;
         ShrinkCompactHeight.IsChecked = definition.ShrinkCompactToContent;
@@ -80,44 +83,47 @@ public partial class CardDesignerWindow : Window
             Canvas.SetLeft(host,field.X); Canvas.SetTop(host,field.Y); DesignCanvas.Children.Add(host);
         }
     }
-    private static FrameworkElement BuildFieldPreview(CustomFieldDefinition field)
+    private FrameworkElement BuildFieldPreview(CustomFieldDefinition field)
     {
+        var headerBrush = ReadAppearanceBrush(HeaderTextColorInput, "#8992A5");
+        var mainBrush = ReadAppearanceBrush(MainTextColorInput, "#F4F6FA");
+        var textBoxBrush = ReadAppearanceBrush(TextBoxColorInput, "#0E1117");
         if (field.Type == "checkbox")
-            return new CheckBox { Content=field.Name, IsChecked=bool.TryParse(field.DefaultValue, out var selected) && selected, FontSize=12, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
+            return new CheckBox { Content=field.Name, Foreground=mainBrush, IsChecked=bool.TryParse(field.DefaultValue, out var selected) && selected, FontSize=12, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
 
         if (field.Type == "list")
-            return BuildLabeledPreview(field.Name, new Border { Background=new SolidColorBrush(Color.FromRgb(29,34,44)), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Text=string.Join(Environment.NewLine, CustomListCodec.Parse(field.DefaultValue).DefaultIfEmpty("List item").Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")), FontSize=11, TextWrapping=TextWrapping.Wrap } });
+            return BuildLabeledPreview(field.Name, new Border { Background=textBoxBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Foreground=mainBrush, Text=string.Join(Environment.NewLine, CustomListCodec.Parse(field.DefaultValue).DefaultIfEmpty("List item").Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")), FontSize=11, TextWrapping=TextWrapping.Wrap } }, headerBrush);
 
         if (field.Type == "tags")
         {
             var tags = new WrapPanel();
             foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).DefaultIfEmpty("tag"))
-                tags.Children.Add(new Border { Background=new SolidColorBrush(Color.FromRgb(81,72,144)), CornerRadius=new CornerRadius(4), Padding=new Thickness(7,3,7,3), Margin=new Thickness(0,0,5,4), Child=new TextBlock { Text=tag, FontSize=9, FontWeight=FontWeights.Bold } });
-            return BuildLabeledPreview(field.Name, tags);
+                tags.Children.Add(new Border { Background=new SolidColorBrush(Color.FromRgb(81,72,144)), CornerRadius=new CornerRadius(4), Padding=new Thickness(7,3,7,3), Margin=new Thickness(0,0,5,4), Child=new TextBlock { Text=tag, Foreground=mainBrush, FontSize=9, FontWeight=FontWeights.Bold } });
+            return BuildLabeledPreview(field.Name, tags, headerBrush);
         }
 
         if (field.Type == "files")
-            return BuildLabeledPreview(field.Name, new Button { Content="＋ Attach files", HorizontalAlignment=HorizontalAlignment.Stretch, Padding=new Thickness(8,5,8,5), IsHitTestVisible=false });
+            return BuildLabeledPreview(field.Name, new Button { Content="＋ Attach files", Foreground=mainBrush, Background=textBoxBrush, HorizontalAlignment=HorizontalAlignment.Stretch, Padding=new Thickness(8,5,8,5), IsHitTestVisible=false }, headerBrush);
 
         var grid = new Grid { IsHitTestVisible=false };
         grid.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
         grid.RowDefinitions.Add(new RowDefinition { Height=new GridLength(1, GridUnitType.Star) });
-        grid.Children.Add(new TextBlock { Text=field.Name.ToUpperInvariant(), Foreground=new SolidColorBrush(Color.FromRgb(137,146,165)), FontSize=10, FontWeight=FontWeights.Bold, Margin=new Thickness(0,0,0,5) });
+        grid.Children.Add(new TextBlock { Text=field.Name.ToUpperInvariant(), Foreground=headerBrush, FontSize=10, FontWeight=FontWeights.Bold, Margin=new Thickness(0,0,0,5) });
         FrameworkElement input;
         if (field.Type == "dropdown")
-            input = new ComboBox { ItemsSource=field.Options, SelectedItem=string.IsNullOrWhiteSpace(field.DefaultValue) ? field.Options.FirstOrDefault() : field.DefaultValue, MinHeight=36, FontSize=13, VerticalAlignment=VerticalAlignment.Top };
+            input = new ComboBox { ItemsSource=field.Options, SelectedItem=string.IsNullOrWhiteSpace(field.DefaultValue) ? field.Options.FirstOrDefault() : field.DefaultValue, Foreground=mainBrush, Background=textBoxBrush, MinHeight=36, FontSize=13, VerticalAlignment=VerticalAlignment.Top };
         else
-            input = new TextBox { Text=field.DefaultValue, MinHeight=36, FontSize=13, Padding=new Thickness(9,7,9,7), AcceptsReturn=field.Type=="text", TextWrapping=TextWrapping.Wrap, VerticalContentAlignment=VerticalAlignment.Top, VerticalAlignment=VerticalAlignment.Stretch };
+            input = new TextBox { Text=field.DefaultValue, Foreground=mainBrush, Background=textBoxBrush, MinHeight=36, FontSize=13, Padding=new Thickness(9,7,9,7), AcceptsReturn=field.Type=="text", TextWrapping=TextWrapping.Wrap, VerticalContentAlignment=VerticalAlignment.Top, VerticalAlignment=VerticalAlignment.Stretch };
         Grid.SetRow(input, 1);
         grid.Children.Add(input);
         return grid;
     }
-    private static FrameworkElement BuildLabeledPreview(string name, FrameworkElement content)
+    private static FrameworkElement BuildLabeledPreview(string name, FrameworkElement content, Brush headerBrush)
     {
         var grid = new Grid { IsHitTestVisible=false };
         grid.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
         grid.RowDefinitions.Add(new RowDefinition { Height=new GridLength(1, GridUnitType.Star) });
-        grid.Children.Add(new TextBlock { Text=name.ToUpperInvariant(), Foreground=new SolidColorBrush(Color.FromRgb(137,146,165)), FontSize=10, FontWeight=FontWeights.Bold, Margin=new Thickness(0,0,0,5) });
+        grid.Children.Add(new TextBlock { Text=name.ToUpperInvariant(), Foreground=headerBrush, FontSize=10, FontWeight=FontWeights.Bold, Margin=new Thickness(0,0,0,5) });
         Grid.SetRow(content, 1);
         grid.Children.Add(content);
         return grid;
@@ -248,7 +254,12 @@ public partial class CardDesignerWindow : Window
         var outline = TryBrush(CardOutlineInput.Text, out var outlineBrush) ? outlineBrush : new SolidColorBrush(Color.FromRgb(42,48,61));
         var width = OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var parsed) ? parsed : 1;
         foreach (var surface in new[] { OpenSurface, ExpandedSurface, CompactSurface }) { surface.Background=fill; surface.BorderBrush=outline; surface.BorderThickness=new Thickness(width); }
+        RenderFields();
+        RefreshExpandedDesigner();
+        RefreshCompactDesigner();
     }
+    private static Brush ReadAppearanceBrush(TextBox input, string fallback) =>
+        TryBrush(input.Text, out var brush) ? brush : (Brush)new BrushConverter().ConvertFromString(fallback)!;
     private static bool TryBrush(string value, out Brush brush)
     {
         try { brush=(Brush)new BrushConverter().ConvertFromString(value)!; return brush is not null; }
@@ -256,10 +267,13 @@ public partial class CardDesignerWindow : Window
     }
     private void Save_Click(object sender, RoutedEventArgs e)
     {
-        if (!TryBrush(CardFillInput.Text, out _) || !TryBrush(CardOutlineInput.Text, out _)) { MessageBox.Show(this, "Use a valid color such as #1D222C.", "Invalid card color", MessageBoxButton.OK, MessageBoxImage.Information); return; }
+        if (!TryBrush(CardFillInput.Text, out _) || !TryBrush(CardOutlineInput.Text, out _) || !TryBrush(HeaderTextColorInput.Text, out _) || !TryBrush(MainTextColorInput.Text, out _) || !TryBrush(TextBoxColorInput.Text, out _)) { MessageBox.Show(this, "Use valid colors such as #1D222C.", "Invalid card color", MessageBoxButton.OK, MessageBoxImage.Information); return; }
         _definition.CardColor=CardFillInput.Text.Trim();
         _definition.Instructions=AgentInstructionsInput.Text.Trim();
         _definition.OutlineColor=CardOutlineInput.Text.Trim();
+        _definition.HeaderTextColor=HeaderTextColorInput.Text.Trim();
+        _definition.MainTextColor=MainTextColorInput.Text.Trim();
+        _definition.TextBoxColor=TextBoxColorInput.Text.Trim();
         _definition.OutlineWidth=OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var width) ? width : 1;
         _definition.ShrinkExpandedToContent=ShrinkExpandedHeight.IsChecked==true;
         _definition.ShrinkCompactToContent=ShrinkCompactHeight.IsChecked==true;
