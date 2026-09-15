@@ -8,7 +8,7 @@
 .\zen-remote.exe
 ```
 
-Tailscale is required. The server asks `tailscale ip -4` for this machine's tailnet address and binds only to that address; it never listens on localhost or public interfaces. The console prints the exact phone-accessible URL. Traffic remains limited by the machine's Tailscale connectivity and tailnet ACLs/grants. HTTP content is transported inside Tailscale's encrypted tunnel.
+Tailscale is required. The server validates that this machine is online, starts its backend only on `127.0.0.1`, and automatically configures private Tailscale Serve to provide the machine's word-based MagicDNS HTTPS URL. It never binds the backend to LAN or public interfaces. The console prints the exact phone-accessible URL. Access remains limited by the tailnet's ACLs/grants.
 
 Use `--port 4777` to select another port. Windows may ask for firewall permission the first time the server listens on the Tailscale interface.
 

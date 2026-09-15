@@ -10,7 +10,8 @@ if (options.ShowHelp)
     return;
 }
 
-var listenAddress = await NetworkHelpers.GetTailscaleAddressAsync();
+var tailnet = await NetworkHelpers.GetTailnetIdentityAsync();
+var listenAddress = IPAddress.Loopback;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(server => server.Listen(listenAddress, options.Port));
@@ -20,7 +21,7 @@ builder.Services.AddSingleton<OperatorClient>();
 
 var app = builder.Build();
 app.MapGet("/", () => Results.Content(DashboardPage.Html, "text/html; charset=utf-8"));
-app.MapGet("/health", () => Results.Ok(new { status = "ok", mode = "tailscale" }));
+app.MapGet("/health", () => Results.Ok(new { status = "ok", mode = "tailscale-serve", tailnetUrl = tailnet.Url }));
 app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry registry, CancellationToken cancellationToken) =>
 {
     var projects = registry.Discover();
@@ -36,13 +37,20 @@ app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry regist
     });
 });
 
-var displayHost = listenAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6
-    ? $"[{listenAddress}]"
-    : listenAddress.ToString();
-Console.WriteLine($"Zen Remote dashboard: http://{displayHost}:{options.Port}");
-Console.WriteLine("Listening only on this machine's Tailscale address. Tailnet policy controls who can connect.");
-Console.WriteLine($"Operator: {options.OperatorPath}");
-await app.RunAsync();
+await app.StartAsync();
+try
+{
+    await NetworkHelpers.ConfigureServeAsync(options.Port);
+    Console.WriteLine($"Zen Remote dashboard: {tailnet.Url}");
+    Console.WriteLine($"Loopback backend: http://127.0.0.1:{options.Port}");
+    Console.WriteLine("The dashboard is exposed only through private Tailscale Serve.");
+    Console.WriteLine($"Operator: {options.OperatorPath}");
+    await app.WaitForShutdownAsync();
+}
+finally
+{
+    await app.StopAsync();
+}
 
 internal sealed record ServerOptions(string OperatorPath, int Port, bool ShowHelp, IReadOnlyList<string> ProjectPaths)
 {
@@ -209,9 +217,32 @@ internal sealed class OperatorClient(ServerOptions options)
     }
 }
 
+internal sealed record TailnetIdentity(string DnsName)
+{
+    public string Url => $"https://{DnsName}/";
+}
+
 internal static class NetworkHelpers
 {
-    public static async Task<IPAddress> GetTailscaleAddressAsync()
+    public static async Task<TailnetIdentity> GetTailnetIdentityAsync()
+    {
+        var output = await RunTailscaleAsync("status", "--json");
+        using var document = JsonDocument.Parse(output);
+        var root = document.RootElement;
+        if (!root.TryGetProperty("Self", out var self) ||
+            !self.TryGetProperty("Online", out var online) || !online.GetBoolean())
+            throw new InvalidOperationException("This machine is not online in Tailscale.");
+        if (!self.TryGetProperty("DNSName", out var dnsProperty) || string.IsNullOrWhiteSpace(dnsProperty.GetString()))
+            throw new InvalidOperationException("Tailscale did not report a MagicDNS hostname for this machine.");
+        return new TailnetIdentity(dnsProperty.GetString()!.TrimEnd('.'));
+    }
+
+    public static async Task ConfigureServeAsync(int port)
+    {
+        await RunTailscaleAsync("serve", "--bg", "--yes", $"http://127.0.0.1:{port}");
+    }
+
+    private static async Task<string> RunTailscaleAsync(params string[] arguments)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -221,23 +252,19 @@ internal static class NetworkHelpers
             RedirectStandardError = true,
             CreateNoWindow = true
         };
-        startInfo.ArgumentList.Add("ip");
-        startInfo.ArgumentList.Add("-4");
+        foreach (var argument in arguments) startInfo.ArgumentList.Add(argument);
         try
         {
             using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("Could not start tailscale.");
             var output = await process.StandardOutput.ReadToEndAsync();
             var error = await process.StandardError.ReadToEndAsync();
             await process.WaitForExitAsync();
-            var address = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(value => IPAddress.TryParse(value, out var parsed) ? parsed : null)
-                .FirstOrDefault(value => value?.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-            if (process.ExitCode == 0 && address is not null) return address;
-            throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? "Tailscale did not report an IPv4 address." : error.Trim());
+            if (process.ExitCode == 0) return output;
+            throw new InvalidOperationException(string.IsNullOrWhiteSpace(error) ? $"tailscale exited with code {process.ExitCode}." : error.Trim());
         }
         catch (System.ComponentModel.Win32Exception exception)
         {
-            throw new InvalidOperationException("Tailscale CLI was not found. Install Tailscale or start without --tailscale.", exception);
+            throw new InvalidOperationException("Tailscale CLI was not found. Tailscale is required to run Zen Remote.", exception);
         }
     }
 }
