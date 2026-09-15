@@ -18,7 +18,6 @@ builder.WebHost.ConfigureKestrel(server => server.Listen(listenAddress, options.
 builder.Services.AddSingleton(options);
 builder.Services.AddSingleton<ProjectRegistry>();
 builder.Services.AddSingleton<OperatorClient>();
-builder.Services.AddSingleton<AccessTokenProvider>();
 builder.Services.AddSingleton<TaskMutationService>();
 
 var app = builder.Build();
@@ -40,15 +39,13 @@ app.MapGet("/api/projects", async (OperatorClient client, ProjectRegistry regist
         ["projects"] = results
     });
 });
-app.MapPost("/api/projects/{projectId}/tasks", async (string projectId, CreateTaskRequest request, HttpRequest httpRequest, AccessTokenProvider auth, TaskMutationService mutations, CancellationToken cancellationToken) =>
+app.MapPost("/api/projects/{projectId}/tasks", async (string projectId, CreateTaskRequest request, TaskMutationService mutations, CancellationToken cancellationToken) =>
 {
-    if (!auth.IsAuthorized(httpRequest)) return Results.Unauthorized();
     try { await mutations.CreateTaskAsync(projectId, request, cancellationToken); return Results.Ok(new { ok = true }); }
     catch (MutationException exception) { return Results.BadRequest(new { error = exception.Message }); }
 });
-app.MapPut("/api/projects/{projectId}/tasks/{taskId}", async (string projectId, string taskId, EditTaskRequest request, HttpRequest httpRequest, AccessTokenProvider auth, TaskMutationService mutations, CancellationToken cancellationToken) =>
+app.MapPut("/api/projects/{projectId}/tasks/{taskId}", async (string projectId, string taskId, EditTaskRequest request, TaskMutationService mutations, CancellationToken cancellationToken) =>
 {
-    if (!auth.IsAuthorized(httpRequest)) return Results.Unauthorized();
     try { await mutations.EditTaskAsync(projectId, taskId, request, cancellationToken); return Results.Ok(new { ok = true }); }
     catch (MutationException exception) { return Results.BadRequest(new { error = exception.Message }); }
 });
@@ -60,9 +57,8 @@ try
     Console.WriteLine($"Zen Remote dashboard: {tailnet.Url}");
     Console.WriteLine($"Loopback backend: http://127.0.0.1:{options.Port}");
     Console.WriteLine("The dashboard is exposed through Tailscale Funnel for phone access without the Tailscale app.");
-    Console.WriteLine("Anyone who knows this URL can reach the read-only dashboard.");
+    Console.WriteLine("Anyone who knows this URL can view, create, and edit tasks without authentication.");
     Console.WriteLine($"Operator: {options.OperatorPath}");
-    Console.WriteLine($"Write access token file: {app.Services.GetRequiredService<AccessTokenProvider>().TokenPath}");
     await app.WaitForShutdownAsync();
 }
 finally
@@ -73,7 +69,7 @@ finally
 internal sealed record ServerOptions(string OperatorPath, int Port, bool ShowHelp, IReadOnlyList<string> ProjectPaths)
 {
     public const string HelpText = """
-        zen-remote - read-only Zen task dashboard
+        zen-remote - Zen task dashboard
 
         Usage:
           zen-remote [--port 4777] [--operator PATH] [--project PATH]...

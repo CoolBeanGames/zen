@@ -1,34 +1,5 @@
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-
-internal sealed class AccessTokenProvider
-{
-    private readonly byte[] _tokenHash;
-    public string TokenPath { get; }
-
-    public AccessTokenProvider()
-    {
-        var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Zen");
-        Directory.CreateDirectory(directory);
-        TokenPath = Path.Combine(directory, "zen-remote-token.txt");
-        var token = File.Exists(TokenPath) ? File.ReadAllText(TokenPath).Trim() : string.Empty;
-        if (token.Length < 32)
-        {
-            token = Convert.ToHexString(RandomNumberGenerator.GetBytes(24)).ToLowerInvariant();
-            File.WriteAllText(TokenPath, token, new UTF8Encoding(false));
-        }
-        _tokenHash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
-    }
-
-    public bool IsAuthorized(HttpRequest request)
-    {
-        if (!request.Headers.TryGetValue("X-Zen-Token", out var supplied) || supplied.Count != 1) return false;
-        var candidate = SHA256.HashData(Encoding.UTF8.GetBytes(supplied[0] ?? string.Empty));
-        return CryptographicOperations.FixedTimeEquals(_tokenHash, candidate);
-    }
-}
 
 internal sealed class CreateTaskRequest
 {
