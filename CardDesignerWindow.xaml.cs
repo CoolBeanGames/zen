@@ -34,6 +34,8 @@ public partial class CardDesignerWindow : Window
         CardFillInput.Text = definition.CardColor;
         CardOutlineInput.Text = definition.OutlineColor;
         OutlineWidthInput.SelectedIndex = Math.Clamp((int)Math.Round(definition.OutlineWidth), 0, 4);
+        ShrinkExpandedHeight.IsChecked = definition.ShrinkExpandedToContent;
+        ShrinkCompactHeight.IsChecked = definition.ShrinkCompactToContent;
         _loading = false;
         Loaded += (_, _) => { ApplyAppearancePreview(); RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); };
     }
@@ -83,7 +85,7 @@ public partial class CardDesignerWindow : Window
             return new CheckBox { Content=field.Name, IsChecked=bool.TryParse(field.DefaultValue, out var selected) && selected, FontSize=12, IsHitTestVisible=false, VerticalAlignment=VerticalAlignment.Center };
 
         if (field.Type == "list")
-            return BuildLabeledPreview(field.Name, new Border { Background=new SolidColorBrush(Color.FromRgb(29,34,44)), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Text=string.Join(Environment.NewLine, field.DefaultValue.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).DefaultIfEmpty("List item").Select(item => $"• {item}")), FontSize=11, TextWrapping=TextWrapping.Wrap } });
+            return BuildLabeledPreview(field.Name, new Border { Background=new SolidColorBrush(Color.FromRgb(29,34,44)), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(7,5,7,5), Child=new TextBlock { Text=string.Join(Environment.NewLine, CustomListCodec.Parse(field.DefaultValue).DefaultIfEmpty("List item").Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")), FontSize=11, TextWrapping=TextWrapping.Wrap } });
 
         if (field.Type == "tags")
         {
@@ -257,6 +259,8 @@ public partial class CardDesignerWindow : Window
         _definition.CardColor=CardFillInput.Text.Trim();
         _definition.OutlineColor=CardOutlineInput.Text.Trim();
         _definition.OutlineWidth=OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var width) ? width : 1;
+        _definition.ShrinkExpandedToContent=ShrinkExpandedHeight.IsChecked==true;
+        _definition.ShrinkCompactToContent=ShrinkCompactHeight.IsChecked==true;
         _definition.Fields.Clear(); foreach(var field in _fields)_definition.Fields.Add(field); DialogResult=true;
     }
     private void Cancel_Click(object sender, RoutedEventArgs e)=>DialogResult=false;

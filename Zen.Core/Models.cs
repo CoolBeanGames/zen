@@ -47,6 +47,8 @@ public sealed class CustomCardDefinition
     public string CardColor { get; set; } = "#1D222C";
     public string OutlineColor { get; set; } = "#2A303D";
     public double OutlineWidth { get; set; } = 1;
+    public bool ShrinkExpandedToContent { get; set; }
+    public bool ShrinkCompactToContent { get; set; }
     public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
 }
 
@@ -64,7 +66,7 @@ public sealed class CustomFieldDefinition
     public double Height { get; set; } = 72;
     public double ExpandedX { get; set; } = 12;
     public double ExpandedY { get; set; } = 12;
-    public double ExpandedWidth { get; set; } = 252;
+    public double ExpandedWidth { get; set; } = 204;
     public double ExpandedHeight { get; set; } = 60;
     public double CompactX { get; set; } = 12;
     public double CompactY { get; set; } = 12;

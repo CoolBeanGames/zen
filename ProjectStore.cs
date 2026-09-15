@@ -6,6 +6,10 @@ namespace Zen;
 
 public sealed class ProjectStore
 {
+    private const double ExpandedSurfaceWidth = 228;
+    private const double ExpandedSurfaceHeight = 168;
+    private const double CompactSurfaceWidth = 192;
+    private const double CompactSurfaceHeight = 96;
     public const string DataFileName = "zen.tasks.json";
     public const string PromptFileName = "prompt.txt";
     public const string FilesDirectoryName = "files";
@@ -280,20 +284,28 @@ public sealed class ProjectStore
             card.CustomBackground = "#1D222C";
             card.CustomBorderColor = "#2A303D";
             card.CustomBorderThickness = new System.Windows.Thickness(1);
+            card.ExpandedLayoutHeight = ExpandedSurfaceHeight;
+            card.CompactLayoutHeight = CompactSurfaceHeight;
             if (card.CustomTypeId is null || !definitions.TryGetValue(card.CustomTypeId, out var definition)) continue;
             card.CustomBackground = definition.CardColor;
             card.CustomBorderColor = definition.OutlineColor;
             card.CustomBorderThickness = new System.Windows.Thickness(definition.OutlineWidth);
             foreach (var field in definition.Fields)
             {
-                var width = Math.Min(276, Math.Max(60, field.ExpandedWidth));
-                card.CustomExpandedFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.ExpandedX, 0, 276-width), Math.Max(0,field.ExpandedY), width, Math.Max(36,field.ExpandedHeight)));
+                var width = Math.Min(ExpandedSurfaceWidth, Math.Max(60, field.ExpandedWidth));
+                var height = Math.Min(ExpandedSurfaceHeight, Math.Max(36, field.ExpandedHeight));
+                card.CustomExpandedFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.ExpandedX, 0, ExpandedSurfaceWidth-width), Math.Clamp(field.ExpandedY, 0, ExpandedSurfaceHeight-height), width, height));
             }
             foreach (var field in definition.Fields.Where(field => field.ShowOnCollapsed))
             {
-                var width = Math.Min(276, Math.Max(60, field.CompactWidth));
-                card.CustomCompactFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.CompactX, 0, 276-width), Math.Max(0,field.CompactY), width, Math.Max(36,field.CompactHeight)));
+                var width = Math.Min(CompactSurfaceWidth, Math.Max(60, field.CompactWidth));
+                var height = Math.Min(CompactSurfaceHeight, Math.Max(36, field.CompactHeight));
+                card.CustomCompactFields.Add(CreateCustomFieldView(card, field, Math.Clamp(field.CompactX, 0, CompactSurfaceWidth-width), Math.Clamp(field.CompactY, 0, CompactSurfaceHeight-height), width, height));
             }
+            var expandedContentHeight = card.CustomExpandedFields.Count == 0 ? 36 : card.CustomExpandedFields.Max(field => field.Y + field.Height);
+            var compactContentHeight = card.CustomCompactFields.Count == 0 ? 36 : card.CustomCompactFields.Max(field => field.Y + field.Height);
+            card.ExpandedLayoutHeight = definition.ShrinkExpandedToContent ? Math.Clamp(expandedContentHeight, 36, ExpandedSurfaceHeight) : ExpandedSurfaceHeight;
+            card.CompactLayoutHeight = definition.ShrinkCompactToContent ? Math.Clamp(compactContentHeight, 36, CompactSurfaceHeight) : CompactSurfaceHeight;
             card.NotifyCustomCompactLayoutChanged();
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Data;
@@ -185,7 +186,15 @@ public sealed class TaskCard : INotifyPropertyChanged
     public CardFlags Flags { get; set; } = new();
     public bool IsDone { get => _isDone; set => SetField(ref _isDone, value); }
     public bool IsLocked { get => _isLocked; set => SetField(ref _isLocked, value); }
-    public bool IsCollapsed { get => _isCollapsed; set => SetField(ref _isCollapsed, value); }
+    public bool IsCollapsed
+    {
+        get => _isCollapsed;
+        set
+        {
+            if (!SetField(ref _isCollapsed, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomCardWidth)));
+        }
+    }
     [JsonIgnore]
     public bool IsBug
     {
@@ -225,10 +234,11 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool HasNotes => Notes.Count > 0;
     [JsonIgnore] public string NotesCountLabel => Notes.Count == 1 ? "1 note" : $"{Notes.Count} notes";
     [JsonIgnore] public bool HasCustomCompactFields => CustomCompactFields.Count > 0;
-    [JsonIgnore] public double CompactLayoutHeight => CustomCompactFields.Count == 0 ? 0 : CustomCompactFields.Max(item => item.Y + item.Height) + 8;
+    [JsonIgnore] public double CompactLayoutHeight { get; internal set; } = 96;
     [JsonIgnore] public bool IsCustomCard => !string.IsNullOrWhiteSpace(CustomTypeId);
     [JsonIgnore] public bool HasCustomExpandedFields => CustomExpandedFields.Count > 0;
-    [JsonIgnore] public double ExpandedLayoutHeight => CustomExpandedFields.Count == 0 ? 0 : CustomExpandedFields.Max(item => item.Y + item.Height) + 8;
+    [JsonIgnore] public double ExpandedLayoutHeight { get; internal set; } = 168;
+    [JsonIgnore] public double CustomCardWidth => IsCollapsed ? 220 : 256;
     [JsonIgnore] public string CustomBackground { get; internal set; } = "#1D222C";
     [JsonIgnore] public string CustomBorderColor { get; internal set; } = "#2A303D";
     [JsonIgnore] public Thickness CustomBorderThickness { get; internal set; } = new(1);
@@ -374,6 +384,8 @@ public sealed class CustomCardDefinition
     public string CardColor { get; set; } = "#1D222C";
     public string OutlineColor { get; set; } = "#2A303D";
     public double OutlineWidth { get; set; } = 1;
+    public bool ShrinkExpandedToContent { get; set; }
+    public bool ShrinkCompactToContent { get; set; }
     public ObservableCollection<CustomFieldDefinition> Fields { get; set; } = [];
 }
 
@@ -391,7 +403,7 @@ public sealed class CustomFieldDefinition
     public double Height { get; set; } = 72;
     public double ExpandedX { get; set; } = 12;
     public double ExpandedY { get; set; } = 12;
-    public double ExpandedWidth { get; set; } = 252;
+    public double ExpandedWidth { get; set; } = 204;
     public double ExpandedHeight { get; set; } = 60;
     public double CompactX { get; set; } = 12;
     public double CompactY { get; set; } = 12;
@@ -416,7 +428,7 @@ public sealed class CustomCompactField
     public bool IsChecked => bool.TryParse(Value, out var value) && value;
     public string DisplayValue => Type switch
     {
-        "list" => string.Join(Environment.NewLine, Value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(item => $"• {item}")),
+        "list" => string.Join(Environment.NewLine, CustomListCodec.Parse(Value).Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")),
         "files" => string.IsNullOrWhiteSpace(Value) ? "No files attached" : Value,
         "tags" => string.IsNullOrWhiteSpace(Value) ? "No tags" : Value,
         _ => Value
@@ -425,4 +437,20 @@ public sealed class CustomCompactField
     public double Y { get; set; }
     public double Width { get; set; }
     public double Height { get; set; }
+}
+
+public static class CustomListCodec
+{
+    public static List<string> Parse(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return [];
+        if (value.TrimStart().StartsWith('['))
+        {
+            try { return JsonSerializer.Deserialize<List<string>>(value) ?? []; }
+            catch (JsonException) { }
+        }
+        return value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+    }
+
+    public static string Serialize(IEnumerable<string> items) => JsonSerializer.Serialize(items);
 }

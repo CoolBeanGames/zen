@@ -61,20 +61,22 @@
     <TabItem Header="Expanded card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="14"/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
         <TextBlock Text="EXPANDED CARD" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
-        <TextBlock Text="Arrange every field as it should appear on an expanded card on the board. Drag fields directly on the surface and resize them from an edge or corner." Foreground="#737D91" TextWrapping="Wrap" FontSize="10"/>
+        <TextBlock Text="Arrange fields inside this fixed 228 × 168 surface. Content never makes the board card grow." Foreground="#737D91" TextWrapping="Wrap" FontSize="10"/>
+        <CheckBox x:Name="ShrinkExpandedHeight" Content="Shrink height to content" Foreground="#D8DCE5" Margin="0,14,0,0" ToolTip="May make expanded cards shorter, but never taller than the designed surface."/>
       </StackPanel></Border>
       <Border x:Name="ExpandedSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Canvas x:Name="ExpandedCanvas" Width="276" Height="360" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" ClipToBounds="True"/>
+        <Canvas x:Name="ExpandedCanvas" Width="228" Height="168" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" ClipToBounds="True"/>
       </Border>
     </Grid></TabItem>
     <TabItem Header="Compact card"><Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="14"/><ColumnDefinition/></Grid.ColumnDefinitions>
       <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="12" Padding="13"><StackPanel>
         <TextBlock Text="COMPACT ELEMENTS" Foreground="#8992A5" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
-        <TextBlock Text="Only fields enabled for compact cards appear here. Drag them onto the compact surface." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,0,0,12"/>
+        <TextBlock Text="Only compact-enabled fields appear inside this fixed 192 × 96 surface." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,0,0,12"/>
+        <CheckBox x:Name="ShrinkCompactHeight" Content="Shrink height to content" Foreground="#D8DCE5" Margin="0,0,0,12" ToolTip="May make compact cards shorter, but never taller than the designed surface."/>
         <ItemsControl x:Name="CompactPalette"><ItemsControl.ItemTemplate><DataTemplate><Button Content="{Binding Name}" Tag="{Binding}" PreviewMouseMove="CompactPalette_PreviewMouseMove" Padding="9" Margin="0,0,0,6"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
       </StackPanel></Border>
       <Border x:Name="CompactSurface" Grid.Column="2" Background="#12151C" BorderBrush="#394151" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Canvas x:Name="CompactCanvas" Width="276" Height="180" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="CompactCanvas_Drop" DragOver="CompactCanvas_DragOver" ClipToBounds="True"/>
+        <Canvas x:Name="CompactCanvas" Width="192" Height="96" HorizontalAlignment="Center" VerticalAlignment="Top" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="CompactCanvas_Drop" DragOver="CompactCanvas_DragOver" ClipToBounds="True"/>
       </Border>
     </Grid></TabItem>
     </TabControl>

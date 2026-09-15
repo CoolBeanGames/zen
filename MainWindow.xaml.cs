@@ -1142,8 +1142,10 @@ public partial class MainWindow : Window
         EditDueDate.SelectedDate = card.DueDate;
         EditPriority.SelectedIndex = card.Priority.HasValue ? (int)card.Priority.Value + 1 : 0;
         EditValidationText.Visibility = Visibility.Collapsed;
-        EditorShell.Height = Math.Max(360, RootLayout.ActualHeight - 48);
-        EditorShell.MaxHeight = EditorShell.Height;
+        var availableEditorHeight = Math.Max(420, RootLayout.ActualHeight - 24);
+        EditorShell.MinHeight = Math.Min(620, availableEditorHeight);
+        EditorShell.MaxHeight = availableEditorHeight;
+        EditorShell.Height = availableEditorHeight;
         EditorShell.Width = isCustomCard ? Math.Min(Math.Max(620, EditCustomCardCanvas.Width + 42), Math.Max(620, RootLayout.ActualWidth - 80)) : 500;
         CardEditorHost.Visibility = Visibility.Visible;
         Dispatcher.BeginInvoke(() =>
@@ -1160,7 +1162,7 @@ public partial class MainWindow : Window
     {
         EditCustomCardCanvas.Children.Clear();
         EditCustomCardCanvas.Width = Math.Max(540, definition.Fields.Count == 0 ? 540 : definition.Fields.Max(item => item.X + item.Width) + 20);
-        EditCustomCardCanvas.Height = definition.Fields.Count == 0 ? 80 : definition.Fields.Max(item => item.Y + item.Height) + 12;
+        EditCustomCardCanvas.Height = definition.Fields.Count == 0 ? 120 : definition.Fields.Max(field => field.Y + GetOpenFieldHeight(field)) + 12;
         foreach (var field in definition.Fields)
         {
             var value = _editingCustomValues.First(item => item.FieldId == field.Id);
@@ -1182,7 +1184,7 @@ public partial class MainWindow : Window
                 input = combo;
             }
             else if (field.Type == "list")
-                input = BuildCustomListEditor(value);
+                input = BuildCustomListEditor(value, () => ResizeCustomEditorForContent(definition));
             else if (field.Type == "tags")
                 input = BuildCustomTagEditor(value);
             else if (field.Type == "files")
@@ -1197,19 +1199,41 @@ public partial class MainWindow : Window
                 fieldLayout.Children.Add(new TextBlock { Text = field.Name.ToUpperInvariant(), Foreground = (Brush)FindResource("MutedBrush"), FontSize = 10, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 5) });
             Grid.SetRow(input, field.Type == "checkbox" ? 0 : 1);
             fieldLayout.Children.Add(input);
-            var container = new Border { Width = field.Width, Height = field.Height, Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
+            var container = new Border { Tag=field, Width = field.Width, Height = GetOpenFieldHeight(field), Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(0), Child = fieldLayout };
             Canvas.SetLeft(container, field.X);
             Canvas.SetTop(container, field.Y);
             EditCustomCardCanvas.Children.Add(container);
         }
     }
 
-    private FrameworkElement BuildCustomListEditor(CustomFieldValue value)
+    private double GetOpenFieldHeight(CustomFieldDefinition field)
     {
-        var entries = value.Value.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-        var root = new StackPanel();
+        if (field.Type != "list") return field.Height;
+        var value = _editingCustomValues.First(item => item.FieldId == field.Id).Value;
+        var contentHeight = 58 + CustomListCodec.Parse(value).Count * 72;
+        return Math.Max(field.Height, Math.Min(420, contentHeight));
+    }
+
+    private void ResizeCustomEditorForContent(CustomCardDefinition definition)
+    {
+        foreach (var container in EditCustomCardCanvas.Children.OfType<Border>())
+            if (container.Tag is CustomFieldDefinition field) container.Height=GetOpenFieldHeight(field);
+        EditCustomCardCanvas.Height=definition.Fields.Count == 0 ? 120 : definition.Fields.Max(field => field.Y + GetOpenFieldHeight(field)) + 12;
+        var available=Math.Max(420, RootLayout.ActualHeight-24);
+        EditorShell.MaxHeight=available;
+        EditorShell.Height=available;
+    }
+
+    private FrameworkElement BuildCustomListEditor(CustomFieldValue value, Action contentChanged)
+    {
+        var entries = CustomListCodec.Parse(value.Value);
+        var root = new Grid();
+        root.RowDefinitions.Add(new RowDefinition());
+        root.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });
         var items = new StackPanel();
-        var addInput = new TextBox { Style=(Style)FindResource("Field"), MinHeight=32, Margin=new Thickness(0,5,6,0) };
+        var scroller = new ScrollViewer { VerticalScrollBarVisibility=ScrollBarVisibility.Auto, HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled, Content=items, Padding=new Thickness(0,0,5,0) };
+        root.Children.Add(scroller);
+        var addInput = new TextBox { Style=(Style)FindResource("Field"), MinHeight=40, AcceptsReturn=false, Margin=new Thickness(0,8,8,0), Padding=new Thickness(10,7,10,7) };
         Action render = null!;
         render = () =>
         {
@@ -1217,20 +1241,24 @@ public partial class MainWindow : Window
             for (var index=0; index<entries.Count; index++)
             {
                 var itemIndex=index;
-                var row=new Grid { Margin=new Thickness(0,0,0,5) };
+                var shell=new Border { Background=new SolidColorBrush(Color.FromRgb(32,37,47)), CornerRadius=new CornerRadius(7), Padding=new Thickness(9), Margin=new Thickness(0,0,0,7) };
+                var row=new Grid();
                 row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Auto });
-                var text=new TextBox { Text=entries[index], Style=(Style)FindResource("Field"), MinHeight=32, Padding=new Thickness(8,5,8,5) };
-                text.TextChanged += (_, _) => { entries[itemIndex]=text.Text; value.Value=string.Join(Environment.NewLine, entries); };
-                var remove=new Button { Content="×", Style=(Style)FindResource("IconButton"), Padding=new Thickness(7,3,7,3), Margin=new Thickness(6,0,0,0), Tag=itemIndex };
-                remove.Click += (_, _) => { entries.RemoveAt(itemIndex); value.Value=string.Join(Environment.NewLine, entries); render(); };
-                Grid.SetColumn(remove,1); row.Children.Add(text); row.Children.Add(remove); items.Children.Add(row);
+                var text=new TextBox { Text=entries[index], AcceptsReturn=true, TextWrapping=TextWrapping.Wrap, MinHeight=48, Padding=new Thickness(12,9,12,9), Background=new SolidColorBrush(Color.FromRgb(14,17,23)), Foreground=(Brush)FindResource("TextBrush"), BorderBrush=new SolidColorBrush(Color.FromRgb(38,44,56)), BorderThickness=new Thickness(1), VerticalScrollBarVisibility=ScrollBarVisibility.Auto };
+                text.TextChanged += (_, _) => { entries[itemIndex]=text.Text; value.Value=CustomListCodec.Serialize(entries); };
+                var remove=new Button { Content="×", Style=(Style)FindResource("IconButton"), Padding=new Thickness(7,3,7,3), Margin=new Thickness(6,0,0,0), Tag=itemIndex, VerticalAlignment=VerticalAlignment.Top };
+                remove.Click += (_, _) => { entries.RemoveAt(itemIndex); value.Value=CustomListCodec.Serialize(entries); render(); contentChanged(); };
+                Grid.SetColumn(remove,1); row.Children.Add(text); row.Children.Add(remove); shell.Child=row; items.Children.Add(shell);
             }
         };
-        render(); root.Children.Add(items);
+        render();
         var addRow=new Grid(); addRow.ColumnDefinitions.Add(new ColumnDefinition()); addRow.ColumnDefinitions.Add(new ColumnDefinition { Width=GridLength.Auto });
-        var add=new Button { Content="Add", Style=(Style)FindResource("IconButton"), Padding=new Thickness(9,5,9,5), Margin=new Thickness(0,5,0,0) };
-        add.Click += (_, _) => { var text=addInput.Text.Trim(); if (text.Length==0) return; entries.Add(text); value.Value=string.Join(Environment.NewLine, entries); addInput.Clear(); render(); };
+        var add=new Button { Content="Add", Style=(Style)FindResource("IconButton"), Padding=new Thickness(9,5,9,5), Margin=new Thickness(0,8,0,0), VerticalAlignment=VerticalAlignment.Stretch };
+        Action addItem=() => { var text=addInput.Text.Trim(); if (text.Length==0) return; entries.Add(text); value.Value=CustomListCodec.Serialize(entries); addInput.Clear(); render(); contentChanged(); scroller.ScrollToEnd(); };
+        add.Click += (_, _) => addItem();
+        addInput.KeyDown += (_, args) => { if (args.Key != Key.Enter) return; addItem(); args.Handled=true; };
         Grid.SetColumn(add,1); addRow.Children.Add(addInput); addRow.Children.Add(add); root.Children.Add(addRow);
+        Grid.SetRow(addRow,1);
         return root;
     }
 
