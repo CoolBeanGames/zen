@@ -1,0 +1,65 @@
+<Window x:Class="Zen.ColorPickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Choose color" Width="420" Height="470" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" Background="#0B0D12" Foreground="#F4F6FA">
+  <Grid Margin="22">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <StackPanel>
+      <TextBlock Text="COLOR PICKER" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
+      <TextBlock Text="Choose a color visually or enter an exact hex value." Foreground="#8992A5" Margin="0,5,0,0"/>
+    </StackPanel>
+
+    <Grid Grid.Row="1" Margin="0,18,0,18">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="86"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <Border x:Name="Preview" Height="62" CornerRadius="8" BorderBrush="#394151" BorderThickness="1"/>
+      <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+        <TextBlock Text="HEX" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,0,0,5"/>
+        <TextBox x:Name="HexInput" FontFamily="Consolas" FontSize="14" Padding="10,7" TextChanged="HexInput_TextChanged"/>
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+      <TextBlock Text="R" Foreground="#FF7F91" FontWeight="Bold" VerticalAlignment="Center"/>
+      <Slider x:Name="RedSlider" Grid.Column="1" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="RgbSlider_ValueChanged"/>
+      <TextBlock x:Name="RedValue" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+      <TextBlock Grid.Row="1" Text="G" Foreground="#72D6A5" FontWeight="Bold" VerticalAlignment="Center"/>
+      <Slider x:Name="GreenSlider" Grid.Row="1" Grid.Column="1" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="RgbSlider_ValueChanged"/>
+      <TextBlock x:Name="GreenValue" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+      <TextBlock Grid.Row="2" Text="B" Foreground="#74B9FF" FontWeight="Bold" VerticalAlignment="Center"/>
+      <Slider x:Name="BlueSlider" Grid.Row="2" Grid.Column="1" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="RgbSlider_ValueChanged"/>
+      <TextBlock x:Name="BlueValue" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+    </Grid>
+
+    <TextBlock Grid.Row="3" Text="QUICK COLORS" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,20,0,8"/>
+    <UniformGrid Grid.Row="4" Columns="6" Rows="2">
+      <Button Tag="#0E1117" Background="#0E1117" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#1D222C" Background="#1D222C" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#394151" Background="#394151" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#8992A5" Background="#8992A5" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#F4F6FA" Background="#F4F6FA" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#8B7CFF" Background="#8B7CFF" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#FF7F91" Background="#FF7F91" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#F0C574" Background="#F0C574" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#72D6A5" Background="#72D6A5" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#74B9FF" Background="#74B9FF" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#DCA2EB" Background="#DCA2EB" Click="Swatch_Click" Margin="3"/>
+      <Button Tag="#7A2632" Background="#7A2632" Click="Swatch_Click" Margin="3"/>
+    </UniformGrid>
+
+    <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+      <Button Content="Cancel" Click="Cancel_Click" Padding="14,8" Margin="0,0,8,0"/>
+      <Button Content="Use color" Click="UseColor_Click" Padding="16,8" Background="#8B7CFF" Foreground="White"/>
+    </StackPanel>
+  </Grid>
+</Window>

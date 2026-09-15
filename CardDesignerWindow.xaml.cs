@@ -254,12 +254,33 @@ public partial class CardDesignerWindow : Window
         var outline = TryBrush(CardOutlineInput.Text, out var outlineBrush) ? outlineBrush : new SolidColorBrush(Color.FromRgb(42,48,61));
         var width = OutlineWidthInput.SelectedItem is ComboBoxItem item && double.TryParse(item.Content?.ToString(), out var parsed) ? parsed : 1;
         foreach (var surface in new[] { OpenSurface, ExpandedSurface, CompactSurface }) { surface.Background=fill; surface.BorderBrush=outline; surface.BorderThickness=new Thickness(width); }
+        CardFillPicker.Background=fill;
+        CardOutlinePicker.Background=outline;
+        HeaderTextPicker.Background=ReadAppearanceBrush(HeaderTextColorInput, "#8992A5");
+        MainTextPicker.Background=ReadAppearanceBrush(MainTextColorInput, "#F4F6FA");
+        TextBoxPicker.Background=ReadAppearanceBrush(TextBoxColorInput, "#0E1117");
         RenderFields();
         RefreshExpandedDesigner();
         RefreshCompactDesigner();
     }
     private static Brush ReadAppearanceBrush(TextBox input, string fallback) =>
         TryBrush(input.Text, out var brush) ? brush : (Brush)new BrushConverter().ConvertFromString(fallback)!;
+    private void PickColor_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: string target }) return;
+        var input = target switch
+        {
+            nameof(CardFillInput) => CardFillInput,
+            nameof(CardOutlineInput) => CardOutlineInput,
+            nameof(HeaderTextColorInput) => HeaderTextColorInput,
+            nameof(MainTextColorInput) => MainTextColorInput,
+            nameof(TextBoxColorInput) => TextBoxColorInput,
+            _ => null
+        };
+        if (input is null) return;
+        var picker = new ColorPickerWindow(input.Text) { Owner=this };
+        if (picker.ShowDialog() == true) input.Text=picker.SelectedHex;
+    }
     private static bool TryBrush(string value, out Brush brush)
     {
         try { brush=(Brush)new BrushConverter().ConvertFromString(value)!; return brush is not null; }

@@ -17,14 +17,14 @@
       </StackPanel>
       <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal">
-          <StackPanel Margin="0,0,12,0"><TextBlock Text="CARD COLOR" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardFillInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
-          <StackPanel Margin="0,0,12,0"><TextBlock Text="OUTLINE" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="CardOutlineInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
+          <StackPanel Margin="0,0,12,0"><TextBlock Text="CARD COLOR" Foreground="#8992A5" FontSize="9"/><StackPanel Orientation="Horizontal"><TextBox x:Name="CardFillInput" Width="78" Padding="7,4" TextChanged="AppearanceChanged"/><Button x:Name="CardFillPicker" Tag="CardFillInput" Width="26" Margin="4,0,0,0" Padding="0" BorderBrush="#8992A5" BorderThickness="1" Click="PickColor_Click" ToolTip="Choose card color"/></StackPanel></StackPanel>
+          <StackPanel Margin="0,0,12,0"><TextBlock Text="OUTLINE" Foreground="#8992A5" FontSize="9"/><StackPanel Orientation="Horizontal"><TextBox x:Name="CardOutlineInput" Width="78" Padding="7,4" TextChanged="AppearanceChanged"/><Button x:Name="CardOutlinePicker" Tag="CardOutlineInput" Width="26" Margin="4,0,0,0" Padding="0" BorderBrush="#8992A5" BorderThickness="1" Click="PickColor_Click" ToolTip="Choose outline color"/></StackPanel></StackPanel>
           <StackPanel><TextBlock Text="WIDTH" Foreground="#8992A5" FontSize="9"/><ComboBox x:Name="OutlineWidthInput" Width="64" SelectionChanged="AppearanceChanged"><ComboBoxItem Content="0"/><ComboBoxItem Content="1"/><ComboBoxItem Content="2"/><ComboBoxItem Content="3"/><ComboBoxItem Content="4"/></ComboBox></StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
-          <StackPanel Margin="0,0,12,0"><TextBlock Text="HEADER TEXT" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="HeaderTextColorInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
-          <StackPanel Margin="0,0,12,0"><TextBlock Text="MAIN TEXT" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="MainTextColorInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
-          <StackPanel><TextBlock Text="TEXT BOX" Foreground="#8992A5" FontSize="9"/><TextBox x:Name="TextBoxColorInput" Width="92" Padding="7,4" TextChanged="AppearanceChanged"/></StackPanel>
+          <StackPanel Margin="0,0,12,0"><TextBlock Text="HEADER TEXT" Foreground="#8992A5" FontSize="9"/><StackPanel Orientation="Horizontal"><TextBox x:Name="HeaderTextColorInput" Width="78" Padding="7,4" TextChanged="AppearanceChanged"/><Button x:Name="HeaderTextPicker" Tag="HeaderTextColorInput" Width="26" Margin="4,0,0,0" Padding="0" BorderBrush="#8992A5" BorderThickness="1" Click="PickColor_Click" ToolTip="Choose header text color"/></StackPanel></StackPanel>
+          <StackPanel Margin="0,0,12,0"><TextBlock Text="MAIN TEXT" Foreground="#8992A5" FontSize="9"/><StackPanel Orientation="Horizontal"><TextBox x:Name="MainTextColorInput" Width="78" Padding="7,4" TextChanged="AppearanceChanged"/><Button x:Name="MainTextPicker" Tag="MainTextColorInput" Width="26" Margin="4,0,0,0" Padding="0" BorderBrush="#8992A5" BorderThickness="1" Click="PickColor_Click" ToolTip="Choose main text color"/></StackPanel></StackPanel>
+          <StackPanel><TextBlock Text="TEXT BOX" Foreground="#8992A5" FontSize="9"/><StackPanel Orientation="Horizontal"><TextBox x:Name="TextBoxColorInput" Width="78" Padding="7,4" TextChanged="AppearanceChanged"/><Button x:Name="TextBoxPicker" Tag="TextBoxColorInput" Width="26" Margin="4,0,0,0" Padding="0" BorderBrush="#8992A5" BorderThickness="1" Click="PickColor_Click" ToolTip="Choose text-box color"/></StackPanel></StackPanel>
         </StackPanel>
       </StackPanel>
     </Grid>
