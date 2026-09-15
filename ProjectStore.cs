@@ -184,6 +184,10 @@ public sealed class ProjectStore
                 card.Requirements ??= [];
                 card.Notes ??= [];
                 card.Flags ??= new CardFlags();
+                if (card.Kind == CardKind.Task && card.Flags.Merge &&
+                    (card.Title.Equals("merge", StringComparison.OrdinalIgnoreCase) || card.Title.Equals("Merge to origin", StringComparison.OrdinalIgnoreCase)) &&
+                    card.Task.StartsWith("Merge this branch safely into main", StringComparison.OrdinalIgnoreCase))
+                    card.Kind = CardKind.Merge;
                 if (card.Kind == CardKind.Note)
                 {
                     card.Tags.Clear();
@@ -195,7 +199,7 @@ public sealed class ProjectStore
                     card.StartedDate = null;
                     card.Priority = null;
                 }
-                else if (card.Kind is CardKind.Break or CardKind.Cleanup)
+                else if (card.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
                 {
                     card.Title = string.Empty;
                     card.Task = string.Empty;
@@ -286,12 +290,14 @@ public sealed class ProjectStore
             card.CustomExpandedFields.Clear();
             card.CustomBackground = "#1D222C";
             card.CustomBorderColor = "#2A303D";
+            card.CustomHeaderTextColor = "#8992A5";
             card.CustomBorderThickness = new System.Windows.Thickness(1);
             card.ExpandedLayoutHeight = ExpandedSurfaceHeight;
             card.CompactLayoutHeight = CompactSurfaceHeight;
             if (card.CustomTypeId is null || !definitions.TryGetValue(card.CustomTypeId, out var definition)) continue;
             card.CustomBackground = definition.CardColor;
             card.CustomBorderColor = definition.OutlineColor;
+            card.CustomHeaderTextColor = definition.HeaderTextColor;
             card.CustomBorderThickness = new System.Windows.Thickness(definition.OutlineWidth);
             foreach (var field in definition.Fields.Where(field => field.ShowOnExpanded))
             {

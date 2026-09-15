@@ -386,11 +386,14 @@ public static class OperationApplier
         if (branch.IsLocked) throw new InvalidOperationException($"Branch '{branchId}' is locked.");
 
         var payload = operation.Payload;
+        var kind = payload["kind"] is JsonNode kindNode && Enum.TryParse<CardKind>(kindNode.GetValue<string>(), true, out var parsedKind)
+            ? parsedKind
+            : CardKind.Task;
         var card = new TaskCard
         {
             Id = Guid.NewGuid().ToString("N"),
             Index = document.NextCardIndex,
-            Kind = CardKind.Task,
+            Kind = kind,
             Title = payload["title"]?.GetValue<string>() ?? "",
             Task = payload["task"]?.GetValue<string>() ?? "",
             IsDone = false,

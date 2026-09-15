@@ -56,7 +56,6 @@ public partial class MainWindow : Window
     private DateTime _ignoreFileEventsUntil;
     private CardKind _newCardKind = CardKind.Task;
     private string? _newCustomTypeId;
-    private bool _newCardIsMerge;
     private BoardColumn? _pressedColumn;
     private Point _columnDragStart;
     private bool _isColumnDragging;
@@ -477,7 +476,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(menu, "Note", CardKind.Note, column);
         AddCardTypeItem(menu, "Break", CardKind.Break, column);
         AddCardTypeItem(menu, "Bug", CardKind.Task, column, true);
-        AddCardTypeItem(menu, "Merge", CardKind.Task, column, merge: true);
+        AddCardTypeItem(menu, "Merge", CardKind.Merge, column);
         AddCardTypeItem(menu, "Cleanup", CardKind.Cleanup, column);
         AddCustomCardTypeItems(menu, column);
         menu.IsOpen = true;
@@ -495,9 +494,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false, bool merge = false)
+    private void AddCardTypeItem(ItemsControl menu, string header, CardKind kind, BoardColumn column, bool bug = false)
     {
-        var item = new MenuItem { Header = header, Tag = new NewCardRequest(column, kind, bug, null, merge) };
+        var item = new MenuItem { Header = header, Tag = new NewCardRequest(column, kind, bug) };
         item.Click += NewCardType_Click;
         menu.Items.Add(item);
     }
@@ -513,8 +512,7 @@ public partial class MainWindow : Window
         _taskTarget = target;
         _newCardKind = request.Kind;
         _newCustomTypeId = request.CustomTypeId;
-        _newCardIsMerge = request.Merge;
-        if (request.Kind is CardKind.Break or CardKind.Cleanup)
+        if (request.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
         {
             target.Tasks.Add(new TaskCard { Index = _nextTaskIndex++, Kind = request.Kind });
             SaveProject();
@@ -581,7 +579,7 @@ public partial class MainWindow : Window
     private bool CanAttachToCard(TaskCard card)
     {
         var column = Columns.FirstOrDefault(candidate => candidate.Tasks.Contains(card));
-        return _store is not null && !card.IsLocked && !card.IsNote && !card.IsBreak && !card.IsCleanup &&
+        return _store is not null && !card.IsLocked && !card.IsNote && !card.IsBreak && !card.IsCleanup && !card.IsMerge &&
                column is { IsLocked: false, IsArchive: false };
     }
 
@@ -676,7 +674,7 @@ public partial class MainWindow : Window
         AddCardTypeItem(add, "Note", CardKind.Note, column);
         AddCardTypeItem(add, "Break", CardKind.Break, column);
         AddCardTypeItem(add, "Bug", CardKind.Task, column, true);
-        AddCardTypeItem(add, "Merge", CardKind.Task, column, merge: true);
+        AddCardTypeItem(add, "Merge", CardKind.Merge, column);
         AddCardTypeItem(add, "Cleanup", CardKind.Cleanup, column);
         AddCustomCardTypeItems(add, column);
         MakeSubmenuSticky(add);
@@ -1093,7 +1091,7 @@ public partial class MainWindow : Window
     private void OpenCardEditor(TaskCard card, Border anchor)
     {
         EndCardDragIfActive();
-        if (card.IsBreak || card.IsCleanup) return;
+        if (card.IsBreak || card.IsCleanup || card.IsMerge) return;
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
@@ -1612,13 +1610,12 @@ public partial class MainWindow : Window
         _modalMode = mode;
         NameInput.Text = string.Empty;
         ValidationText.Visibility = Visibility.Collapsed;
-        var cardTypeName = _newCardIsMerge ? "merge" : _newCardKind.ToString().ToLowerInvariant();
-        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : $"Add a {cardTypeName}";
+        ModalTitle.Text = mode == ModalMode.Column ? "Create a column" : $"Add a {_newCardKind.ToString().ToLowerInvariant()}";
         ModalSubtitle.Text = mode == ModalMode.Column
             ? "Add another branch or category to this workspace."
             : $"Add a task to {_taskTarget?.Title}.";
-        NameLabel.Text = mode == ModalMode.Column ? "COLUMN NAME" : $"{cardTypeName.ToUpperInvariant()} TITLE";
-        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : $"Add {cardTypeName}";
+        NameLabel.Text = mode == ModalMode.Column ? "COLUMN NAME" : $"{_newCardKind.ToString().ToUpperInvariant()} TITLE";
+        ConfirmButton.Content = mode == ModalMode.Column ? "Create column" : $"Add {_newCardKind.ToString().ToLowerInvariant()}";
         ConfirmButton.Tag = bug;
         ModalScrim.Visibility = Visibility.Visible;
         NameInput.Focus();
@@ -1681,13 +1678,6 @@ public partial class MainWindow : Window
                 }
             }
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
-            if (_newCardIsMerge)
-            {
-                card.Task = "Merge this branch safely into main, push origin/main, then archive this merge task after the remote update succeeds.";
-                card.Flags.Commit = true;
-                card.Flags.Build = true;
-                card.Flags.Merge = true;
-            }
             target.Tasks.Add(card);
             SaveProject();
             CloseModal();
@@ -1960,7 +1950,7 @@ public partial class MainWindow : Window
     private enum ModalMode { Column, Task }
 
     private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, int SourceIndex, Border SourceElement);
-    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug, string? CustomTypeId = null, bool Merge = false);
+    private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug, string? CustomTypeId = null);
 
     [DllImport("user32.dll")]
     private static extern uint GetDoubleClickTime();

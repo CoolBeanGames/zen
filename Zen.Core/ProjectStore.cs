@@ -158,6 +158,10 @@ public sealed class ProjectStore
                 card.Requirements ??= [];
                 card.Notes ??= [];
                 card.Flags ??= new CardFlags();
+                if (card.Kind == CardKind.Task && card.Flags.Merge &&
+                    (card.Title.Equals("merge", StringComparison.OrdinalIgnoreCase) || card.Title.Equals("Merge to origin", StringComparison.OrdinalIgnoreCase)) &&
+                    card.Task.StartsWith("Merge this branch safely into main", StringComparison.OrdinalIgnoreCase))
+                    card.Kind = CardKind.Merge;
                 if (card.Kind == CardKind.Note)
                 {
                     card.Tags.Clear();
@@ -171,7 +175,7 @@ public sealed class ProjectStore
                     card.StartedDate = null;
                     card.Priority = null;
                 }
-                else if (card.Kind is CardKind.Break or CardKind.Cleanup)
+                else if (card.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
                 {
                     card.Title = string.Empty;
                     card.Task = string.Empty;

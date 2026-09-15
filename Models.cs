@@ -27,7 +27,7 @@ public sealed class FractionToStarConverter : IValueConverter
 public enum ColumnKind { Work, Archive }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CardKind { Task, Note, Break, Cleanup }
+public enum CardKind { Task, Note, Break, Cleanup, Merge }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CardPriority { Low, Normal, High, Critical }
@@ -222,10 +222,11 @@ public sealed class TaskCard : INotifyPropertyChanged
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string IndexLabel => $"#{Index:000}";
-    [JsonIgnore] public string KindLabel => Kind switch { CardKind.Note => "NOTE", CardKind.Break => "BREAK", CardKind.Cleanup => "CLEANUP", _ => string.Empty };
+    [JsonIgnore] public string KindLabel => Kind switch { CardKind.Note => "NOTE", CardKind.Break => "BREAK", CardKind.Cleanup => "CLEANUP", CardKind.Merge => "MERGE", _ => string.Empty };
     [JsonIgnore] public bool IsNote => Kind == CardKind.Note;
     [JsonIgnore] public bool IsBreak => Kind == CardKind.Break;
     [JsonIgnore] public bool IsCleanup => Kind == CardKind.Cleanup;
+    [JsonIgnore] public bool IsMerge => Kind == CardKind.Merge;
     [JsonIgnore] public bool HasDueDate => DueDate.HasValue;
     [JsonIgnore] public bool HasStartedDate => StartedDate.HasValue;
     [JsonIgnore] public bool HasPriority => Priority.HasValue;
@@ -240,9 +241,10 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool IsCustomCard => !string.IsNullOrWhiteSpace(CustomTypeId);
     [JsonIgnore] public bool HasCustomExpandedFields => CustomExpandedFields.Count > 0;
     [JsonIgnore] public double ExpandedLayoutHeight { get; internal set; } = 168;
-    [JsonIgnore] public double CustomCardWidth => IsCollapsed ? 192 : 228;
+    [JsonIgnore] public double CustomCardWidth => IsCollapsed ? 208 : 244;
     [JsonIgnore] public string CustomBackground { get; internal set; } = "#1D222C";
     [JsonIgnore] public string CustomBorderColor { get; internal set; } = "#2A303D";
+    [JsonIgnore] public string CustomHeaderTextColor { get; internal set; } = "#8992A5";
     [JsonIgnore] public Thickness CustomBorderThickness { get; internal set; } = new(1);
     public event PropertyChangedEventHandler? PropertyChanged;
 

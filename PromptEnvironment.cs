@@ -26,7 +26,7 @@ public static class PromptEnvironment
     {
         var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
-        updatedPrompt = EnsureMergePresetInstructions(updatedPrompt);
+        updatedPrompt = EnsureMergeControlInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
@@ -91,26 +91,26 @@ public static class PromptEnvironment
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
 
-    private static string EnsureMergePresetInstructions(string prompt)
+    private static string EnsureMergeControlInstructions(string prompt)
     {
-        const string current = "- Zen's add menu and `zen-operator merge --branch <id>` create a quick merge task preset with `flags.commit`, `flags.build`, and `flags.merge` enabled. Its task text requires a safe merge into `main`, a push to `origin/main`, and archiving the merge task only after the remote update succeeds. On `main`, verify and push without trying to merge main into itself.";
-        if (prompt.Contains(current, StringComparison.Ordinal)) return prompt;
+        const string heading = "MERGE CONTROL CARDS";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
 
         var newline = prompt.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
         var lines = prompt.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n').ToList();
         var legacyIndex = lines.FindIndex(line => line.Contains("add menu", StringComparison.OrdinalIgnoreCase) && line.Contains("Merge", StringComparison.Ordinal));
-        if (legacyIndex >= 0)
-            lines[legacyIndex] = current;
-        else
+        if (legacyIndex >= 0) lines.RemoveAt(legacyIndex);
+        var section = new[]
         {
-            var releaseIndex = lines.FindIndex(line => line.Equals("RELEASE TASKS", StringComparison.Ordinal));
-            if (releaseIndex < 0) lines.Add(current);
-            else
-            {
-                lines.Insert(releaseIndex, current);
-                lines.Insert(releaseIndex + 1, string.Empty);
-            }
-        }
+            heading,
+            "- Zen's add menu and `zen-operator merge --branch <id>` insert a nameless built-in `kind: \"merge\"` card immediately, like Cleanup. It has no title, task text, tags, requirements, or action flags.",
+            "- When reached on a non-main Git-backed branch, verify earlier work is complete, merge that branch safely into `main`, and push `origin/main`. When reached on `main`, verify and push `main` without trying to merge it into itself. Never discard conflicts or unrelated work.",
+            "- Archive the merge card only after the remote update succeeds. If the merge or push fails, leave it open and report the blocker.",
+            string.Empty
+        };
+        var releaseIndex = lines.FindIndex(line => line.Equals("RELEASE TASKS", StringComparison.Ordinal));
+        if (releaseIndex < 0) lines.AddRange(section);
+        else lines.InsertRange(releaseIndex, section);
         return string.Join(newline, lines);
     }
 
