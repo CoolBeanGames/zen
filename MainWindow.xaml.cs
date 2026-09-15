@@ -1135,7 +1135,8 @@ public partial class MainWindow : Window
             EditCustomCardHost.Background = TryCreateBrush(customDefinition.CardColor, "#1D222C");
             EditCustomCardHost.BorderBrush = TryCreateBrush(customDefinition.OutlineColor, "#2A303D");
             EditCustomCardHost.BorderThickness = new Thickness(Math.Clamp(customDefinition.OutlineWidth, 0, 6));
-            EditCustomCardHost.Padding = new Thickness(12);
+            // Field coordinates already include the designer-authored outer spacing.
+            EditCustomCardHost.Padding = new Thickness(0);
             RenderCustomCardEditor(customDefinition);
         }
         _pendingUploadPaths.Clear();
@@ -1154,7 +1155,7 @@ public partial class MainWindow : Window
         EditorShell.MinHeight = Math.Min(620, availableEditorHeight);
         EditorShell.MaxHeight = availableEditorHeight;
         EditorShell.Height = availableEditorHeight;
-        EditorShell.Width = isCustomCard ? Math.Min(Math.Max(620, EditCustomCardCanvas.Width + 42), Math.Max(620, RootLayout.ActualWidth - 80)) : 500;
+        EditorShell.Width = isCustomCard ? Math.Min(Math.Max(660, EditCustomCardCanvas.Width + 60), Math.Max(660, RootLayout.ActualWidth - 80)) : 500;
         CardEditorHost.Visibility = Visibility.Visible;
         Dispatcher.BeginInvoke(() =>
         {
@@ -1168,7 +1169,7 @@ public partial class MainWindow : Window
 
     private void RenderCustomCardEditor(CustomCardDefinition definition)
     {
-        const double editorSurfaceWidth = 420;
+        const double editorSurfaceWidth = 600;
         EditCustomCardCanvas.Children.Clear();
         var headerBrush = TryCreateBrush(definition.HeaderTextColor, "#8992A5");
         var mainBrush = TryCreateBrush(definition.MainTextColor, "#F4F6FA");

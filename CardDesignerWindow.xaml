@@ -59,8 +59,8 @@
         <TextBlock Text="Drag a real control onto the card." Foreground="#737D91" TextWrapping="Wrap" FontSize="10" Margin="0,14,0,0"/>
       </StackPanel></Border>
       <Border Grid.Column="2" Background="#0E1117" BorderBrush="#262C38" BorderThickness="1" CornerRadius="14" Padding="18">
-        <Border x:Name="OpenSurface" Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
-          <Canvas x:Name="DesignCanvas" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="DesignCanvas_Drop" DragOver="DesignCanvas_DragOver" ClipToBounds="True"/>
+        <Border x:Name="OpenSurface" Width="600" HorizontalAlignment="Center" Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+          <Canvas x:Name="DesignCanvas" Width="600" Background="{StaticResource DotGridBrush}" AllowDrop="True" Drop="DesignCanvas_Drop" DragOver="DesignCanvas_DragOver" ClipToBounds="True"/>
         </Border>
       </Border>
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">

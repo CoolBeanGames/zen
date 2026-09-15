@@ -7,7 +7,7 @@
     <AssemblyName>zen-operator</AssemblyName>
     <RootNamespace>ZenOperator</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <Version>0.4.21</Version>
+    <Version>0.4.22</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Zen.Core\Zen.Core.csproj" />
