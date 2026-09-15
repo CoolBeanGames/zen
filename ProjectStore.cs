@@ -327,11 +327,15 @@ public sealed class ProjectStore
         else if (field.Type == "tags")
             value = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
         var imagePath = field.Type == "files" ? card.Files.FirstOrDefault(file => file.IsImage)?.AbsolutePath ?? string.Empty : string.Empty;
+        var tagViews = field.Type == "tags"
+            ? card.TagViews.Where(tag => !tag.Name.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Name.Equals("in progress", StringComparison.OrdinalIgnoreCase))
+                .Select(tag => new TagChip { Name=tag.Name, Color=tag.Color }).ToList()
+            : [];
         return new CustomCompactField
         {
             Name=field.Name, Type=field.Type, Value=value,
             HeaderTextColor=definition.HeaderTextColor, MainTextColor=definition.MainTextColor, TextBoxColor=definition.TextBoxColor,
-            IsCompactView=isCompactView, ImagePath=imagePath,
+            IsCompactView=isCompactView, ImagePath=imagePath, TagViews=tagViews,
             X=x, Y=y, Width=width, Height=height
         };
     }

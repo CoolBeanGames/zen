@@ -438,7 +438,9 @@ public sealed class CustomCompactField
     public string TextBoxColor { get; set; } = "#0E1117";
     public bool IsCompactView { get; set; }
     public string ImagePath { get; set; } = string.Empty;
+    public IReadOnlyList<TagChip> TagViews { get; set; } = [];
     public bool HasImagePreview => !string.IsNullOrWhiteSpace(ImagePath);
+    public bool HasTags => TagViews.Count > 0;
     public bool HideHeader => Type == "label" || (Type == "list" && IsCompactView);
     public bool IsChecked => bool.TryParse(Value, out var value) && value;
     public string DisplayValue => Type switch

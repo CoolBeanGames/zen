@@ -1284,17 +1284,44 @@ public partial class MainWindow : Window
     {
         var root=new StackPanel();
         var text=new TextBox { Text=value.Value, Style=(Style)FindResource("Field"), Foreground=mainBrush, Background=textBoxBrush, MinHeight=36, ToolTip="Comma-separated project tags" };
-        text.TextChanged += (_, _) => value.Value=text.Text;
         root.Children.Add(text);
-        var picker=new ComboBox { ItemsSource=_document?.TagCatalog.Select(tag => tag.Name).OrderBy(name => name).ToList(), IsEditable=true, IsTextSearchEnabled=true, Foreground=mainBrush, Background=textBoxBrush, Margin=new Thickness(0,6,0,0), MinHeight=32 };
-        picker.SelectionChanged += (_, _) =>
+        var suggestions=new ListBox { Visibility=Visibility.Collapsed, MaxHeight=116, Background=textBoxBrush, Foreground=mainBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(42,48,61)), Margin=new Thickness(0,3,0,0) };
+        root.Children.Add(suggestions);
+
+        Action<string> acceptSuggestion = suggestion =>
         {
-            if (picker.SelectedItem is not string selected) return;
-            var tags=text.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-            if (!tags.Contains(selected, StringComparer.OrdinalIgnoreCase)) tags.Add(selected);
-            text.Text=string.Join(", ", tags); text.CaretIndex=text.Text.Length; picker.SelectedIndex=-1;
+            var comma=text.Text.LastIndexOf(',');
+            var prefix=comma >= 0 ? text.Text[..(comma+1)] + " " : string.Empty;
+            text.Text=prefix + suggestion + ", ";
+            text.CaretIndex=text.Text.Length;
+            suggestions.Visibility=Visibility.Collapsed;
+            text.Focus();
         };
-        root.Children.Add(picker);
+        text.TextChanged += (_, _) =>
+        {
+            value.Value=text.Text;
+            var comma=text.Text.LastIndexOf(',');
+            var token=text.Text[(comma+1)..].Trim();
+            if (token.Length == 0) { suggestions.Visibility=Visibility.Collapsed; return; }
+            var alreadyUsed=text.Text[..Math.Max(0,comma+1)].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var matches=(_document?.TagCatalog.Select(tag => tag.Name) ?? [])
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Where(tag => tag.StartsWith(token,StringComparison.OrdinalIgnoreCase) && !tag.Equals(token,StringComparison.OrdinalIgnoreCase) && !alreadyUsed.Contains(tag,StringComparer.OrdinalIgnoreCase))
+                .OrderBy(tag => tag).Take(6).ToList();
+            suggestions.ItemsSource=matches;
+            suggestions.SelectedIndex=matches.Count > 0 ? 0 : -1;
+            suggestions.Visibility=matches.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        };
+        text.PreviewKeyDown += (_, args) =>
+        {
+            if (args.Key == Key.Tab && suggestions.Visibility == Visibility.Visible && suggestions.SelectedItem is string suggestion)
+            { acceptSuggestion(suggestion); args.Handled=true; }
+            else if (args.Key == Key.Down && suggestions.Visibility == Visibility.Visible && suggestions.Items.Count > 0)
+            { suggestions.SelectedIndex=Math.Min(suggestions.Items.Count-1,suggestions.SelectedIndex+1); args.Handled=true; }
+            else if (args.Key == Key.Up && suggestions.Visibility == Visibility.Visible && suggestions.Items.Count > 0)
+            { suggestions.SelectedIndex=Math.Max(0,suggestions.SelectedIndex-1); args.Handled=true; }
+        };
+        suggestions.MouseLeftButtonUp += (_, _) => { if (suggestions.SelectedItem is string suggestion) acceptSuggestion(suggestion); };
         return root;
     }
 

@@ -374,12 +374,19 @@
                                                                         <CheckBox x:Name="CheckView" Content="{Binding Name}" Foreground="{Binding MainTextColor}" IsChecked="{Binding IsChecked, Mode=OneWay}" FontSize="12" IsHitTestVisible="False" Visibility="Collapsed"/>
                                                                         <TextBlock x:Name="LabelView" Text="{Binding DisplayValue}" Foreground="{Binding MainTextColor}" FontSize="13" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                                                         <Border x:Name="ImageView" Background="{Binding TextBoxColor}" CornerRadius="5" ClipToBounds="True" Visibility="Collapsed"><Image Source="{Binding ImagePath}" Stretch="UniformToFill"/></Border>
+                                                                        <StackPanel x:Name="TagsView" Visibility="Collapsed">
+                                                                            <TextBlock Text="{Binding Name}" Foreground="{Binding HeaderTextColor}" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                                            <ItemsControl ItemsSource="{Binding TagViews}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Background="{Binding Color}" CornerRadius="4" Padding="6,2" Margin="0,0,5,3"><TextBlock Text="{Binding Name}" Foreground="White" FontSize="9" FontWeight="SemiBold"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                                                                            <TextBlock x:Name="NoTagsView" Text="No tags" Foreground="{Binding MainTextColor}" FontSize="11" Opacity="0.65"/>
+                                                                        </StackPanel>
                                                                     </Grid>
                                                                     <DataTemplate.Triggers>
                                                                         <DataTrigger Binding="{Binding Type}" Value="checkbox"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="CheckView" Property="Visibility" Value="Visible"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding Type}" Value="label"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="LabelView" Property="Visibility" Value="Visible"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding HideHeader}" Value="True"><Setter TargetName="HeaderView" Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding HasImagePreview}" Value="True"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="ImageView" Property="Visibility" Value="Visible"/></DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Type}" Value="tags"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="TagsView" Property="Visibility" Value="Visible"/></DataTrigger>
+                                                                        <DataTrigger Binding="{Binding HasTags}" Value="True"><Setter TargetName="NoTagsView" Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                     </DataTemplate.Triggers>
                                                                 </DataTemplate></ItemsControl.ItemTemplate>
                                                             </ItemsControl>
@@ -393,12 +400,19 @@
                                                                         <CheckBox x:Name="CheckView" Content="{Binding Name}" Foreground="{Binding MainTextColor}" IsChecked="{Binding IsChecked, Mode=OneWay}" FontSize="12" IsHitTestVisible="False" Visibility="Collapsed"/>
                                                                         <TextBlock x:Name="LabelView" Text="{Binding DisplayValue}" Foreground="{Binding MainTextColor}" FontSize="13" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                                                         <Border x:Name="ImageView" Background="{Binding TextBoxColor}" CornerRadius="5" ClipToBounds="True" Visibility="Collapsed"><Image Source="{Binding ImagePath}" Stretch="UniformToFill"/></Border>
+                                                                        <StackPanel x:Name="TagsView" Visibility="Collapsed">
+                                                                            <TextBlock Text="{Binding Name}" Foreground="{Binding HeaderTextColor}" FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                                            <ItemsControl ItemsSource="{Binding TagViews}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Background="{Binding Color}" CornerRadius="4" Padding="6,2" Margin="0,0,5,3"><TextBlock Text="{Binding Name}" Foreground="White" FontSize="9" FontWeight="SemiBold"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                                                                            <TextBlock x:Name="NoTagsView" Text="No tags" Foreground="{Binding MainTextColor}" FontSize="11" Opacity="0.65"/>
+                                                                        </StackPanel>
                                                                     </Grid>
                                                                     <DataTemplate.Triggers>
                                                                         <DataTrigger Binding="{Binding Type}" Value="checkbox"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="CheckView" Property="Visibility" Value="Visible"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding Type}" Value="label"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="LabelView" Property="Visibility" Value="Visible"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding HideHeader}" Value="True"><Setter TargetName="HeaderView" Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         <DataTrigger Binding="{Binding HasImagePreview}" Value="True"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="ImageView" Property="Visibility" Value="Visible"/></DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Type}" Value="tags"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="TagsView" Property="Visibility" Value="Visible"/></DataTrigger>
+                                                                        <DataTrigger Binding="{Binding HasTags}" Value="True"><Setter TargetName="NoTagsView" Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                     </DataTemplate.Triggers>
                                                                 </DataTemplate></ItemsControl.ItemTemplate>
                                                             </ItemsControl>
