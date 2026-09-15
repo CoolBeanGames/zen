@@ -290,7 +290,7 @@ public sealed class ProjectStore
             card.CustomBackground = definition.CardColor;
             card.CustomBorderColor = definition.OutlineColor;
             card.CustomBorderThickness = new System.Windows.Thickness(definition.OutlineWidth);
-            foreach (var field in definition.Fields)
+            foreach (var field in definition.Fields.Where(field => field.ShowOnExpanded))
             {
                 var width = Math.Min(ExpandedSurfaceWidth, Math.Max(60, field.ExpandedWidth));
                 var height = Math.Min(ExpandedSurfaceHeight, Math.Max(36, field.ExpandedHeight));

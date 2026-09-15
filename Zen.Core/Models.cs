@@ -60,6 +60,7 @@ public sealed class CustomFieldDefinition
     public string Type { get; set; } = "text";
     public string DefaultValue { get; set; } = string.Empty;
     public ObservableCollection<string> Options { get; set; } = [];
+    public bool ShowOnExpanded { get; set; } = true;
     public bool ShowOnCollapsed { get; set; } = true;
     public double X { get; set; } = 24;
     public double Y { get; set; } = 24;

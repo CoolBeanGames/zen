@@ -41,7 +41,7 @@ public partial class CardDesignerWindow : Window
         Loaded += (_, _) => { ApplyAppearancePreview(); RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); };
     }
 
-    private static CustomFieldDefinition Clone(CustomFieldDefinition f) => new() { Id=f.Id, Name=f.Name, Type=f.Type, DefaultValue=f.DefaultValue, Options=new(f.Options), ShowOnCollapsed=f.ShowOnCollapsed, X=f.X, Y=f.Y, Width=f.Width, Height=f.Height, ExpandedX=f.ExpandedX, ExpandedY=f.ExpandedY, ExpandedWidth=f.ExpandedWidth, ExpandedHeight=f.ExpandedHeight, CompactX=f.CompactX, CompactY=f.CompactY, CompactWidth=f.CompactWidth, CompactHeight=f.CompactHeight };
+    private static CustomFieldDefinition Clone(CustomFieldDefinition f) => new() { Id=f.Id, Name=f.Name, Type=f.Type, DefaultValue=f.DefaultValue, Options=new(f.Options), ShowOnExpanded=f.ShowOnExpanded, ShowOnCollapsed=f.ShowOnCollapsed, X=f.X, Y=f.Y, Width=f.Width, Height=f.Height, ExpandedX=f.ExpandedX, ExpandedY=f.ExpandedY, ExpandedWidth=f.ExpandedWidth, ExpandedHeight=f.ExpandedHeight, CompactX=f.CompactX, CompactY=f.CompactY, CompactWidth=f.CompactWidth, CompactHeight=f.CompactHeight };
 
     private void Palette_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => _paletteDragArmed = true;
 
@@ -191,15 +191,15 @@ public partial class CardDesignerWindow : Window
     private void Field_MouseDown(object sender, MouseButtonEventArgs e) { if(IsResizeHandle(e)||sender is not FrameworkElement {Tag:CustomFieldDefinition f} element)return; _selected=f; _dragOrigin=e.GetPosition(DesignCanvas); _fieldOriginX=f.X; _fieldOriginY=f.Y; element.CaptureMouse(); }
     private void Field_MouseMove(object sender, MouseEventArgs e) { if(e.LeftButton!=MouseButtonState.Pressed||sender is not FrameworkElement {Tag:CustomFieldDefinition f}||Mouse.Captured is Thumb)return; var p=e.GetPosition(DesignCanvas); var d=p-_dragOrigin; f.X=Math.Max(0,Snap(_fieldOriginX+d.X)); f.Y=Math.Max(0,Snap(_fieldOriginY+d.Y)); Canvas.SetLeft((UIElement)sender,f.X); Canvas.SetTop((UIElement)sender,f.Y); }
     private void Field_MouseUp(object sender, MouseButtonEventArgs e) { if(sender is FrameworkElement element && Mouse.Captured==element)element.ReleaseMouseCapture(); if(_selected is not null)SelectField(_selected); }
-    private void SelectField(CustomFieldDefinition field) { _selected=field; _loading=true; Inspector.Visibility=Visibility.Visible; FieldName.Text=field.Name; FieldType.SelectedIndex=Math.Max(0,FieldTypes.ToList().IndexOf(field.Type)); DefaultValue.Text=field.DefaultValue; OptionsInput.Text=string.Join(", ",field.Options); OptionsHost.Visibility=field.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; CollapsedVisible.IsChecked=field.ShowOnCollapsed; _loading=false; RenderFields(); }
-    private void InspectorChanged(object sender, RoutedEventArgs e) { if(_loading||_selected is null)return; _selected.Name=FieldName.Text; _selected.Type=(FieldType.SelectedItem as ComboBoxItem)?.Content?.ToString()??"text"; _selected.DefaultValue=DefaultValue.Text; _selected.ShowOnCollapsed=CollapsedVisible.IsChecked==true; _selected.Options.Clear(); foreach(var item in OptionsInput.Text.Split(',',StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries))_selected.Options.Add(item); OptionsHost.Visibility=_selected.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); }
+    private void SelectField(CustomFieldDefinition field) { _selected=field; _loading=true; Inspector.Visibility=Visibility.Visible; FieldName.Text=field.Name; FieldType.SelectedIndex=Math.Max(0,FieldTypes.ToList().IndexOf(field.Type)); DefaultValue.Text=field.DefaultValue; OptionsInput.Text=string.Join(", ",field.Options); OptionsHost.Visibility=field.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; ExpandedVisible.IsChecked=field.ShowOnExpanded; CollapsedVisible.IsChecked=field.ShowOnCollapsed; _loading=false; RenderFields(); }
+    private void InspectorChanged(object sender, RoutedEventArgs e) { if(_loading||_selected is null)return; _selected.Name=FieldName.Text; _selected.Type=(FieldType.SelectedItem as ComboBoxItem)?.Content?.ToString()??"text"; _selected.DefaultValue=DefaultValue.Text; _selected.ShowOnExpanded=ExpandedVisible.IsChecked==true; _selected.ShowOnCollapsed=CollapsedVisible.IsChecked==true; _selected.Options.Clear(); foreach(var item in OptionsInput.Text.Split(',',StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries))_selected.Options.Add(item); OptionsHost.Visibility=_selected.Type=="dropdown"?Visibility.Visible:Visibility.Collapsed; RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); }
     private void RemoveElement_Click(object sender, RoutedEventArgs e) { if(_selected is null)return; _fields.Remove(_selected); _selected=null; Inspector.Visibility=Visibility.Collapsed; RenderFields(); RefreshExpandedDesigner(); RefreshCompactDesigner(); }
     private void DesignerTabs_SelectionChanged(object sender, SelectionChangedEventArgs e) { if (IsLoaded) { RefreshExpandedDesigner(); RefreshCompactDesigner(); } }
 
     private void RefreshExpandedDesigner()
     {
         ExpandedCanvas.Children.Clear();
-        foreach (var field in _fields)
+        foreach (var field in _fields.Where(field => field.ShowOnExpanded))
         {
             field.ExpandedWidth=Math.Min(ExpandedCanvas.Width,Math.Max(60,Snap(field.ExpandedWidth)));
             field.ExpandedHeight=Math.Min(ExpandedCanvas.Height,Math.Max(36,Snap(field.ExpandedHeight)));
