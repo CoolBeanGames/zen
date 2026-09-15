@@ -240,7 +240,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool IsCustomCard => !string.IsNullOrWhiteSpace(CustomTypeId);
     [JsonIgnore] public bool HasCustomExpandedFields => CustomExpandedFields.Count > 0;
     [JsonIgnore] public double ExpandedLayoutHeight { get; internal set; } = 168;
-    [JsonIgnore] public double CustomCardWidth => IsCollapsed ? 220 : 256;
+    [JsonIgnore] public double CustomCardWidth => IsCollapsed ? 192 : 228;
     [JsonIgnore] public string CustomBackground { get; internal set; } = "#1D222C";
     [JsonIgnore] public string CustomBorderColor { get; internal set; } = "#2A303D";
     [JsonIgnore] public Thickness CustomBorderThickness { get; internal set; } = new(1);

@@ -278,7 +278,13 @@
                                                             <RowDefinition Height="*"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
-                                                        <StackPanel Grid.Row="0" Margin="14,14,14,12">
+                                                        <StackPanel Grid.Row="0">
+                                                            <StackPanel.Style>
+                                                                <Style TargetType="StackPanel">
+                                                                    <Setter Property="Margin" Value="14,14,14,12"/>
+                                                                    <Style.Triggers><DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Margin" Value="0"/></DataTrigger></Style.Triggers>
+                                                                </Style>
+                                                            </StackPanel.Style>
                                                             <TextBlock Text="—  BREAK · AGENTS STOP HERE  —" HorizontalAlignment="Center" Foreground="#FF7F91" FontSize="11" FontWeight="Bold">
                                                                 <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                                                             </TextBlock>
@@ -288,7 +294,7 @@
                                                             <StackPanel>
                                                                 <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsBreak}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsCleanup}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                                             <Grid Margin="0,0,0,10">
-                                                                <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
+                                                                <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
                                                                 <ItemsControl ItemsSource="{Binding TagViews}" MaxWidth="210" HorizontalAlignment="Left">
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
@@ -318,7 +324,7 @@
                                                                 </StackPanel>
                                                             </Grid>
                                                             <WrapPanel Margin="0,-2,0,7">
-                                                                <WrapPanel.Style><Style TargetType="WrapPanel"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></WrapPanel.Style>
+                                                                <WrapPanel.Style><Style TargetType="WrapPanel"><Style.Triggers><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></WrapPanel.Style>
                                                                 <Border Background="#3B334A" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
                                                                     <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding KindLabel}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
                                                                     <TextBlock Text="{Binding KindLabel}" Foreground="#CFC5FF" FontSize="9" FontWeight="Bold"/>
@@ -341,13 +347,14 @@
                                                                 </Border>
                                                             </WrapPanel>
                                                             <Grid>
+                                                                <Grid.Style><Style TargetType="Grid"><Style.Triggers><DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Grid.Style>
                                                                 <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" LineHeight="20" Margin="0,0,72,0"/>
                                                                 <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#413750" CornerRadius="4" Padding="6,2">
                                                                     <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasPriority}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Border.Style>
                                                                     <TextBlock Text="{Binding PriorityLabel}" Foreground="#E0D7FF" FontSize="9" FontWeight="Bold"/>
                                                                 </Border>
                                                             </Grid>
-                                                            <ItemsControl ItemsSource="{Binding CustomCompactFields}" Width="192" Height="{Binding CompactLayoutHeight}" HorizontalAlignment="Center" ClipToBounds="True" Margin="0,8,0,0">
+                                                            <ItemsControl ItemsSource="{Binding CustomCompactFields}" Width="192" Height="{Binding CompactLayoutHeight}" HorizontalAlignment="Center" ClipToBounds="True">
                                                                 <ItemsControl.Style><Style TargetType="ItemsControl"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCollapsed}" Value="True"/><Condition Binding="{Binding HasCustomCompactFields}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></ItemsControl.Style>
                                                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                                                 <ItemsControl.ItemContainerStyle><Style TargetType="ContentPresenter"><Setter Property="Canvas.Left" Value="{Binding X}"/><Setter Property="Canvas.Top" Value="{Binding Y}"/></Style></ItemsControl.ItemContainerStyle>
@@ -359,7 +366,7 @@
                                                                     <DataTemplate.Triggers><DataTrigger Binding="{Binding Type}" Value="checkbox"><Setter TargetName="ValueView" Property="Visibility" Value="Collapsed"/><Setter TargetName="CheckView" Property="Visibility" Value="Visible"/></DataTrigger></DataTemplate.Triggers>
                                                                 </DataTemplate></ItemsControl.ItemTemplate>
                                                             </ItemsControl>
-                                                            <ItemsControl ItemsSource="{Binding CustomExpandedFields}" Width="228" Height="{Binding ExpandedLayoutHeight}" HorizontalAlignment="Center" ClipToBounds="True" Margin="0,8,0,0">
+                                                            <ItemsControl ItemsSource="{Binding CustomExpandedFields}" Width="228" Height="{Binding ExpandedLayoutHeight}" HorizontalAlignment="Center" ClipToBounds="True">
                                                                 <ItemsControl.Style><Style TargetType="ItemsControl"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding IsCollapsed}" Value="False"/><Condition Binding="{Binding HasCustomExpandedFields}" Value="True"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></ItemsControl.Style>
                                                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                                                 <ItemsControl.ItemContainerStyle><Style TargetType="ContentPresenter"><Setter Property="Canvas.Left" Value="{Binding X}"/><Setter Property="Canvas.Top" Value="{Binding Y}"/></Style></ItemsControl.ItemContainerStyle>
@@ -378,12 +385,13 @@
                                                                             <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
                                                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                                             </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </TextBlock.Style>
                                                             </TextBlock>
                                                             <StackPanel Margin="0,8,0,0">
-                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                                                <StackPanel.Style><Style TargetType="StackPanel"><Style.Triggers><DataTrigger Binding="{Binding IsCollapsed}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                                                 <TextBlock Text="{Binding StartedDate, StringFormat='Started · {0:MMM d, yyyy}'}" Foreground="{StaticResource MutedBrush}" FontSize="10"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding HasStartedDate}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
                                                                 <TextBlock Text="{Binding DueDate, StringFormat='Due · {0:MMM d, yyyy}'}" Foreground="#E6B46B" FontSize="10"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding HasDueDate}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
                                                             </StackPanel>
@@ -395,6 +403,7 @@
                                                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                                             </DataTrigger>
                                                                             <DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </ItemsControl.Style>
@@ -441,6 +450,7 @@
                                                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                                             </DataTrigger>
                                                                             <DataTrigger Binding="{Binding IsNote}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsCustomCard}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </Grid.Style>
@@ -521,10 +531,10 @@
                 <Grid>
                 <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                 <ScrollViewer x:Name="EditorScroller" Grid.Row="0"
-                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                               PreviewMouseDown="EditorScroller_PreviewMouseDown" PreviewMouseMove="EditorScroller_PreviewMouseMove"
                               PreviewMouseUp="EditorScroller_PreviewMouseUp" LostMouseCapture="EditorScroller_LostMouseCapture">
-                <Border Width="{Binding ViewportWidth, ElementName=EditorScroller}" Padding="0,0,12,0">
+                <Border MinWidth="{Binding ViewportWidth, ElementName=EditorScroller}" Padding="0,0,12,0">
                 <StackPanel>
                     <Grid Margin="0,0,0,17">
                         <StackPanel Margin="0,0,170,0">
