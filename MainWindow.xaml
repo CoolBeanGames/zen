@@ -527,7 +527,6 @@
                                        TextWrapping="Wrap" Margin="0,8,0,0" MaxHeight="72" ToolTip="Instructions given to agents when they read this custom card"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                            <Button x:Name="EditCustomCardTypeButton" Style="{StaticResource IconButton}" Content="Edit card type…" Click="EditCustomCardType_Click" Padding="9,5" Margin="0,0,6,0" Visibility="Collapsed"/>
                             <Button Style="{StaticResource IconButton}" Content="×" Click="CancelCardEdit_Click" FontSize="19" Padding="6,1"/>
                         </StackPanel>
                     </Grid>
@@ -638,10 +637,14 @@
                 <Border Grid.Row="1" Background="#171B23" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
                     <StackPanel>
                     <TextBlock x:Name="EditValidationText" Text="A title is required." Foreground="#FF7F91" FontSize="11" Margin="0,0,0,8" Visibility="Collapsed"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource IconButton}" Content="Cancel" Click="CancelCardEdit_Click" Margin="0,0,8,0"/>
-                        <Button Style="{StaticResource PrimaryButton}" Content="Apply" Click="ApplyCardEdit_Click"/>
-                    </StackPanel>
+                    <Grid>
+                        <Button x:Name="EditCustomCardTypeButton" Style="{StaticResource IconButton}" Content="Edit card design…"
+                                Click="EditCustomCardType_Click" Padding="9,5" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource IconButton}" Content="Cancel" Click="CancelCardEdit_Click" Margin="0,0,8,0"/>
+                            <Button Style="{StaticResource PrimaryButton}" Content="Apply" Click="ApplyCardEdit_Click"/>
+                        </StackPanel>
+                    </Grid>
                     </StackPanel>
                 </Border>
                 </Grid>
