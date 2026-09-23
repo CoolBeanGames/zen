@@ -403,6 +403,7 @@ public partial class MainWindow : Window
         var launch = new MenuItem { Header = "Launch" };
         AddMenuItem(launch, "Codex", (_, _) => LaunchAgent("codex", scopeInstruction));
         AddMenuItem(launch, "Claude", (_, _) => LaunchAgent("claude", scopeInstruction));
+        AddMenuItem(launch, "Gemini", (_, _) => LaunchAgent("gemini", scopeInstruction));
         MakeSubmenuSticky(launch);
         return launch;
     }
@@ -457,10 +458,14 @@ public partial class MainWindow : Window
         var instruction = File.Exists(PromptEnvironment.PromptPath)
             ? $"Ignore any prompt.txt inside the project folder. Read only the current canonical instructions at \"{PromptEnvironment.PromptPath}\", then {scopeInstruction}"
             : $"Read prompt.txt, then {scopeInstruction}";
-        var permissionFlag = agent == "codex"
-            ? "--dangerously-bypass-approvals-and-sandbox"
-            : "--dangerously-skip-permissions";
-        var command = $"& {QuotePowerShellLiteral(agent)} {permissionFlag} {QuotePowerShellLiteral(instruction)}";
+        var quotedInstruction = QuotePowerShellLiteral(instruction);
+        var command = agent switch
+        {
+            "codex" => $"& 'codex' --dangerously-bypass-approvals-and-sandbox {quotedInstruction}",
+            "claude" => $"& 'claude' --dangerously-skip-permissions {quotedInstruction}",
+            "gemini" => $"& 'agy' --dangerously-skip-permissions -i {quotedInstruction}",
+            _ => throw new ArgumentOutOfRangeException(nameof(agent), agent, "Unknown agent")
+        };
         var encodedCommand = Convert.ToBase64String(Encoding.Unicode.GetBytes(command));
         try
         {
