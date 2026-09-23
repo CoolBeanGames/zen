@@ -73,6 +73,8 @@ public static class PromptEnvironment
         var operatorExePath = Path.Combine(operatorDirectory, "zen-operator.exe");
         if (!File.Exists(operatorExePath)) return;
 
+        WriteOperatorPointer(operatorExePath);
+
         const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
         var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
             .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -96,13 +98,24 @@ public static class PromptEnvironment
             settings.OperatorPathEntry = operatorDirectory;
             store.Save(settings);
         }
+    }
+
+    private static void WriteOperatorPointer(string operatorExePath)
+    {
 
         System.IO.Directory.CreateDirectory(Directory);
         if (!File.Exists(OperatorPointerPath) || File.ReadAllText(OperatorPointerPath) != operatorExePath)
         {
-            var temporaryPath = OperatorPointerPath + ".tmp";
-            File.WriteAllText(temporaryPath, operatorExePath);
-            File.Move(temporaryPath, OperatorPointerPath, true);
+            var temporaryPath = $"{OperatorPointerPath}.{Environment.ProcessId}.{Guid.NewGuid():N}.tmp";
+            try
+            {
+                File.WriteAllText(temporaryPath, operatorExePath);
+                if (File.Exists(operatorExePath)) File.Move(temporaryPath, OperatorPointerPath, true);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath)) File.Delete(temporaryPath);
+            }
         }
     }
 
