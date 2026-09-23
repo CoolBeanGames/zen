@@ -69,7 +69,15 @@ public sealed class ClusterDefinition : INotifyPropertyChanged
 
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get => _name; set => SetField(ref _name, value); }
-    public string Description { get => _description; set => SetField(ref _description, value); }
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            if (!SetField(ref _description, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DescriptionPreview)));
+        }
+    }
     public string Color { get => _color; set => SetField(ref _color, value); }
     public ObservableCollection<string> Tags { get; set; } = [];
     public ObservableCollection<TaskRequirement> Requirements { get; set; } = [];
@@ -99,6 +107,9 @@ public sealed class ClusterDefinition : INotifyPropertyChanged
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     [JsonIgnore] public string CollapseGlyph => IsCollapsed ? "▾" : "▴";
     [JsonIgnore] public string LockGlyph => IsLocked ? "🔒" : string.Empty;
+    [JsonIgnore]
+    public string DescriptionPreview => string.Join(Environment.NewLine,
+        Description.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Split('\n').Take(4));
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)

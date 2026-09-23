@@ -33,6 +33,7 @@
                 <TextBlock Text="ACTIONS" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,12,0,7"/>
                 <WrapPanel>
                     <CheckBox x:Name="CommitInput" Content="Commit" Margin="0,0,18,8"/>
+                    <CheckBox x:Name="MergeInput" Content="Merge" Margin="0,0,18,8"/>
                     <CheckBox x:Name="BuildInput" Content="Build" Margin="0,0,18,8"/>
                     <CheckBox x:Name="ReleaseInput" Content="Release" Margin="0,0,0,8"/>
                 </WrapPanel>

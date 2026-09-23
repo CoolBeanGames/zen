@@ -353,6 +353,7 @@ public static class OperationApplier
             foreach (var text in requirementsNode.AsArray().Select(node => node!.GetValue<string>()))
                 cluster.Requirements.Add(new TaskRequirement { Index = cluster.Requirements.Count + 1, Text = text });
         cluster.Flags.Commit = operation.Payload["commit"]?.GetValue<bool>() ?? false;
+        cluster.Flags.Merge = operation.Payload["merge"]?.GetValue<bool>() ?? false;
         cluster.Flags.Build = operation.Payload["build"]?.GetValue<bool>() ?? false;
         cluster.Flags.Release = operation.Payload["release"]?.GetValue<bool>() ?? false;
         document.Clusters.Add(cluster);
@@ -382,6 +383,7 @@ public static class OperationApplier
             foreach (var tag in tagsNode.AsArray().Select(node => node!.GetValue<string>()).Distinct(StringComparer.OrdinalIgnoreCase)) cluster.Tags.Add(tag);
         }
         if (payload["commit"] is JsonNode commitNode) cluster.Flags.Commit = commitNode.GetValue<bool>();
+        if (payload["merge"] is JsonNode mergeNode) cluster.Flags.Merge = mergeNode.GetValue<bool>();
         if (payload["build"] is JsonNode buildNode) cluster.Flags.Build = buildNode.GetValue<bool>();
         if (payload["release"] is JsonNode releaseNode) cluster.Flags.Release = releaseNode.GetValue<bool>();
         if (payload["isAwaitingFeedback"] is JsonNode feedbackNode) cluster.IsAwaitingFeedback = feedbackNode.GetValue<bool>();

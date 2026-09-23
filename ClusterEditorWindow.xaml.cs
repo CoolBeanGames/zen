@@ -25,6 +25,7 @@ public partial class ClusterEditorWindow : Window
         DoNotArchiveInput.IsChecked = source.DoNotArchive;
         LockedInput.IsChecked = source.IsLocked;
         CommitInput.IsChecked = source.Flags.Commit;
+        MergeInput.IsChecked = source.Flags.Merge;
         BuildInput.IsChecked = source.Flags.Build;
         ReleaseInput.IsChecked = source.Flags.Release;
         foreach (var item in source.Requirements)
@@ -87,7 +88,13 @@ public partial class ClusterEditorWindow : Window
             Tags = new(TagsInput.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.OrdinalIgnoreCase)),
             Requirements = new(_requirements.Select(item => new TaskRequirement { Id = item.Id, Index = item.Index, Text = item.Text.Trim(), IsDone = item.IsDone }).Where(item => item.Text.Length > 0)),
             Notes = new(_notes.Select(item => new TaskNote { Id = item.Id, Text = item.Text.Trim() }).Where(item => item.Text.Length > 0)),
-            Flags = new CardFlags { Commit = CommitInput.IsChecked == true, Build = BuildInput.IsChecked == true, Release = ReleaseInput.IsChecked == true },
+            Flags = new CardFlags
+            {
+                Commit = CommitInput.IsChecked == true,
+                Merge = MergeInput.IsChecked == true,
+                Build = BuildInput.IsChecked == true,
+                Release = ReleaseInput.IsChecked == true
+            },
             IsCollapsed = _source.IsCollapsed,
             IsLocked = LockedInput.IsChecked == true,
             IsAwaitingFeedback = AwaitingFeedbackInput.IsChecked == true,

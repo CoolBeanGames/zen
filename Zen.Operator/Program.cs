@@ -88,6 +88,7 @@ int Run(string[] arguments)
                 ["tags"] = new JsonArray(OptionValues(arguments, "--tag").Select(tag => (JsonNode)tag).ToArray()),
                 ["requirements"] = new JsonArray(OptionValues(arguments, "--requirement").Select(text => (JsonNode)text).ToArray()),
                 ["commit"] = arguments.Contains("--commit"),
+                ["merge"] = arguments.Contains("--merge"),
                 ["build"] = arguments.Contains("--build"),
                 ["release"] = arguments.Contains("--release"),
                 ["doNotArchive"] = arguments.Contains("--do-not-archive")
@@ -107,6 +108,8 @@ int Run(string[] arguments)
                 payload["tags"] = new JsonArray(tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(tag => (JsonNode)tag).ToArray());
             if (arguments.Contains("--commit")) payload["commit"] = true;
             if (arguments.Contains("--no-commit")) payload["commit"] = false;
+            if (arguments.Contains("--merge")) payload["merge"] = true;
+            if (arguments.Contains("--no-merge")) payload["merge"] = false;
             if (arguments.Contains("--build")) payload["build"] = true;
             if (arguments.Contains("--no-build")) payload["build"] = false;
             if (arguments.Contains("--release")) payload["release"] = true;
@@ -874,9 +877,9 @@ void PrintUsage()
       clusters                                  list project clusters and their member tasks
       cluster <id-or-name>                      print one cluster
       cluster create --name <n> [--description <d>] [--color <hex>] [--tag <t>]* [--requirement <r>]*
-                     [--commit] [--build] [--release] [--do-not-archive]
+                     [--commit] [--merge] [--build] [--release] [--do-not-archive]
       cluster edit <id-or-name> [--name <n>] [--description <d>] [--color <hex>] [--tags <a,b>]
-                   [--commit|--no-commit] [--build|--no-build] [--release|--no-release]
+                   [--commit|--no-commit] [--merge|--no-merge] [--build|--no-build] [--release|--no-release]
                    [--awaiting|--clear-awaiting] [--do-not-archive|--allow-archive]
       cluster lock|unlock|collapse|expand <id-or-name>
       cluster move <id-or-name> --to <branchId> move every member task as one unit

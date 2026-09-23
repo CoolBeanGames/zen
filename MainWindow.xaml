@@ -230,16 +230,71 @@
                                                                 PreviewMouseLeftButtonUp="ClusterHeader_PreviewMouseLeftButtonUp"
                                                                 PreviewMouseRightButtonUp="ClusterHeader_PreviewMouseRightButtonUp">
                                                             <Grid>
-                                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="◆" Foreground="White" FontSize="10" Margin="0,0,7,0" VerticalAlignment="Center"/>
-                                                                    <TextBlock Text="{Binding Items[0].Cluster.Name}" Foreground="White" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                                                                    <Border Background="#55000000" CornerRadius="4" Padding="6,2" Margin="7,0,0,0">
-                                                                        <TextBlock Text="{Binding ItemCount}" Foreground="White" FontSize="9"/>
-                                                                    </Border>
-                                                                    <TextBlock Text="{Binding Items[0].Cluster.LockGlyph}" Foreground="#F0C574" FontSize="10" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                                                <TextBlock x:Name="CollapsedClusterName" Text="{Binding Items[0].Cluster.Name}"
+                                                                           Foreground="White" FontSize="12" FontWeight="SemiBold" Visibility="Collapsed"/>
+                                                                <StackPanel x:Name="ExpandedClusterContent">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="◆" Foreground="White" FontSize="10" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                                                            <TextBlock Text="{Binding Items[0].Cluster.Name}" Foreground="White" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                            <Border Background="#55000000" CornerRadius="4" Padding="6,2" Margin="7,0,0,0">
+                                                                                <TextBlock Text="{Binding ItemCount}" Foreground="White" FontSize="9"/>
+                                                                            </Border>
+                                                                        </StackPanel>
+                                                                        <TextBlock Grid.Column="1" Text="{Binding Items[0].Cluster.CollapseGlyph}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                                                                    </Grid>
+                                                                    <TextBlock x:Name="ClusterDescriptionPreview" Text="{Binding Items[0].Cluster.DescriptionPreview}"
+                                                                               Foreground="#F7F8FC" FontSize="11" LineHeight="16" TextWrapping="Wrap"
+                                                                               MaxHeight="64" TextTrimming="CharacterEllipsis" Margin="0,7,0,0"/>
+                                                                    <ItemsControl x:Name="ClusterTags" ItemsSource="{Binding Items[0].Cluster.Tags}" Margin="0,7,0,0">
+                                                                        <ItemsControl.Style>
+                                                                            <Style TargetType="ItemsControl">
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding Items[0].Cluster.Tags.Count}" Value="0"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </ItemsControl.Style>
+                                                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Border Background="#56000000" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                                    <TextBlock Text="{Binding}" Foreground="White" FontSize="9" FontWeight="SemiBold"/>
+                                                                                </Border>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                    <WrapPanel Margin="0,7,0,-3">
+                                                                        <Border Background="#64273A31" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.Flags.Commit}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="COMMIT" Foreground="#B6F0CE" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#643D2946" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.Flags.Merge}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="MERGE" Foreground="#F0C9F7" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#64263749" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.Flags.Build}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="BUILD" Foreground="#BBDDFC" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#64463822" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.Flags.Release}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="RELEASE" Foreground="#FFE0A3" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#64273A31" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.IsAwaitingFeedback}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="FEEDBACK" Foreground="#B6F0CE" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#64463822" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.IsLocked}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="LOCKED" Foreground="#FFE0A3" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                        <Border Background="#64413A2D" CornerRadius="4" Padding="6,2" Margin="0,0,5,3">
+                                                                            <Border.Style><Style TargetType="Border"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Items[0].Cluster.DoNotArchive}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></Border.Style>
+                                                                            <TextBlock Text="KEEP" Foreground="#FFE0A3" FontSize="9" FontWeight="Bold"/>
+                                                                        </Border>
+                                                                    </WrapPanel>
                                                                 </StackPanel>
-                                                                <TextBlock Grid.Column="1" Text="{Binding Items[0].Cluster.CollapseGlyph}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
                                                             </Grid>
                                                             <Border.Style>
                                                                 <Style TargetType="Border">
@@ -253,6 +308,15 @@
                                                                 </Style>
                                                             </Border.Style>
                                                         </Border>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding Items[0].Cluster.DescriptionPreview}" Value="">
+                                                                <Setter TargetName="ClusterDescriptionPreview" Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Items[0].Cluster.IsCollapsed}" Value="True">
+                                                                <Setter TargetName="ExpandedClusterContent" Property="Visibility" Value="Collapsed"/>
+                                                                <Setter TargetName="CollapsedClusterName" Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </GroupStyle.HeaderTemplate>
                                                 <GroupStyle.ContainerStyle>
@@ -265,6 +329,9 @@
                                                                         <ItemsPresenter x:Name="ClusterItems"/>
                                                                     </StackPanel>
                                                                     <ControlTemplate.Triggers>
+                                                                        <DataTrigger Binding="{Binding Items[0].HasCluster}" Value="True">
+                                                                            <Setter TargetName="ClusterItems" Property="Margin" Value="7,0,0,0"/>
+                                                                        </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Items[0].Cluster.IsCollapsed}" Value="True">
                                                                             <Setter TargetName="ClusterItems" Property="Visibility" Value="Collapsed"/>
                                                                         </DataTrigger>
@@ -338,6 +405,15 @@
                                                             <RowDefinition Height="*"/>
                                                             <RowDefinition Height="Auto"/>
                                                         </Grid.RowDefinitions>
+                                                        <Border Grid.RowSpan="2" Panel.ZIndex="2" Width="4" HorizontalAlignment="Left"
+                                                                Background="{Binding Cluster.Color}" CornerRadius="3,0,0,3">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers><DataTrigger Binding="{Binding HasCluster}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                        </Border>
                                                         <StackPanel Grid.Row="0">
                                                             <StackPanel.Style>
                                                                 <Style TargetType="StackPanel">
