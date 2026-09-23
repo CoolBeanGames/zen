@@ -26,6 +26,7 @@ public sealed class ProjectDocument
     public string? LatestReleasePath { get; set; }
     public ObservableCollection<ProjectTag> TagCatalog { get; set; } = [];
     public ObservableCollection<CustomCardDefinition> CustomCardTypes { get; set; } = [];
+    public ObservableCollection<ClusterDefinition> Clusters { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 
     // One-way migration support for project files created by the earlier schema.
@@ -38,6 +39,24 @@ public sealed class ProjectDocument
             if (value is { Count: > 0 } && Branches.Count == 0) Branches = value;
         }
     }
+}
+
+public sealed class ClusterDefinition
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Name { get; set; } = "Cluster";
+    public string Description { get; set; } = string.Empty;
+    public string Color { get; set; } = "#514890";
+    public ObservableCollection<string> Tags { get; set; } = [];
+    public ObservableCollection<TaskRequirement> Requirements { get; set; } = [];
+    public ObservableCollection<TaskNote> Notes { get; set; } = [];
+    public CardFlags Flags { get; set; } = new();
+    public bool IsCollapsed { get; set; }
+    public bool IsLocked { get; set; }
+    public bool IsAwaitingFeedback { get; set; }
+    public bool DoNotArchive { get; set; }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
 
 public sealed class CustomCardDefinition
@@ -177,6 +196,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
+    public string? ClusterId { get; set; }
     public string? CustomTypeId { get; set; }
     public Dictionary<string, string> CustomValues { get; set; } = [];
     private ObservableCollection<TaskRequirement> _requirements = [];

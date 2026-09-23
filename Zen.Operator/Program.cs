@@ -48,7 +48,8 @@ int Run(string[] arguments)
                 document.NextCardIndex,
                 document.LatestExePath,
                 document.LatestReleasePath,
-                document.TagCatalog
+                document.TagCatalog,
+                Clusters = document.Clusters.Select(cluster => DescribeCluster(document, cluster))
             });
             return 0;
         }
@@ -66,6 +67,147 @@ int Run(string[] arguments)
                 b.IsPermanent,
                 TaskCount = b.Tasks.Count
             }));
+            return 0;
+        }
+
+        case "clusters":
+        {
+            var document = store.OpenOrCreate();
+            PrintJson(document.Clusters.Select(cluster => DescribeCluster(document, cluster)));
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 2 && arguments[1] == "create":
+        {
+            var name = OptionValue(arguments, "--name") ?? throw new InvalidOperationException("--name is required");
+            var payload = new JsonObject
+            {
+                ["name"] = name,
+                ["description"] = OptionValue(arguments, "--description") ?? string.Empty,
+                ["color"] = OptionValue(arguments, "--color") ?? "#514890",
+                ["tags"] = new JsonArray(OptionValues(arguments, "--tag").Select(tag => (JsonNode)tag).ToArray()),
+                ["requirements"] = new JsonArray(OptionValues(arguments, "--requirement").Select(text => (JsonNode)text).ToArray()),
+                ["commit"] = arguments.Contains("--commit"),
+                ["build"] = arguments.Contains("--build"),
+                ["release"] = arguments.Contains("--release"),
+                ["doNotArchive"] = arguments.Contains("--do-not-archive")
+            };
+            Enqueue(root, "createCluster", payload);
+            Console.WriteLine($"ok: created cluster '{name}'");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] == "edit":
+        {
+            var payload = new JsonObject { ["clusterId"] = arguments[2] };
+            if (OptionValue(arguments, "--name") is { } name) payload["name"] = name;
+            if (OptionValue(arguments, "--description") is { } description) payload["description"] = description;
+            if (OptionValue(arguments, "--color") is { } color) payload["color"] = color;
+            if (OptionValue(arguments, "--tags") is { } tags)
+                payload["tags"] = new JsonArray(tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(tag => (JsonNode)tag).ToArray());
+            if (arguments.Contains("--commit")) payload["commit"] = true;
+            if (arguments.Contains("--no-commit")) payload["commit"] = false;
+            if (arguments.Contains("--build")) payload["build"] = true;
+            if (arguments.Contains("--no-build")) payload["build"] = false;
+            if (arguments.Contains("--release")) payload["release"] = true;
+            if (arguments.Contains("--no-release")) payload["release"] = false;
+            if (arguments.Contains("--awaiting")) payload["isAwaitingFeedback"] = true;
+            if (arguments.Contains("--clear-awaiting")) payload["isAwaitingFeedback"] = false;
+            if (arguments.Contains("--do-not-archive")) payload["doNotArchive"] = true;
+            if (arguments.Contains("--allow-archive")) payload["doNotArchive"] = false;
+            Enqueue(root, "editCluster", payload);
+            Console.WriteLine($"ok: edited cluster {arguments[2]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] is "lock" or "unlock":
+            Enqueue(root, "setClusterLocked", new JsonObject { ["clusterId"] = arguments[2], ["isLocked"] = arguments[1] == "lock" });
+            Console.WriteLine($"ok: cluster {arguments[2]} {arguments[1]}ed");
+            return 0;
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] is "collapse" or "expand":
+            Enqueue(root, "setClusterCollapsed", new JsonObject { ["clusterId"] = arguments[2], ["isCollapsed"] = arguments[1] == "collapse" });
+            Console.WriteLine($"ok: cluster {arguments[2]} {arguments[1]}ed");
+            return 0;
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] == "delete":
+            Enqueue(root, "deleteCluster", new JsonObject { ["clusterId"] = arguments[2] });
+            Console.WriteLine($"ok: deleted cluster {arguments[2]} and kept its tasks");
+            return 0;
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] == "archive":
+            Enqueue(root, "archiveCluster", new JsonObject { ["clusterId"] = arguments[2] });
+            Console.WriteLine($"ok: archived cluster {arguments[2]}");
+            return 0;
+
+        case "cluster" when arguments.Length >= 3 && arguments[1] == "move":
+        {
+            var branchId = OptionValue(arguments, "--to") ?? throw new InvalidOperationException("--to is required");
+            Enqueue(root, "moveCluster", new JsonObject { ["clusterId"] = arguments[2], ["branchId"] = branchId });
+            Console.WriteLine($"ok: moved cluster {arguments[2]} to {branchId}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 5 && arguments[1] == "task" && arguments[2] == "add":
+            Enqueue(root, "setTaskCluster", new JsonObject { ["clusterId"] = arguments[3], ["taskId"] = arguments[4] });
+            Console.WriteLine($"ok: added task {arguments[4]} to cluster {arguments[3]}");
+            return 0;
+
+        case "cluster" when arguments.Length >= 4 && arguments[1] == "task" && arguments[2] == "remove":
+            Enqueue(root, "setTaskCluster", new JsonObject { ["clusterId"] = "clear", ["taskId"] = arguments[3] });
+            Console.WriteLine($"ok: removed task {arguments[3]} from its cluster");
+            return 0;
+
+        case "cluster" when arguments.Length >= 4 && arguments[1] == "requirement" && arguments[2] == "add":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "addClusterRequirement", new JsonObject { ["clusterId"] = arguments[3], ["text"] = text });
+            Console.WriteLine($"ok: added requirement to cluster {arguments[3]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 5 && arguments[1] == "requirement" && arguments[2] == "edit":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "editClusterRequirement", new JsonObject { ["clusterId"] = arguments[3], ["requirementId"] = arguments[4], ["text"] = text });
+            Console.WriteLine($"ok: edited cluster requirement {arguments[4]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 5 && arguments[1] == "requirement" && arguments[2] == "remove":
+            Enqueue(root, "removeClusterRequirement", new JsonObject { ["clusterId"] = arguments[3], ["requirementId"] = arguments[4] });
+            Console.WriteLine($"ok: removed cluster requirement {arguments[4]}");
+            return 0;
+
+        case "cluster" when arguments.Length >= 5 && arguments[1] == "requirement":
+        {
+            var isDone = arguments[4] switch { "done" => true, "undone" => false, _ => throw new InvalidOperationException("state must be 'done' or 'undone'") };
+            Enqueue(root, "setClusterRequirement", new JsonObject { ["clusterId"] = arguments[2], ["requirementId"] = arguments[3], ["isDone"] = isDone });
+            Console.WriteLine($"ok: cluster requirement {arguments[3]} marked {arguments[4]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 4 && arguments[1] == "note" && arguments[2] == "add":
+        {
+            var text = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, "addClusterNote", new JsonObject { ["clusterId"] = arguments[3], ["text"] = text });
+            Console.WriteLine($"ok: added note to cluster {arguments[3]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length >= 5 && arguments[1] == "note" && arguments[2] is "edit" or "remove":
+        {
+            var payload = new JsonObject { ["clusterId"] = arguments[3], ["noteId"] = arguments[4] };
+            if (arguments[2] == "edit") payload["text"] = OptionValue(arguments, "--text") ?? throw new InvalidOperationException("--text is required");
+            Enqueue(root, arguments[2] == "edit" ? "editClusterNote" : "removeClusterNote", payload);
+            Console.WriteLine($"ok: {arguments[2]}ed cluster note {arguments[4]}");
+            return 0;
+        }
+
+        case "cluster" when arguments.Length == 2:
+        {
+            var document = store.OpenOrCreate();
+            PrintJson(DescribeCluster(document, RequireCluster(document, arguments[1])));
             return 0;
         }
 
@@ -108,7 +250,7 @@ int Run(string[] arguments)
             var eligibleOnly = arguments.Contains("--eligible");
             var branches = document.Branches.Where(b => branchFilter is null || b.Id.Equals(branchFilter, StringComparison.OrdinalIgnoreCase));
             var tasks = eligibleOnly
-                ? branches.SelectMany(EligibilityEngine.GetEligible)
+                ? branches.SelectMany(branch => EligibilityEngine.GetEligible(document, branch))
                 : branches.SelectMany(b => b.Tasks);
             PrintJson(tasks.Select(card => DescribeTask(document, card)));
             return 0;
@@ -133,6 +275,7 @@ int Run(string[] arguments)
                 ["release"] = arguments.Contains("--release"),
                 ["merge"] = arguments.Contains("--merge")
             };
+            if (OptionValue(arguments, "--cluster") is { } cluster) payload["cluster"] = cluster;
             Enqueue(root, "addTask", payload);
             Console.WriteLine($"ok: created task '{title}' on branch {branchId}");
             return 0;
@@ -147,6 +290,7 @@ int Run(string[] arguments)
             if (OptionValue(arguments, "--due") is { } due) payload["dueDate"] = due;
             if (OptionValue(arguments, "--started") is { } started) payload["startedDate"] = started;
             if (OptionValue(arguments, "--priority") is { } priority) payload["priority"] = priority;
+            if (OptionValue(arguments, "--cluster") is { } cluster) payload["cluster"] = cluster;
             if (arguments.Contains("--commit")) payload["commit"] = true;
             if (arguments.Contains("--no-commit")) payload["commit"] = false;
             if (arguments.Contains("--build")) payload["build"] = true;
@@ -218,7 +362,7 @@ int Run(string[] arguments)
             var document = store.OpenOrCreate();
             var card = RequireCustomCard(document, arguments[2]);
             var field = RequireCustomField(document, card, arguments[3]);
-            PrintJson(DescribeCustomField(card, field));
+            PrintJson(DescribeCustomField(document, card, field));
             return 0;
         }
 
@@ -317,7 +461,7 @@ int Run(string[] arguments)
             {
                 var branch = document.Branches.FirstOrDefault(b => b.Id.Equals(branchFilter, StringComparison.OrdinalIgnoreCase));
                 if (branch is null) return Fail($"branch '{branchFilter}' not found");
-                PrintJson(EligibilityEngine.GetEligible(branch).Select(card => DescribeTask(document, card)));
+                PrintJson(EligibilityEngine.GetEligible(document, branch).Select(card => DescribeTask(document, card)));
             }
             else
             {
@@ -574,6 +718,44 @@ IEnumerable<string> OptionValues(string[] arguments, string name)
         if (arguments[i] == name) yield return arguments[i + 1];
 }
 
+ClusterDefinition RequireCluster(ProjectDocument document, string idOrName)
+{
+    var byId = document.Clusters.FirstOrDefault(cluster => cluster.Id.Equals(idOrName, StringComparison.OrdinalIgnoreCase));
+    if (byId is not null) return byId;
+    var byName = document.Clusters.Where(cluster => cluster.Name.Equals(idOrName, StringComparison.OrdinalIgnoreCase)).ToList();
+    return byName.Count switch
+    {
+        1 => byName[0],
+        > 1 => throw new InvalidOperationException($"cluster name '{idOrName}' is ambiguous; use its immutable id"),
+        _ => throw new InvalidOperationException($"cluster '{idOrName}' was not found")
+    };
+}
+
+object DescribeCluster(ProjectDocument document, ClusterDefinition cluster)
+{
+    var members = document.Branches.SelectMany(branch => branch.Tasks
+        .Where(card => card.ClusterId?.Equals(cluster.Id, StringComparison.OrdinalIgnoreCase) == true)
+        .Select(card => new { BranchId = branch.Id, Branch = branch.Branch, card.Id, card.Index, card.Title, card.IsDone, card.IsLocked }));
+    return new
+    {
+        cluster.Id,
+        cluster.Name,
+        cluster.Description,
+        cluster.Color,
+        cluster.Tags,
+        cluster.Requirements,
+        cluster.Notes,
+        cluster.Flags,
+        cluster.IsCollapsed,
+        cluster.IsLocked,
+        cluster.IsAwaitingFeedback,
+        cluster.DoNotArchive,
+        cluster.CreatedAt,
+        cluster.UpdatedAt,
+        Tasks = members.ToList()
+    };
+}
+
 TaskCard RequireCustomCard(ProjectDocument document, string idOrIndex)
 {
     var card = OperationApplier.FindCard(document, idOrIndex)
@@ -612,6 +794,8 @@ object DescribeTask(ProjectDocument document, TaskCard card)
         card.Title,
         card.Task,
         card.Tags,
+        card.ClusterId,
+        Cluster = string.IsNullOrWhiteSpace(card.ClusterId) ? null : document.Clusters.Where(cluster => cluster.Id.Equals(card.ClusterId, StringComparison.OrdinalIgnoreCase)).Select(cluster => new { cluster.Id, cluster.Name, cluster.Color, cluster.IsLocked, cluster.IsAwaitingFeedback }).FirstOrDefault(),
         card.Files,
         card.Requirements,
         card.Notes,
@@ -632,13 +816,13 @@ object DescribeTask(ProjectDocument document, TaskCard card)
             Name = definition?.Name,
             AgentInstructions = definition?.Instructions
         },
-        CustomFields = definition?.Fields.Select(field => DescribeCustomField(card, field)).ToList()
+        CustomFields = definition?.Fields.Select(field => DescribeCustomField(document, card, field)).ToList()
     };
 }
 
-object DescribeCustomField(TaskCard card, CustomFieldDefinition field)
+object DescribeCustomField(ProjectDocument document, TaskCard card, CustomFieldDefinition field)
 {
-    object value = field.Type.Equals("files", StringComparison.OrdinalIgnoreCase)
+    object? value = field.Type.Equals("files", StringComparison.OrdinalIgnoreCase)
         ? card.Files.Select(file => new { file.Id, file.Name, file.RelativePath, file.Size }).ToList()
         : field.Type.Equals("tags", StringComparison.OrdinalIgnoreCase)
             ? card.Tags.Where(tag => !IsSystemTag(tag)).ToList()
@@ -646,6 +830,8 @@ object DescribeCustomField(TaskCard card, CustomFieldDefinition field)
                 ? CustomListCodec.Parse(card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue))
                 : field.Type.Equals("label", StringComparison.OrdinalIgnoreCase)
                     ? field.DefaultValue
+                    : field.Type.Equals("cluster", StringComparison.OrdinalIgnoreCase)
+                        ? document.Clusters.Where(cluster => cluster.Id.Equals(card.ClusterId, StringComparison.OrdinalIgnoreCase)).Select(cluster => new { cluster.Id, cluster.Name, cluster.Color }).FirstOrDefault()
                 : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
     return new
     {
@@ -683,8 +869,25 @@ void PrintUsage()
     (you and the GUI, or multiple agents) through one queue, not to restrict what you can do.
 
       prompt                                   print the canonical agent instructions
-      project                                   print project id/name/nextCardIndex/paths/tagCatalog
+      project                                   print project id/name/nextCardIndex/paths/tagCatalog/clusters
       branches                                  list branches (id, title, git branch, locked, task count)
+      clusters                                  list project clusters and their member tasks
+      cluster <id-or-name>                      print one cluster
+      cluster create --name <n> [--description <d>] [--color <hex>] [--tag <t>]* [--requirement <r>]*
+                     [--commit] [--build] [--release] [--do-not-archive]
+      cluster edit <id-or-name> [--name <n>] [--description <d>] [--color <hex>] [--tags <a,b>]
+                   [--commit|--no-commit] [--build|--no-build] [--release|--no-release]
+                   [--awaiting|--clear-awaiting] [--do-not-archive|--allow-archive]
+      cluster lock|unlock|collapse|expand <id-or-name>
+      cluster move <id-or-name> --to <branchId> move every member task as one unit
+      cluster archive|delete <id-or-name>       archive members, or remove grouping but keep tasks
+      cluster task add <cluster> <task>         add a task to a cluster
+      cluster task remove <task>                remove a task from its cluster
+      cluster requirement <cluster> <req> done|undone
+      cluster requirement add <cluster> --text <text>
+      cluster requirement edit|remove <cluster> <req> [--text <text>]
+      cluster note add <cluster> --text <text>
+      cluster note edit|remove <cluster> <noteId> [--text <text>]
       branch create --title <t> [--branch <gitBranchName>]
                                                  create a new branch/column
       branch lock|unlock <id>                   lock or unlock a branch
@@ -692,10 +895,10 @@ void PrintUsage()
       branch archive <id>                       archive a non-permanent branch (its tasks move to Archived)
       tasks [--branch <id>] [--eligible]        list tasks, optionally filtered
       task <id-or-index>                        print one task
-      task create --branch <id> --title <t> --task <t> [--tag <t>]* [--requirement <r>]*
+      task create --branch <id> --title <t> --task <t> [--cluster <id|name>] [--tag <t>]* [--requirement <r>]*
                   [--commit] [--build] [--release] [--merge]
                                                  create a plain task
-      task edit <id-or-index> [--title <t>] [--task <t>] [--due <date|clear>]
+      task edit <id-or-index> [--title <t>] [--task <t>] [--cluster <id|name|clear>] [--due <date|clear>]
                 [--started <date|clear>] [--priority low|normal|high|critical|clear]
                 [--commit|--no-commit] [--build|--no-build] [--release|--no-release] [--merge|--no-merge]
                                                  edit any field on an existing task

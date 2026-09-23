@@ -91,6 +91,10 @@ public static class OperationApplier
                         card.Tags.Clear();
                         foreach (var tag in systemTags.Concat(requestedTags)) card.Tags.Add(tag);
                     }
+                    else if (field.Type.Equals("cluster", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SetCardCluster(document, card, value);
+                    }
                     else if (field.Type.Equals("list", StringComparison.OrdinalIgnoreCase))
                     {
                         card.CustomValues[field.Id] = CustomListCodec.Serialize(CustomListCodec.Parse(value));
@@ -197,6 +201,90 @@ public static class OperationApplier
                 if (operation.Payload["latestExePath"] is JsonNode exeNode) document.LatestExePath = exeNode.GetValue<string>();
                 if (operation.Payload["latestReleasePath"] is JsonNode releaseNode) document.LatestReleasePath = releaseNode.GetValue<string>();
                 break;
+            case "createCluster":
+                CreateCluster(document, operation);
+                break;
+            case "editCluster":
+                EditCluster(document, operation);
+                break;
+            case "setClusterLocked":
+                WithCluster(document, operation, cluster => cluster.IsLocked = operation.Payload["isLocked"]!.GetValue<bool>());
+                break;
+            case "setClusterCollapsed":
+                WithCluster(document, operation, cluster => cluster.IsCollapsed = operation.Payload["isCollapsed"]!.GetValue<bool>());
+                break;
+            case "deleteCluster":
+                DeleteCluster(document, operation);
+                break;
+            case "archiveCluster":
+                ArchiveCluster(document, operation);
+                break;
+            case "moveCluster":
+                MoveCluster(document, operation);
+                break;
+            case "setTaskCluster":
+                WithCard(document, operation, card => SetCardCluster(document, card, Require(operation, "clusterId")));
+                break;
+            case "addClusterRequirement":
+                WithCluster(document, operation, cluster =>
+                {
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A cluster requirement cannot be empty.");
+                    cluster.Requirements.Add(new TaskRequirement { Index = cluster.Requirements.Count + 1, Text = text });
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "editClusterRequirement":
+                WithCluster(document, operation, cluster =>
+                {
+                    var requirement = RequireClusterRequirement(cluster, Require(operation, "requirementId"));
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A cluster requirement cannot be empty.");
+                    requirement.Text = text;
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "removeClusterRequirement":
+                WithCluster(document, operation, cluster =>
+                {
+                    cluster.Requirements.Remove(RequireClusterRequirement(cluster, Require(operation, "requirementId")));
+                    for (var index = 0; index < cluster.Requirements.Count; index++) cluster.Requirements[index].Index = index + 1;
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "setClusterRequirement":
+                WithCluster(document, operation, cluster =>
+                {
+                    RequireClusterRequirement(cluster, Require(operation, "requirementId")).IsDone = operation.Payload["isDone"]!.GetValue<bool>();
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "addClusterNote":
+                WithCluster(document, operation, cluster =>
+                {
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A cluster note cannot be empty.");
+                    cluster.Notes.Add(new TaskNote { Text = text });
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "editClusterNote":
+                WithCluster(document, operation, cluster =>
+                {
+                    var note = RequireClusterNote(cluster, Require(operation, "noteId"));
+                    var text = Require(operation, "text").Trim();
+                    if (text.Length == 0) throw new InvalidOperationException("A cluster note cannot be empty.");
+                    note.Text = text;
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
+            case "removeClusterNote":
+                WithCluster(document, operation, cluster =>
+                {
+                    cluster.Notes.Remove(RequireClusterNote(cluster, Require(operation, "noteId")));
+                    cluster.UpdatedAt = DateTimeOffset.UtcNow;
+                });
+                break;
             case "addTask":
                 AddTask(document, operation);
                 break;
@@ -237,11 +325,150 @@ public static class OperationApplier
         if (payload["dueDate"] is JsonNode dueNode) card.DueDate = ParseDateOrClear(dueNode);
         if (payload["startedDate"] is JsonNode startedNode) card.StartedDate = ParseDateOrClear(startedNode);
         if (payload["priority"] is JsonNode priorityNode) card.Priority = ParsePriorityOrClear(priorityNode);
+        if (payload["cluster"] is JsonNode clusterNode) SetCardCluster(document, card, clusterNode.GetValue<string>());
         if (payload["commit"] is JsonNode commitNode) card.Flags.Commit = commitNode.GetValue<bool>();
         if (payload["build"] is JsonNode buildNode) card.Flags.Build = buildNode.GetValue<bool>();
         if (payload["release"] is JsonNode releaseNode) card.Flags.Release = releaseNode.GetValue<bool>();
         if (payload["merge"] is JsonNode mergeNode) card.Flags.Merge = mergeNode.GetValue<bool>();
     });
+
+    private static void CreateCluster(ProjectDocument document, QueuedWrite operation)
+    {
+        var name = Require(operation, "name").Trim();
+        if (name.Length == 0) throw new InvalidOperationException("A cluster name cannot be empty.");
+        if (document.Clusters.Any(cluster => cluster.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException($"Cluster '{name}' already exists.");
+        var color = operation.Payload["color"]?.GetValue<string>() ?? "#514890";
+        if (!IsHexColor(color)) throw new InvalidOperationException($"'{color}' is not a valid cluster color.");
+        var cluster = new ClusterDefinition
+        {
+            Name = name,
+            Description = operation.Payload["description"]?.GetValue<string>() ?? string.Empty,
+            Color = color,
+            DoNotArchive = operation.Payload["doNotArchive"]?.GetValue<bool>() ?? false
+        };
+        if (operation.Payload["tags"] is JsonNode tagsNode)
+            foreach (var tag in tagsNode.AsArray().Select(node => node!.GetValue<string>()).Distinct(StringComparer.OrdinalIgnoreCase)) cluster.Tags.Add(tag);
+        if (operation.Payload["requirements"] is JsonNode requirementsNode)
+            foreach (var text in requirementsNode.AsArray().Select(node => node!.GetValue<string>()))
+                cluster.Requirements.Add(new TaskRequirement { Index = cluster.Requirements.Count + 1, Text = text });
+        cluster.Flags.Commit = operation.Payload["commit"]?.GetValue<bool>() ?? false;
+        cluster.Flags.Build = operation.Payload["build"]?.GetValue<bool>() ?? false;
+        cluster.Flags.Release = operation.Payload["release"]?.GetValue<bool>() ?? false;
+        document.Clusters.Add(cluster);
+    }
+
+    private static void EditCluster(ProjectDocument document, QueuedWrite operation) => WithCluster(document, operation, cluster =>
+    {
+        var payload = operation.Payload;
+        if (payload["name"] is JsonNode nameNode)
+        {
+            var name = nameNode.GetValue<string>().Trim();
+            if (name.Length == 0) throw new InvalidOperationException("A cluster name cannot be empty.");
+            if (document.Clusters.Any(other => other != cluster && other.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException($"Cluster '{name}' already exists.");
+            cluster.Name = name;
+        }
+        if (payload["description"] is JsonNode descriptionNode) cluster.Description = descriptionNode.GetValue<string>();
+        if (payload["color"] is JsonNode colorNode)
+        {
+            var color = colorNode.GetValue<string>();
+            if (!IsHexColor(color)) throw new InvalidOperationException($"'{color}' is not a valid cluster color.");
+            cluster.Color = color;
+        }
+        if (payload["tags"] is JsonNode tagsNode)
+        {
+            cluster.Tags.Clear();
+            foreach (var tag in tagsNode.AsArray().Select(node => node!.GetValue<string>()).Distinct(StringComparer.OrdinalIgnoreCase)) cluster.Tags.Add(tag);
+        }
+        if (payload["commit"] is JsonNode commitNode) cluster.Flags.Commit = commitNode.GetValue<bool>();
+        if (payload["build"] is JsonNode buildNode) cluster.Flags.Build = buildNode.GetValue<bool>();
+        if (payload["release"] is JsonNode releaseNode) cluster.Flags.Release = releaseNode.GetValue<bool>();
+        if (payload["isAwaitingFeedback"] is JsonNode feedbackNode) cluster.IsAwaitingFeedback = feedbackNode.GetValue<bool>();
+        if (payload["doNotArchive"] is JsonNode archiveNode) cluster.DoNotArchive = archiveNode.GetValue<bool>();
+        cluster.UpdatedAt = DateTimeOffset.UtcNow;
+    });
+
+    private static void DeleteCluster(ProjectDocument document, QueuedWrite operation)
+    {
+        var cluster = RequireCluster(document, Require(operation, "clusterId"));
+        foreach (var card in document.Branches.SelectMany(branch => branch.Tasks).Where(card => card.ClusterId == cluster.Id)) card.ClusterId = null;
+        document.Clusters.Remove(cluster);
+    }
+
+    private static void ArchiveCluster(ProjectDocument document, QueuedWrite operation)
+    {
+        var cluster = RequireCluster(document, Require(operation, "clusterId"));
+        if (cluster.IsLocked) throw new InvalidOperationException($"Cluster '{cluster.Name}' is locked.");
+        if (cluster.DoNotArchive) throw new InvalidOperationException($"Cluster '{cluster.Name}' is marked do not archive.");
+        MoveClusterCards(document, cluster, document.Branches.First(branch => branch.IsArchive));
+    }
+
+    private static void MoveCluster(ProjectDocument document, QueuedWrite operation)
+    {
+        var cluster = RequireCluster(document, Require(operation, "clusterId"));
+        if (cluster.IsLocked) throw new InvalidOperationException($"Cluster '{cluster.Name}' is locked.");
+        var destinationId = Require(operation, "branchId");
+        var destination = document.Branches.FirstOrDefault(branch => branch.Id.Equals(destinationId, StringComparison.OrdinalIgnoreCase))
+            ?? throw new InvalidOperationException($"Branch '{destinationId}' was not found.");
+        if (destination.IsLocked) throw new InvalidOperationException($"Branch '{destinationId}' is locked.");
+        if (destination.IsArchive && cluster.DoNotArchive) throw new InvalidOperationException($"Cluster '{cluster.Name}' is marked do not archive.");
+        MoveClusterCards(document, cluster, destination);
+    }
+
+    private static void MoveClusterCards(ProjectDocument document, ClusterDefinition cluster, BoardColumn destination)
+    {
+        var cards = document.Branches.SelectMany(branch => branch.Tasks).Where(card => card.ClusterId == cluster.Id).ToList();
+        foreach (var card in cards)
+            foreach (var branch in document.Branches) branch.Tasks.Remove(card);
+        foreach (var card in cards)
+        {
+            card.IsDone = destination.IsArchive;
+            destination.Tasks.Add(card);
+        }
+        cluster.UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    private static void SetCardCluster(ProjectDocument document, TaskCard card, string idOrName)
+    {
+        if (idOrName.Equals("clear", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(idOrName))
+        {
+            card.ClusterId = null;
+            return;
+        }
+        card.ClusterId = RequireCluster(document, idOrName).Id;
+        card.UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    private static void WithCluster(ProjectDocument document, QueuedWrite operation, Action<ClusterDefinition> mutate)
+    {
+        mutate(RequireCluster(document, Require(operation, "clusterId")));
+    }
+
+    private static ClusterDefinition RequireCluster(ProjectDocument document, string idOrName)
+    {
+        var byId = document.Clusters.FirstOrDefault(cluster => cluster.Id.Equals(idOrName, StringComparison.OrdinalIgnoreCase));
+        if (byId is not null) return byId;
+        var byName = document.Clusters.Where(cluster => cluster.Name.Equals(idOrName, StringComparison.OrdinalIgnoreCase)).ToList();
+        return byName.Count switch
+        {
+            1 => byName[0],
+            > 1 => throw new InvalidOperationException($"Cluster name '{idOrName}' is ambiguous; use its immutable id."),
+            _ => throw new InvalidOperationException($"Cluster '{idOrName}' was not found.")
+        };
+    }
+
+    private static TaskRequirement RequireClusterRequirement(ClusterDefinition cluster, string idOrIndex) =>
+        cluster.Requirements.FirstOrDefault(requirement => requirement.Id.Equals(idOrIndex, StringComparison.OrdinalIgnoreCase) ||
+                                                           (int.TryParse(idOrIndex, out var index) && requirement.Index == index))
+        ?? throw new InvalidOperationException($"Requirement '{idOrIndex}' was not found on cluster '{cluster.Name}'.");
+
+    private static TaskNote RequireClusterNote(ClusterDefinition cluster, string id) =>
+        cluster.Notes.FirstOrDefault(note => note.Id.Equals(id, StringComparison.OrdinalIgnoreCase))
+        ?? throw new InvalidOperationException($"Note '{id}' was not found on cluster '{cluster.Name}'.");
+
+    private static bool IsHexColor(string? value) =>
+        !string.IsNullOrWhiteSpace(value) && value[0] == '#' && value.Length is 4 or 5 or 7 or 9 && value[1..].All(Uri.IsHexDigit);
 
     private static DateTime? ParseDateOrClear(JsonNode node)
     {
@@ -412,6 +639,7 @@ public static class OperationApplier
         card.Flags.Build = payload["build"]?.GetValue<bool>() ?? false;
         card.Flags.Release = payload["release"]?.GetValue<bool>() ?? false;
         card.Flags.Merge = payload["merge"]?.GetValue<bool>() ?? false;
+        if (payload["cluster"] is JsonNode clusterNode) SetCardCluster(document, card, clusterNode.GetValue<string>());
 
         var isBug = card.Tags.Contains("bug", StringComparer.OrdinalIgnoreCase);
         if (isBug)

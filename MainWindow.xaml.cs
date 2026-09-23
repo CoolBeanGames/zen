@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     private ModalMode _modalMode;
     private Point _dragStart;
     private Border? _pressedCard;
-    private TaskDragPayload? _activeDrag;
+    private BoardDragPayload? _activeDrag;
     private Border? _dragPreview;
     private Border? _dropIndicator;
     private Border? _highlightedColumn;
@@ -59,6 +59,8 @@ public partial class MainWindow : Window
     private BoardColumn? _pressedColumn;
     private Point _columnDragStart;
     private bool _isColumnDragging;
+    private ClusterDefinition? _pressedCluster;
+    private Border? _pressedClusterHeader;
     private bool _manualReloadRequested;
 
     public ObservableCollection<BoardColumn> Columns { get; } = [];
@@ -113,6 +115,7 @@ public partial class MainWindow : Window
         {
             Id = "archive", Title = "Archived", Branch = null, IsArchive = true, IsPermanent = true
         });
+        foreach (var column in Columns) column.RefreshTaskView();
     }
 
     private void ProjectMenu_Click(object sender, RoutedEventArgs e)
@@ -543,7 +546,7 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-        if (task.IsLocked) return;
+        if (task.IsLocked || task.Cluster?.IsLocked == true) return;
         _pressedCard = card;
         _dragStart = e.GetPosition(card);
         card.CaptureMouse();
@@ -576,10 +579,121 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
+    private void ClusterHeader_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not Border { Tag: ClusterDefinition cluster } header) return;
+        if (e.ClickCount > 1)
+        {
+            _pressedCluster = null;
+            _pressedClusterHeader = null;
+            OpenClusterEditor(cluster);
+            e.Handled = true;
+            return;
+        }
+        _pressedCluster = cluster;
+        _pressedClusterHeader = header;
+        _dragStart = e.GetPosition(header);
+        header.CaptureMouse();
+    }
+
+    private void ClusterHeader_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) => e.Handled = true;
+
+    private void ClusterHeader_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not Border { Tag: ClusterDefinition cluster } header) return;
+        _pressedCluster = null;
+        _pressedClusterHeader = null;
+        ShowClusterMenu(header, cluster);
+        e.Handled = true;
+    }
+
+    private void ShowClusterMenu(FrameworkElement anchor, ClusterDefinition cluster)
+    {
+        var source = Columns.FirstOrDefault(column => column.Tasks.Any(card => card.ClusterId == cluster.Id));
+        if (source is null) return;
+        var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
+        AddMenuItem(menu, "Edit cluster", (_, _) => OpenClusterEditor(cluster));
+        AddMenuItem(menu, cluster.IsCollapsed ? "Expand cluster" : "Collapse cluster", (_, _) => { cluster.IsCollapsed = !cluster.IsCollapsed; SaveProject(); });
+        AddMenuItem(menu, cluster.IsLocked ? "Unlock cluster" : "Lock cluster", (_, _) => { cluster.IsLocked = !cluster.IsLocked; SaveProject(); });
+        var move = new MenuItem { Header = "Move cluster to" };
+        foreach (var destination in Columns.Where(column => column != source))
+            AddMenuItem(move, destination.Title, (_, _) => MoveCluster(cluster, source, destination));
+        MakeSubmenuSticky(move);
+        menu.Items.Add(move);
+        if (source.IsArchive)
+            AddMenuItem(menu, "Restore cluster to main", (_, _) => MoveCluster(cluster, source, Columns.First(column => column.Id == "main")));
+        else
+            AddMenuItem(menu, cluster.DoNotArchive ? "Archive disabled by cluster" : "Archive cluster", (_, _) => ArchiveCluster(cluster));
+        menu.Items.Add(new Separator());
+        if (cluster.IsLocked || source.IsLocked)
+            menu.Items.Add(new MenuItem { Header = "Launch — cluster locked", IsEnabled = false });
+        else
+            menu.Items.Add(CreateLaunchMenu($"Process only cluster '{cluster.Name}' ({cluster.Id}) in branch '{source.Branch ?? source.Title}'."));
+        AddMenuItem(menu, "Delete cluster", (_, _) => DeleteCluster(cluster));
+        menu.IsOpen = true;
+    }
+
+    private void OpenClusterEditor(ClusterDefinition cluster)
+    {
+        if (_document is null) return;
+        var editor = new ClusterEditorWindow(cluster) { Owner = this };
+        if (editor.ShowDialog() != true || editor.Result is not { } result) return;
+        var index = _document.Clusters.IndexOf(cluster);
+        if (index >= 0) _document.Clusters[index] = result;
+        SaveProject();
+    }
+
+    private void DeleteCluster(ClusterDefinition cluster)
+    {
+        if (_document is null || MessageBox.Show(this,
+                $"Delete cluster '{cluster.Name}'? Its tasks will remain and become unclustered.",
+                "Delete cluster", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+        foreach (var card in Columns.SelectMany(column => column.Tasks).Where(card => card.ClusterId == cluster.Id)) card.ClusterId = null;
+        _document.Clusters.Remove(cluster);
+        SaveProject();
+    }
+
+    private void ArchiveCluster(ClusterDefinition cluster)
+    {
+        if (cluster.DoNotArchive)
+        {
+            MessageBox.Show(this, $"'{cluster.Name}' is marked do not archive.", "Cluster preserved", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        var source = Columns.FirstOrDefault(column => !column.IsArchive && column.Tasks.Any(card => card.ClusterId == cluster.Id));
+        if (source is not null) MoveCluster(cluster, source, Columns.First(column => column.IsArchive));
+    }
+
+    private IReadOnlyList<TaskCard> GetClusterTasksForMove(ClusterDefinition cluster, BoardColumn source) =>
+        source.IsArchive
+            ? source.Tasks.Where(card => card.ClusterId == cluster.Id).ToList()
+            : Columns.Where(column => !column.IsArchive).SelectMany(column => column.Tasks)
+                .Where(card => card.ClusterId == cluster.Id).ToList();
+
+    private void MoveCluster(ClusterDefinition cluster, BoardColumn source, BoardColumn destination)
+    {
+        if (cluster.IsLocked || source.IsLocked || destination.IsLocked) return;
+        if (destination.IsArchive && cluster.DoNotArchive)
+        {
+            MessageBox.Show(this, $"'{cluster.Name}' is marked do not archive.", "Cluster preserved", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        var tasks = GetClusterTasksForMove(cluster, source);
+        foreach (var task in tasks)
+            foreach (var column in Columns)
+                column.Tasks.Remove(task);
+        foreach (var task in tasks)
+        {
+            task.IsDone = destination.IsArchive;
+            destination.Tasks.Add(task);
+        }
+        SaveProject();
+    }
+
     private bool CanAttachToCard(TaskCard card)
     {
         var column = Columns.FirstOrDefault(candidate => candidate.Tasks.Contains(card));
-        return _store is not null && !card.IsLocked && !card.IsNote && !card.IsBreak && !card.IsCleanup && !card.IsMerge &&
+        return _store is not null && !card.IsLocked && card.Cluster?.IsLocked != true && !card.IsNote && !card.IsBreak && !card.IsCleanup && !card.IsMerge &&
                column is { IsLocked: false, IsArchive: false };
     }
 
@@ -719,6 +833,16 @@ public partial class MainWindow : Window
         if (_isBoardPanning || e.LeftButton != MouseButtonState.Pressed)
             return;
 
+        if (_activeDrag is null && _pressedCluster is not null && _pressedClusterHeader is not null)
+        {
+            var current = e.GetPosition(_pressedClusterHeader);
+            if (Math.Abs(current.X - _dragStart.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(current.Y - _dragStart.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+            if (_pressedCluster.IsLocked) return;
+            BeginClusterDrag(_pressedClusterHeader, _pressedCluster);
+        }
+
         if (_pressedCard is null && _pressedColumn is not null)
         {
             var columnPointer = e.GetPosition(RootLayout);
@@ -850,13 +974,32 @@ public partial class MainWindow : Window
         _pendingClickCard = null;
 
         card.ReleaseMouseCapture();
-        _activeDrag = new TaskDragPayload(task, source, source.Tasks.IndexOf(task), card);
+        _activeDrag = new BoardDragPayload([task], source, source.Tasks.IndexOf(task), card);
         CreateDragPreview(card);
         MoveDragPreview(Mouse.GetPosition(RootLayout));
 
         card.Opacity = 0.16;
         card.RenderTransformOrigin = new Point(0.5, 0.5);
         card.RenderTransform = new ScaleTransform(0.98, 0.98);
+        RootLayout.Cursor = Cursors.Hand;
+        Mouse.Capture(RootLayout, CaptureMode.SubTree);
+    }
+
+    private void BeginClusterDrag(Border header, ClusterDefinition cluster)
+    {
+        var source = Columns.FirstOrDefault(column => column.Tasks.Any(task => task.ClusterId == cluster.Id));
+        if (source is null || source.IsLocked || cluster.IsLocked) return;
+        var tasks = GetClusterTasksForMove(cluster, source);
+        if (tasks.Count == 0) return;
+        var firstSourceTask = tasks.FirstOrDefault(source.Tasks.Contains);
+        if (firstSourceTask is null) return;
+        header.ReleaseMouseCapture();
+        _activeDrag = new BoardDragPayload(tasks, source, source.Tasks.IndexOf(firstSourceTask), header, cluster);
+        CreateDragPreview(header);
+        MoveDragPreview(Mouse.GetPosition(RootLayout));
+        header.Opacity = 0.2;
+        header.RenderTransformOrigin = new Point(0.5, 0.5);
+        header.RenderTransform = new ScaleTransform(0.98, 0.98);
         RootLayout.Cursor = Cursors.Hand;
         Mouse.Capture(RootLayout, CaptureMode.SubTree);
     }
@@ -979,14 +1122,26 @@ public partial class MainWindow : Window
             var target = FindColumnAt(pointer);
             var cardDrop = FindCardDropAt(pointer);
             EndCardDrag();
-            if (target is not null && drag.Source.Tasks.Remove(drag.Task))
+            if (target is not null)
             {
-                drag.Task.IsDone = target.Value.Column.Kind == ColumnKind.Archive;
-                var insertionIndex = cardDrop?.Card == drag.Task
-                    ? Math.Min(drag.SourceIndex, target.Value.Column.Tasks.Count)
-                    : cardDrop is null ? target.Value.Column.Tasks.Count : target.Value.Column.Tasks.IndexOf(cardDrop.Value.Card) + (cardDrop.Value.After ? 1 : 0);
-                target.Value.Column.Tasks.Insert(Math.Clamp(insertionIndex, 0, target.Value.Column.Tasks.Count), drag.Task);
-                SaveProject();
+                if (drag.Cluster is { DoNotArchive: true } && target.Value.Column.IsArchive)
+                    MessageBox.Show(this, $"'{drag.Cluster.Name}' is marked do not archive.", "Cluster preserved", MessageBoxButton.OK, MessageBoxImage.Information);
+                else if (!target.Value.Column.IsLocked)
+                {
+                    var dragged = drag.Tasks.ToHashSet();
+                    foreach (var task in drag.Tasks)
+                        foreach (var column in Columns)
+                            column.Tasks.Remove(task);
+                    var insertionIndex = cardDrop is { } drop && !dragged.Contains(drop.Card) && target.Value.Column.Tasks.Contains(drop.Card)
+                        ? target.Value.Column.Tasks.IndexOf(drop.Card) + (drop.After ? 1 : 0)
+                        : target.Value.Column == drag.Source ? Math.Min(drag.SourceIndex, target.Value.Column.Tasks.Count) : target.Value.Column.Tasks.Count;
+                    foreach (var task in drag.Tasks)
+                    {
+                        task.IsDone = target.Value.Column.Kind == ColumnKind.Archive;
+                        target.Value.Column.Tasks.Insert(Math.Clamp(insertionIndex++, 0, target.Value.Column.Tasks.Count), task);
+                    }
+                    SaveProject();
+                }
             }
             e.Handled = true;
         }
@@ -994,6 +1149,18 @@ public partial class MainWindow : Window
         {
             _pressedCard.ReleaseMouseCapture();
             _pressedCard = null;
+        }
+        else if (_pressedClusterHeader is not null)
+        {
+            _pressedClusterHeader.ReleaseMouseCapture();
+            if (_pressedCluster is not null)
+            {
+                _pressedCluster.IsCollapsed = !_pressedCluster.IsCollapsed;
+                SaveProject();
+            }
+            _pressedClusterHeader = null;
+            _pressedCluster = null;
+            e.Handled = true;
         }
     }
 
@@ -1065,6 +1232,8 @@ public partial class MainWindow : Window
         _edgeScrollTimer.Stop();
         _activeDrag = null;
         _pressedCard = null;
+        _pressedCluster = null;
+        _pressedClusterHeader = null;
         RootLayout.ClearValue(CursorProperty);
         if (Mouse.Captured is not null) Mouse.Capture(null);
     }
@@ -1092,12 +1261,19 @@ public partial class MainWindow : Window
     {
         EndCardDragIfActive();
         if (card.IsBreak || card.IsCleanup || card.IsMerge) return;
+        if (card.Cluster?.IsLocked == true)
+        {
+            MessageBox.Show(this, $"Unlock cluster '{card.Cluster.Name}' before editing its tasks.", "Cluster locked", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
         _editingCard = card;
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
         EditTagsInput.Text = string.Join(", ", card.Tags.Where(tag =>
             !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) &&
             !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
+        EditClusterInput.Text = card.Cluster?.Name ?? string.Empty;
+        ClusterSuggestions.Visibility = Visibility.Collapsed;
         EditBugFlag.IsChecked = card.IsBug;
         EditInProgressFlag.IsChecked = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
         EditAwaitingFeedbackFlag.IsChecked = card.IsAwaitingFeedback;
@@ -1117,7 +1293,7 @@ public partial class MainWindow : Window
         var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == card.CustomTypeId);
         if (customDefinition is not null)
             foreach (var field in customDefinition.Fields)
-                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "label" ? field.DefaultValue : field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
+                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "label" ? field.DefaultValue : field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : field.Type == "cluster" ? card.Cluster?.Name ?? string.Empty : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
         EditCustomFieldsList.ItemsSource = _editingCustomValues;
         EditCustomFieldsHost.Visibility = Visibility.Collapsed;
         var isCustomCard = customDefinition is not null;
@@ -1204,6 +1380,8 @@ public partial class MainWindow : Window
                 input = BuildCustomListEditor(value, () => ResizeCustomEditorForContent(definition), mainBrush, textBoxBrush);
             else if (field.Type == "tags")
                 input = BuildCustomTagEditor(value, mainBrush, textBoxBrush);
+            else if (field.Type == "cluster")
+                input = BuildCustomClusterEditor(value, mainBrush, textBoxBrush);
             else if (field.Type == "files")
                 input = BuildCustomFileEditor(mainBrush, textBoxBrush);
             else
@@ -1326,6 +1504,35 @@ public partial class MainWindow : Window
         return root;
     }
 
+    private FrameworkElement BuildCustomClusterEditor(CustomFieldValue value, Brush mainBrush, Brush textBoxBrush)
+    {
+        var root = new StackPanel();
+        var text = new TextBox { Text=value.Value, Style=(Style)FindResource("Field"), Foreground=mainBrush, Background=textBoxBrush, MinHeight=36, ToolTip="Choose an existing cluster or type a name to create one" };
+        var suggestions = new ListBox { Visibility=Visibility.Collapsed, MaxHeight=116, Background=textBoxBrush, Foreground=mainBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(42,48,61)), Margin=new Thickness(0,3,0,0) };
+        root.Children.Add(text);
+        root.Children.Add(suggestions);
+        void Accept(string name) { text.Text=name; text.CaretIndex=text.Text.Length; suggestions.Visibility=Visibility.Collapsed; text.Focus(); }
+        text.TextChanged += (_, _) =>
+        {
+            value.Value = text.Text;
+            var token = text.Text.Trim();
+            var matches = (_document?.Clusters ?? []).Select(cluster => cluster.Name)
+                .Where(name => token.Length == 0 || name.Contains(token, StringComparison.OrdinalIgnoreCase))
+                .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(name => name).Take(7).ToList();
+            suggestions.ItemsSource=matches;
+            suggestions.SelectedIndex=matches.Count > 0 ? 0 : -1;
+            suggestions.Visibility=matches.Count > 0 && !matches.Any(name => name.Equals(token, StringComparison.OrdinalIgnoreCase)) ? Visibility.Visible : Visibility.Collapsed;
+        };
+        text.PreviewKeyDown += (_, args) =>
+        {
+            if (args.Key == Key.Tab && suggestions.Visibility == Visibility.Visible && suggestions.SelectedItem is string name) { Accept(name); args.Handled=true; }
+            else if (args.Key == Key.Down && suggestions.Visibility == Visibility.Visible && suggestions.Items.Count > 0) { suggestions.SelectedIndex=Math.Min(suggestions.Items.Count-1,suggestions.SelectedIndex+1); args.Handled=true; }
+            else if (args.Key == Key.Up && suggestions.Visibility == Visibility.Visible && suggestions.Items.Count > 0) { suggestions.SelectedIndex=Math.Max(0,suggestions.SelectedIndex-1); args.Handled=true; }
+        };
+        suggestions.MouseLeftButtonUp += (_, _) => { if (suggestions.SelectedItem is string name) Accept(name); };
+        return root;
+    }
+
     private FrameworkElement BuildCustomFileEditor(Brush mainBrush, Brush textBoxBrush)
     {
         var root=new StackPanel();
@@ -1379,6 +1586,7 @@ public partial class MainWindow : Window
         _editingCard.IsAwaitingFeedback = EditAwaitingFeedbackFlag.IsChecked == true;
         if (!_editingCard.IsNote && _editingCard.CustomTypeId is null)
         {
+            AssignCluster(_editingCard, EditClusterInput.Text);
             _editingCard.Tags.Clear();
             if (EditBugFlag.IsChecked == true) _editingCard.Tags.Add("bug");
             if (EditInProgressFlag.IsChecked == true) _editingCard.Tags.Add("in progress");
@@ -1401,8 +1609,13 @@ public partial class MainWindow : Window
             _editingCard.DueDate = EditDueDate.SelectedDate;
             _editingCard.Priority = EditPriority.SelectedIndex > 0 ? (CardPriority?)(EditPriority.SelectedIndex - 1) : null;
         }
-        foreach (var field in _editingCustomValues) _editingCard.CustomValues[field.FieldId] = field.Value;
         var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == _editingCard.CustomTypeId);
+        foreach (var value in _editingCustomValues)
+        {
+            var definition = customDefinition?.Fields.FirstOrDefault(field => field.Id == value.FieldId);
+            if (definition?.Type == "cluster") AssignCluster(_editingCard, value.Value);
+            else _editingCard.CustomValues[value.FieldId] = value.Value;
+        }
         if (customDefinition?.Fields.Any(field => field.Type == "tags") == true)
         {
             var systemTags = _editingCard.Tags.Where(tag => tag.Equals("bug", StringComparison.OrdinalIgnoreCase) || tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -1546,6 +1759,69 @@ public partial class MainWindow : Window
         _editingFileNames.Add($"＋ {Path.GetFileName(path)}");
     }
 
+    private void AssignCluster(TaskCard card, string? nameOrId)
+    {
+        if (_document is null || string.IsNullOrWhiteSpace(nameOrId))
+        {
+            card.ClusterId = null;
+            return;
+        }
+        var token = nameOrId.Trim();
+        var cluster = _document.Clusters.FirstOrDefault(item => item.Id.Equals(token, StringComparison.OrdinalIgnoreCase) || item.Name.Equals(token, StringComparison.OrdinalIgnoreCase));
+        if (cluster is null)
+        {
+            var colors = new[] { "#514890", "#386D9A", "#2F7A68", "#8A4F78", "#9A6334", "#3F6F77" };
+            cluster = new ClusterDefinition { Name = token, Color = colors[_document.Clusters.Count % colors.Length] };
+            _document.Clusters.Add(cluster);
+        }
+        card.ClusterId = cluster.Id;
+    }
+
+    private void EditClusterInput_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (ClusterSuggestions is null) return;
+        var token = EditClusterInput.Text.Trim();
+        var matches = (_document?.Clusters ?? []).Select(cluster => cluster.Name)
+            .Where(name => token.Length == 0 || name.Contains(token, StringComparison.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(name => name).Take(7).ToList();
+        ClusterSuggestions.ItemsSource = matches;
+        ClusterSuggestions.SelectedIndex = matches.Count > 0 ? 0 : -1;
+        ClusterSuggestions.Visibility = matches.Count > 0 && !matches.Any(name => name.Equals(token, StringComparison.OrdinalIgnoreCase))
+            ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void EditClusterInput_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Tab && ClusterSuggestions.Visibility == Visibility.Visible && ClusterSuggestions.SelectedItem is string suggestion)
+        {
+            AcceptClusterSuggestion(suggestion);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Down && ClusterSuggestions.Visibility == Visibility.Visible && ClusterSuggestions.Items.Count > 0)
+        {
+            ClusterSuggestions.SelectedIndex = Math.Min(ClusterSuggestions.Items.Count - 1, ClusterSuggestions.SelectedIndex + 1);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Up && ClusterSuggestions.Visibility == Visibility.Visible && ClusterSuggestions.Items.Count > 0)
+        {
+            ClusterSuggestions.SelectedIndex = Math.Max(0, ClusterSuggestions.SelectedIndex - 1);
+            e.Handled = true;
+        }
+    }
+
+    private void ClusterSuggestions_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (ClusterSuggestions.SelectedItem is string suggestion) AcceptClusterSuggestion(suggestion);
+    }
+
+    private void AcceptClusterSuggestion(string suggestion)
+    {
+        EditClusterInput.Text = suggestion;
+        EditClusterInput.CaretIndex = EditClusterInput.Text.Length;
+        ClusterSuggestions.Visibility = Visibility.Collapsed;
+        EditClusterInput.Focus();
+    }
+
     private void EditTagsInput_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (TagSuggestions is null) return;
@@ -1624,6 +1900,7 @@ public partial class MainWindow : Window
         _editingCard = null;
         EditValidationText.Visibility = Visibility.Collapsed;
         TagSuggestions.Visibility = Visibility.Collapsed;
+        ClusterSuggestions.Visibility = Visibility.Collapsed;
     }
 
     private void EditorBackdrop_MouseDown(object sender, MouseButtonEventArgs e) => CloseCardEditor();
@@ -1699,10 +1976,11 @@ public partial class MainWindow : Window
                 card.Tags.Clear();
                 foreach (var field in definition.Fields)
                 {
-                    card.CustomValues[field.Id] = field.DefaultValue;
-                    if (field.Type != "tags") continue;
-                    foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-                        if (!card.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(tag);
+                    if (field.Type == "cluster") AssignCluster(card, field.DefaultValue);
+                    else card.CustomValues[field.Id] = field.DefaultValue;
+                    if (field.Type == "tags")
+                        foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                            if (!card.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(tag);
                 }
             }
             if (ConfirmButton.Tag is true) card.Tags.Insert(0, "bug");
@@ -1723,7 +2001,9 @@ public partial class MainWindow : Window
 
     private void Column_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: BoardColumn column } element || FindDataContext<TaskCard>(e.OriginalSource as DependencyObject) is not null) return;
+        if (sender is not FrameworkElement { Tag: BoardColumn column } element ||
+            FindDataContext<TaskCard>(e.OriginalSource as DependencyObject) is not null ||
+            FindTaggedAncestor<ClusterDefinition>(e.OriginalSource as DependencyObject) is not null) return;
         ShowColumnMenu(element, column);
         e.Handled = true;
     }
@@ -1796,6 +2076,16 @@ public partial class MainWindow : Window
         while (element is not null)
         {
             if (element is T value) return value;
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return null;
+    }
+
+    private static T? FindTaggedAncestor<T>(DependencyObject? element) where T : class
+    {
+        while (element is not null)
+        {
+            if (element is FrameworkElement { Tag: T value }) return value;
             element = VisualTreeHelper.GetParent(element);
         }
         return null;
@@ -1977,7 +2267,7 @@ public partial class MainWindow : Window
 
     private enum ModalMode { Column, Task }
 
-    private sealed record TaskDragPayload(TaskCard Task, BoardColumn Source, int SourceIndex, Border SourceElement);
+    private sealed record BoardDragPayload(IReadOnlyList<TaskCard> Tasks, BoardColumn Source, int SourceIndex, FrameworkElement SourceElement, ClusterDefinition? Cluster = null);
     private sealed record NewCardRequest(BoardColumn Column, CardKind Kind, bool Bug, string? CustomTypeId = null);
 
     [DllImport("user32.dll")]

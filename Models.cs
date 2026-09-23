@@ -42,6 +42,7 @@ public sealed class ProjectDocument
     public string? LatestReleasePath { get; set; }
     public ObservableCollection<ProjectTag> TagCatalog { get; set; } = [];
     public ObservableCollection<CustomCardDefinition> CustomCardTypes { get; set; } = [];
+    public ObservableCollection<ClusterDefinition> Clusters { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 
     // One-way migration support for project files created by the earlier schema.
@@ -53,6 +54,60 @@ public sealed class ProjectDocument
         {
             if (value is { Count: > 0 } && Branches.Count == 0) Branches = value;
         }
+    }
+}
+
+public sealed class ClusterDefinition : INotifyPropertyChanged
+{
+    private string _name = "Cluster";
+    private string _description = string.Empty;
+    private string _color = "#514890";
+    private bool _isCollapsed;
+    private bool _isLocked;
+    private bool _isAwaitingFeedback;
+    private bool _doNotArchive;
+
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Name { get => _name; set => SetField(ref _name, value); }
+    public string Description { get => _description; set => SetField(ref _description, value); }
+    public string Color { get => _color; set => SetField(ref _color, value); }
+    public ObservableCollection<string> Tags { get; set; } = [];
+    public ObservableCollection<TaskRequirement> Requirements { get; set; } = [];
+    public ObservableCollection<TaskNote> Notes { get; set; } = [];
+    public CardFlags Flags { get; set; } = new();
+    public bool IsCollapsed
+    {
+        get => _isCollapsed;
+        set
+        {
+            if (!SetField(ref _isCollapsed, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CollapseGlyph)));
+        }
+    }
+    public bool IsLocked
+    {
+        get => _isLocked;
+        set
+        {
+            if (!SetField(ref _isLocked, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LockGlyph)));
+        }
+    }
+    public bool IsAwaitingFeedback { get => _isAwaitingFeedback; set => SetField(ref _isAwaitingFeedback, value); }
+    public bool DoNotArchive { get => _doNotArchive; set => SetField(ref _doNotArchive, value); }
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    [JsonIgnore] public string CollapseGlyph => IsCollapsed ? "▾" : "▴";
+    [JsonIgnore] public string LockGlyph => IsLocked ? "🔒" : string.Empty;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        UpdatedAt = DateTimeOffset.UtcNow;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        return true;
     }
 }
 
@@ -88,6 +143,7 @@ public sealed class BoardColumn : INotifyPropertyChanged
     }
     [JsonIgnore] public string LockGlyph => IsLocked ? "🔒" : string.Empty;
     public ObservableCollection<TaskCard> Tasks { get; set; } = [];
+    [JsonIgnore] public ICollectionView TaskView { get; private set; } = null!;
     [JsonIgnore]
     public ColumnKind Kind
     {
@@ -97,6 +153,14 @@ public sealed class BoardColumn : INotifyPropertyChanged
     [JsonIgnore] public string KindLabel => IsArchive ? "HISTORY" : Branch is null ? "CATEGORY" : $"BRANCH · {Branch}";
     [JsonIgnore] public string KindGlyph => IsArchive ? "↙" : Branch is null ? "◆" : "⑂";
     [JsonIgnore] public string CollapseGlyph => IsCollapsed ? "▾" : "▴";
+    public void RefreshTaskView()
+    {
+        TaskView = CollectionViewSource.GetDefaultView(Tasks);
+        TaskView.GroupDescriptions.Clear();
+        TaskView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TaskCard.BoardGroupKey)));
+        TaskView.Refresh();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TaskView)));
+    }
     public event PropertyChangedEventHandler? PropertyChanged;
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
     {
@@ -156,6 +220,10 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public ObservableCollection<CustomCompactField> CustomCompactFields { get; } = [];
     [JsonIgnore] public ObservableCollection<CustomCompactField> CustomExpandedFields { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
+    public string? ClusterId { get; set; }
+    [JsonIgnore] public ClusterDefinition? Cluster { get; internal set; }
+    [JsonIgnore] public string BoardGroupKey => Cluster?.Id ?? $"task:{Id}";
+    [JsonIgnore] public bool HasCluster => Cluster is not null;
     public string? CustomTypeId { get; set; }
     public Dictionary<string, string> CustomValues { get; set; } = [];
     private ObservableCollection<TaskRequirement> _requirements = [];

@@ -42,6 +42,7 @@ public sealed class ProjectStore
         Normalize(document);
         HydrateFiles(document);
         HydrateTags(document);
+        HydrateClusters(document);
         HydrateCustomCards(document);
         Save(document);
         return document;
@@ -52,6 +53,7 @@ public sealed class ProjectStore
         Normalize(document);
         HydrateFiles(document);
         HydrateTags(document);
+        HydrateClusters(document);
         HydrateCustomCards(document);
         var temporaryPath = DataPath + ".tmp";
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(document, JsonOptions));
@@ -111,6 +113,28 @@ public sealed class ProjectStore
         document.Branches ??= [];
         document.TagCatalog ??= [];
         document.CustomCardTypes ??= [];
+        document.Clusters ??= [];
+        var seenClusterIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var cluster in document.Clusters.ToList())
+        {
+            if (string.IsNullOrWhiteSpace(cluster.Id) || !seenClusterIds.Add(cluster.Id))
+            {
+                document.Clusters.Remove(cluster);
+                continue;
+            }
+            cluster.Name = string.IsNullOrWhiteSpace(cluster.Name) ? "Cluster" : cluster.Name.Trim();
+            cluster.Description ??= string.Empty;
+            if (!IsHexColor(cluster.Color)) cluster.Color = "#514890";
+            cluster.Tags ??= [];
+            var normalizedClusterTags = cluster.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            cluster.Tags.Clear();
+            foreach (var tag in normalizedClusterTags) cluster.Tags.Add(tag);
+            cluster.Requirements ??= [];
+            cluster.Notes ??= [];
+            cluster.Flags ??= new CardFlags();
+            for (var requirementIndex = 0; requirementIndex < cluster.Requirements.Count; requirementIndex++)
+                cluster.Requirements[requirementIndex].Index = requirementIndex + 1;
+        }
         foreach (var definition in document.CustomCardTypes)
         {
             if (!IsHexColor(definition.CardColor)) definition.CardColor = "#1D222C";
@@ -155,6 +179,9 @@ public sealed class ProjectStore
             document.TagCatalog.Add(new ProjectTag { Name = "in progress", Color = "#8B7CFF" });
         else
             inProgressDefinition.Color = "#8B7CFF";
+        foreach (var tag in document.Clusters.SelectMany(cluster => cluster.Tags).Distinct(StringComparer.OrdinalIgnoreCase))
+            if (!document.TagCatalog.Any(item => item.Name.Equals(tag, StringComparison.OrdinalIgnoreCase)))
+                document.TagCatalog.Add(new ProjectTag { Name = tag, Color = TagColors[Random.Shared.Next(TagColors.Length)] });
         var main = EnsureSystemColumn(document, "main", "main", false);
         main.Branch = "main";
         var archive = EnsureSystemColumn(document, "archive", "Archived", true);
@@ -190,6 +217,7 @@ public sealed class ProjectStore
                     card.Kind = CardKind.Merge;
                 if (card.Kind == CardKind.Note)
                 {
+                    card.ClusterId = null;
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
@@ -201,6 +229,7 @@ public sealed class ProjectStore
                 }
                 else if (card.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
                 {
+                    card.ClusterId = null;
                     card.Title = string.Empty;
                     card.Task = string.Empty;
                     card.Tags.Clear();
@@ -214,6 +243,8 @@ public sealed class ProjectStore
                 }
                 for (var requirementIndex = 0; requirementIndex < card.Requirements.Count; requirementIndex++)
                     card.Requirements[requirementIndex].Index = requirementIndex + 1;
+                if (!string.IsNullOrWhiteSpace(card.ClusterId) && !seenClusterIds.Contains(card.ClusterId))
+                    card.ClusterId = null;
                 var normalizedTags = card.Tags.Where(tag => !string.IsNullOrWhiteSpace(tag))
                     .Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
                 card.Tags.Clear();
@@ -281,6 +312,19 @@ public sealed class ProjectStore
         }
     }
 
+    private static void HydrateClusters(ProjectDocument document)
+    {
+        var clusters = document.Clusters.ToDictionary(cluster => cluster.Id, StringComparer.OrdinalIgnoreCase);
+        foreach (var column in document.Branches)
+        {
+            foreach (var card in column.Tasks)
+                card.Cluster = !string.IsNullOrWhiteSpace(card.ClusterId) && clusters.TryGetValue(card.ClusterId, out var cluster)
+                    ? cluster
+                    : null;
+            column.RefreshTaskView();
+        }
+    }
+
     private static void HydrateCustomCards(ProjectDocument document)
     {
         var definitions = document.CustomCardTypes.ToDictionary(item => item.Id, StringComparer.OrdinalIgnoreCase);
@@ -326,6 +370,8 @@ public sealed class ProjectStore
             value = string.Join(Environment.NewLine, card.Files.Select(file => $"📎 {file.Name}"));
         else if (field.Type == "tags")
             value = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
+        else if (field.Type == "cluster")
+            value = card.Cluster?.Name ?? "No cluster";
         var imagePath = field.Type == "files" ? card.Files.FirstOrDefault(file => file.IsImage)?.AbsolutePath ?? string.Empty : string.Empty;
         var tagViews = field.Type == "tags"
             ? card.TagViews.Where(tag => !tag.Name.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Name.Equals("in progress", StringComparison.OrdinalIgnoreCase))

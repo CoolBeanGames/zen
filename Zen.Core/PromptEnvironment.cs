@@ -28,6 +28,7 @@ public static class PromptEnvironment
         updatedPrompt = EnsureOperatorPathFallbackInstructions(updatedPrompt);
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
+        updatedPrompt = EnsureClusterInstructions(updatedPrompt);
         updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
         settings.GlobalPrompt = updatedPrompt;
@@ -176,6 +177,22 @@ public static class PromptEnvironment
             "- Every card has a global `isAwaitingFeedback` state. Set it with `zen-operator feedback <task> waiting` only after adding a clear note that explains what user input is needed. Then run `progress <task> stop` and do not continue that card until the user responds and the state is cleared with `feedback <task> clear`.\r\n" +
             "- Awaiting-feedback cards glow green in Zen and are excluded from the eligible queue. When processing a branch or project, continue with other eligible cards if their work does not depend on the pending answer; otherwise stop and report the dependency.\r\n\r\n";
         const string nextHeading = "LOCKS AND ELIGIBILITY";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureClusterInstructions(string prompt)
+    {
+        const string heading = "CLUSTERS";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "CLUSTERS\r\n" +
+            "- Clusters are project-wide work groups stored in `clusters[]`; tasks join one with `clusterId`. `project`, `task`, `tasks`, and `eligible` expose cluster data. Use `clusters` or `cluster <id-or-name>` for full metadata and member tasks.\r\n" +
+            "- Create and edit clusters with `cluster create` and `cluster edit`. Use `cluster task add <cluster> <task>` or `cluster task remove <task>` for membership. A custom card field of type `cluster` reads and writes the same built-in membership.\r\n" +
+            "- Cluster requirements and notes use `cluster requirement ...` and `cluster note ...`. Mark each cluster requirement done as soon as it is satisfied, just like a task requirement.\r\n" +
+            "- A locked or awaiting-feedback cluster makes every member task ineligible. When cluster feedback is needed, add a cluster note first, set `--awaiting`, and stop work in that cluster until it is cleared.\r\n" +
+            "- `cluster move` and `cluster archive` act on the entire group. Never archive a cluster whose `doNotArchive` value is true. Deleting a cluster keeps its tasks and only removes their grouping.\r\n" +
+            "- A launch scoped to a cluster authorizes only that cluster's member tasks. Respect its order, requirements, notes, locks, feedback state, and commit/build/release flags.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }

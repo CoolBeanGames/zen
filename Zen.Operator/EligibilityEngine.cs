@@ -6,14 +6,17 @@ namespace ZenOperator;
 // gets the same answer instead of re-deriving locks/breaks/bug-priority by hand each time.
 public static class EligibilityEngine
 {
-    public static List<TaskCard> GetEligible(BoardColumn branch)
+    public static List<TaskCard> GetEligible(ProjectDocument document, BoardColumn branch)
     {
         if (branch.IsLocked || branch.IsArchive) return [];
+        var clusters = document.Clusters.ToDictionary(cluster => cluster.Id, StringComparer.OrdinalIgnoreCase);
         var eligible = new List<TaskCard>();
         foreach (var card in branch.Tasks)
         {
             if (card.Kind == CardKind.Break) break;
             if (card.IsLocked || card.IsDone || card.IsAwaitingFeedback) continue;
+            if (!string.IsNullOrWhiteSpace(card.ClusterId) && clusters.TryGetValue(card.ClusterId, out var cluster) &&
+                (cluster.IsLocked || cluster.IsAwaitingFeedback)) continue;
             if (card.Kind == CardKind.Note) continue;
             eligible.Add(card);
         }
@@ -23,7 +26,7 @@ public static class EligibilityEngine
     public static List<(BoardColumn Branch, List<TaskCard> Tasks)> GetEligibleProject(ProjectDocument document) =>
         document.Branches
             .Where(branch => !branch.IsLocked && !branch.IsArchive)
-            .Select(branch => (branch, GetEligible(branch)))
+            .Select(branch => (branch, GetEligible(document, branch)))
             .Where(entry => entry.Item2.Count > 0)
             .ToList();
 }
