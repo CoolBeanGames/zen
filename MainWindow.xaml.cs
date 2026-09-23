@@ -164,6 +164,7 @@ public partial class MainWindow : Window
             _recentProjects.Remember(store.RootDirectory, document.Name);
             ReloadButton.IsEnabled = true;
             LaunchProjectButton.IsEnabled = true;
+            LaunchLazyButton.IsEnabled = true;
             SignaturesButton.IsEnabled = true;
             OpenProjectFolderButton.IsEnabled = true;
             _periodicReloadTimer.Start();
@@ -386,6 +387,14 @@ public partial class MainWindow : Window
     {
         var menu = new ContextMenu { PlacementTarget = LaunchProjectButton, Placement = PlacementMode.Bottom };
         menu.Items.Add(CreateLaunchMenu("Process all eligible tasks in zen.tasks.json branch by branch."));
+        menu.IsOpen = true;
+    }
+
+    private void LaunchLazy_Click(object sender, RoutedEventArgs e)
+    {
+        const string lazyInstruction = "Prime yourself for future work in this project. Read the project state and task queue through zen-operator (project, branches, tasks, and eligible). Do not start, claim, edit, execute, or otherwise perform any task, and do not mutate project data. After reading, wait for explicit user direction.";
+        var menu = new ContextMenu { PlacementTarget = LaunchLazyButton, Placement = PlacementMode.Bottom };
+        menu.Items.Add(CreateLaunchMenu(lazyInstruction));
         menu.IsOpen = true;
     }
 

@@ -101,6 +101,7 @@
                     <Button x:Name="SignaturesButton" Style="{StaticResource IconButton}" Click="Signatures_Click" ToolTip="View project signatures" Content="Signatures" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button x:Name="OpenProjectFolderButton" Style="{StaticResource IconButton}" Click="OpenProjectFolder_Click" ToolTip="Open the project folder" Content="Open folder" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button x:Name="LaunchProjectButton" Style="{StaticResource IconButton}" Click="LaunchProject_Click" ToolTip="Launch an agent for this project" Content="Launch agent" Margin="0,0,8,0" IsEnabled="False"/>
+                    <Button x:Name="LaunchLazyButton" Style="{StaticResource IconButton}" Click="LaunchLazy_Click" ToolTip="Prime an agent with this project without starting any task" Content="Launch agent: Lazy" Margin="0,0,8,0" IsEnabled="False"/>
                     <Button Style="{StaticResource PrimaryButton}" Click="NewColumn_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="＋" FontSize="17" Foreground="White" Margin="0,-2,7,0"/>
