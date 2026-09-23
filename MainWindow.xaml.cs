@@ -537,6 +537,7 @@ public partial class MainWindow : Window
     private void TaskCard_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (sender is not Border { DataContext: TaskCard task } card) return;
+        if (IsCardEffectivelyLocked(task)) return;
         if (e.ClickCount > 1)
         {
             _cardClickTimer.Stop();
@@ -547,7 +548,6 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-        if (task.IsLocked || task.Cluster?.IsLocked == true) return;
         _pressedCard = card;
         _dragStart = e.GetPosition(card);
         card.CaptureMouse();
@@ -556,6 +556,7 @@ public partial class MainWindow : Window
     private void TaskCard_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         if (sender is not Border { DataContext: TaskCard card }) return;
+        if (IsCardEffectivelyLocked(card)) return;
 
         if (_openEditorOnReleaseFor == card)
         {
@@ -694,7 +695,7 @@ public partial class MainWindow : Window
     private bool CanAttachToCard(TaskCard card)
     {
         var column = Columns.FirstOrDefault(candidate => candidate.Tasks.Contains(card));
-        return _store is not null && !card.IsLocked && card.Cluster?.IsLocked != true && !card.IsNote && !card.IsBreak && !card.IsCleanup && !card.IsMerge &&
+        return _store is not null && !IsCardEffectivelyLocked(card) && !card.IsNote && !card.IsBreak && !card.IsCleanup && !card.IsMerge &&
                column is { IsLocked: false, IsArchive: false };
     }
 
@@ -755,32 +756,42 @@ public partial class MainWindow : Window
     private void ShowCardMenu(Border anchor, TaskCard card)
     {
         var column = Columns.First(c => c.Tasks.Contains(card));
+        var effectivelyLocked = IsCardEffectivelyLocked(card) || column.IsLocked;
         var menu = new ContextMenu { PlacementTarget = anchor, Placement = PlacementMode.MousePoint };
         menu.Items.Add(CreateNewCardMenu(column));
-        AddMenuItem(menu, "Edit", (_, _) => OpenCardEditor(card, anchor));
-        AddMenuItem(menu, "Delete", (_, _) => DeleteCard(card));
+        AddMenuItem(menu, "Edit", (_, _) => OpenCardEditor(card, anchor)).IsEnabled = !effectivelyLocked;
+        AddMenuItem(menu, "Delete", (_, _) => DeleteCard(card)).IsEnabled = !effectivelyLocked;
         var move = new MenuItem { Header = "Move to" };
         foreach (var destination in Columns.Where(candidate => candidate != column))
             AddMenuItem(move, destination.Title, (_, _) => MoveCard(card, column, destination));
         MakeSubmenuSticky(move);
+        move.IsEnabled = !effectivelyLocked;
         menu.Items.Add(move);
         menu.Items.Add(new Separator());
-        AddMenuItem(menu, card.IsCollapsed ? "Expand" : "Collapse", (_, _) => { card.IsCollapsed = !card.IsCollapsed; SaveProject(); });
-        AddMenuItem(menu, card.IsLocked ? "Unlock" : "Lock", (_, _) => { card.IsLocked = !card.IsLocked; SaveProject(); });
-        AddMenuItem(menu, card.IsBug ? "Remove bug flag" : "Mark as bug", (_, _) => ToggleBug(card));
-        if (column.IsLocked)
+        AddMenuItem(menu, card.IsCollapsed ? "Expand" : "Collapse", (_, _) => { card.IsCollapsed = !card.IsCollapsed; SaveProject(); }).IsEnabled = !effectivelyLocked;
+        AddMenuItem(menu, card.IsLocked ? "Unlock" : "Lock", (_, _) => { card.IsLocked = !card.IsLocked; SaveProject(); }).IsEnabled = card.Cluster?.IsLocked != true && !column.IsLocked;
+        AddMenuItem(menu, card.IsBug ? "Remove bug flag" : "Mark as bug", (_, _) => ToggleBug(card)).IsEnabled = !effectivelyLocked;
+        if (card.Cluster?.IsLocked == true)
+            menu.Items.Add(new MenuItem { Header = "Launch — cluster locked", IsEnabled = false });
+        else if (card.IsLocked)
+            menu.Items.Add(new MenuItem { Header = "Launch — task locked", IsEnabled = false });
+        else if (column.IsLocked)
             menu.Items.Add(new MenuItem { Header = "Launch — branch locked", IsEnabled = false });
         else
             menu.Items.Add(CreateLaunchMenu($"Process only task #{card.Index} ({card.Id}) in branch '{column.Branch ?? column.Title}'."));
         menu.IsOpen = true;
     }
 
-    private static void AddMenuItem(ItemsControl parent, string header, RoutedEventHandler handler)
+    private static MenuItem AddMenuItem(ItemsControl parent, string header, RoutedEventHandler handler)
     {
         var item = new MenuItem { Header = header };
         item.Click += handler;
         parent.Items.Add(item);
+        return item;
     }
+
+    private static bool IsCardEffectivelyLocked(TaskCard card) =>
+        card.IsLocked || card.Cluster?.IsLocked == true;
 
     private MenuItem CreateNewCardMenu(BoardColumn column)
     {
@@ -798,6 +809,7 @@ public partial class MainWindow : Window
 
     private void DeleteCard(TaskCard card)
     {
+        if (IsCardEffectivelyLocked(card)) return;
         if (MessageBox.Show(this, $"Delete #{card.Index:000} · {card.Title}? Attached files will remain.", "Delete card", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
         Columns.FirstOrDefault(column => column.Tasks.Contains(card))?.Tasks.Remove(card);
         SaveProject();
@@ -805,6 +817,7 @@ public partial class MainWindow : Window
 
     private void MoveCard(TaskCard card, BoardColumn source, BoardColumn destination)
     {
+        if (IsCardEffectivelyLocked(card) || source.IsLocked || destination.IsLocked) return;
         if (!source.Tasks.Remove(card)) return;
         card.IsDone = destination.IsArchive;
         destination.Tasks.Add(card);
@@ -813,6 +826,7 @@ public partial class MainWindow : Window
 
     private void ToggleBug(TaskCard card)
     {
+        if (IsCardEffectivelyLocked(card)) return;
         var existing = card.Tags.FirstOrDefault(tag => tag.Equals("bug", StringComparison.OrdinalIgnoreCase));
         if (existing is null) card.Tags.Insert(0, "bug"); else card.Tags.Remove(existing);
         SaveProject();
@@ -821,7 +835,7 @@ public partial class MainWindow : Window
     private void CardClickTimer_Tick(object? sender, EventArgs e)
     {
         _cardClickTimer.Stop();
-        if (_pendingClickCard is not null)
+        if (_pendingClickCard is not null && !IsCardEffectivelyLocked(_pendingClickCard))
         {
             _pendingClickCard.IsCollapsed = !_pendingClickCard.IsCollapsed;
             SaveProject();
@@ -968,6 +982,7 @@ public partial class MainWindow : Window
     private void BeginCardDrag(Border card)
     {
         if (card.DataContext is not TaskCard task) return;
+        if (IsCardEffectivelyLocked(task)) return;
         var source = Columns.FirstOrDefault(column => column.Tasks.Contains(task));
         if (source is null) return;
 
@@ -1262,6 +1277,11 @@ public partial class MainWindow : Window
     {
         EndCardDragIfActive();
         if (card.IsBreak || card.IsCleanup || card.IsMerge) return;
+        if (card.IsLocked)
+        {
+            MessageBox.Show(this, $"Unlock task #{card.Index:000} before editing it.", "Task locked", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
         if (card.Cluster?.IsLocked == true)
         {
             MessageBox.Show(this, $"Unlock cluster '{card.Cluster.Name}' before editing its tasks.", "Cluster locked", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -1569,6 +1589,11 @@ public partial class MainWindow : Window
     private void ApplyCardEdit_Click(object sender, RoutedEventArgs e)
     {
         if (_editingCard is null)
+        {
+            CloseCardEditor();
+            return;
+        }
+        if (IsCardEffectivelyLocked(_editingCard))
         {
             CloseCardEditor();
             return;

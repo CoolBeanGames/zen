@@ -324,13 +324,21 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="GroupItem">
-                                                                    <StackPanel>
-                                                                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
-                                                                        <ItemsPresenter x:Name="ClusterItems"/>
-                                                                    </StackPanel>
+                                                                    <Border x:Name="ClusterContainer" BorderThickness="0" CornerRadius="11">
+                                                                        <StackPanel>
+                                                                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                                                                            <ItemsPresenter x:Name="ClusterItems"/>
+                                                                        </StackPanel>
+                                                                    </Border>
                                                                     <ControlTemplate.Triggers>
                                                                         <DataTrigger Binding="{Binding Items[0].HasCluster}" Value="True">
                                                                             <Setter TargetName="ClusterItems" Property="Margin" Value="7,0,0,0"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Items[0].Cluster.IsLocked}" Value="True">
+                                                                            <Setter TargetName="ClusterContainer" Property="BorderBrush" Value="#D69B45"/>
+                                                                            <Setter TargetName="ClusterContainer" Property="BorderThickness" Value="2"/>
+                                                                            <Setter TargetName="ClusterContainer" Property="Padding" Value="4"/>
+                                                                            <Setter TargetName="ClusterContainer" Property="Margin" Value="0,0,0,5"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Items[0].Cluster.IsCollapsed}" Value="True">
                                                                             <Setter TargetName="ClusterItems" Property="Visibility" Value="Collapsed"/>
