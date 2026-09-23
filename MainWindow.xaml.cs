@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Win32;
 using System.Windows;
@@ -446,15 +447,17 @@ public partial class MainWindow : Window
         var instruction = File.Exists(PromptEnvironment.PromptPath)
             ? $"Ignore any prompt.txt inside the project folder. Read only the current canonical instructions at \"{PromptEnvironment.PromptPath}\", then {scopeInstruction}"
             : $"Read prompt.txt, then {scopeInstruction}";
-        var command = agent == "codex"
-            ? $"codex --dangerously-bypass-approvals-and-sandbox \"{instruction.Replace("\"", "\\\"")}\""
-            : $"claude --dangerously-skip-permissions \"{instruction.Replace("\"", "\\\"")}\"";
+        var permissionFlag = agent == "codex"
+            ? "--dangerously-bypass-approvals-and-sandbox"
+            : "--dangerously-skip-permissions";
+        var command = $"& {QuotePowerShellLiteral(agent)} {permissionFlag} {QuotePowerShellLiteral(instruction)}";
+        var encodedCommand = Convert.ToBase64String(Encoding.Unicode.GetBytes(command));
         try
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = $"/k {command}",
+                FileName = "powershell.exe",
+                Arguments = $"-NoLogo -NoExit -EncodedCommand {encodedCommand}",
                 WorkingDirectory = _store.RootDirectory,
                 UseShellExecute = true
             });
@@ -1834,6 +1837,8 @@ public partial class MainWindow : Window
             e.Handled = true;
         }
     }
+
+    private static string QuotePowerShellLiteral(string value) => $"'{value.Replace("'", "''")}'";
 
     private void ClusterSuggestions_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
