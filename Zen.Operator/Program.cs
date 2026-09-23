@@ -542,8 +542,17 @@ int Run(string[] arguments)
     }
 }
 
-void Enqueue(string root, string kind, JsonObject payload) =>
+void Enqueue(string root, string kind, JsonObject payload)
+{
+    if (payload["taskId"] is JsonNode taskIdNode)
+    {
+        var taskId = taskIdNode.GetValue<string>();
+        if (taskId.StartsWith("--", StringComparison.Ordinal))
+            throw new InvalidOperationException($"'{taskId}' is an option, not a task id or index.");
+    }
+
     QueueStore.EnqueueAndFlush(root, [new QueuedWrite { Kind = kind, Payload = payload }]);
+}
 
 void PrintJson<T>(T value) => Console.WriteLine(JsonSerializer.Serialize(value, jsonOptions));
 

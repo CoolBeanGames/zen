@@ -19,6 +19,7 @@ public static class QueueStore
 {
     private const string QueueFileName = ".zen-queue.json";
     private const string FlushingFileName = ".zen-queue.flushing.json";
+    private const string FailedFilePrefix = ".zen-queue.failed";
     private const string LockFileName = ".zen-queue.lock";
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
@@ -43,7 +44,34 @@ public static class QueueStore
 
     private static void ResumeInterruptedFlush(string rootDirectory, string flushingPath)
     {
-        if (File.Exists(flushingPath)) ApplyFlushFile(rootDirectory, flushingPath);
+        if (!File.Exists(flushingPath)) return;
+
+        try
+        {
+            ApplyFlushFile(rootDirectory, flushingPath);
+        }
+        catch (Exception exception) when (IsNonRetryableQueueFailure(exception))
+        {
+            var failedPath = CreateFailedPath(rootDirectory);
+            File.Move(flushingPath, failedPath);
+            Console.Error.WriteLine(
+                $"warning: quarantined an invalid interrupted queue as '{Path.GetFileName(failedPath)}': {exception.Message}");
+        }
+    }
+
+    private static bool IsNonRetryableQueueFailure(Exception exception) => exception is
+        InvalidOperationException or
+        InvalidDataException or
+        JsonException or
+        FormatException or
+        ArgumentException or
+        NullReferenceException;
+
+    private static string CreateFailedPath(string rootDirectory)
+    {
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ");
+        var suffix = Guid.NewGuid().ToString("N")[..8];
+        return Path.Combine(rootDirectory, $"{FailedFilePrefix}.{timestamp}.{suffix}.json");
     }
 
     private static void ApplyFlushFile(string rootDirectory, string flushingPath)

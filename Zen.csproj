@@ -13,10 +13,13 @@
   <ItemGroup>
     <Compile Remove="Zen.Core\**" />
     <Compile Remove="Zen.Operator\**" />
+    <Compile Remove="Zen.Remote\**" />
     <EmbeddedResource Remove="Zen.Core\**" />
     <EmbeddedResource Remove="Zen.Operator\**" />
+    <EmbeddedResource Remove="Zen.Remote\**" />
     <None Remove="Zen.Core\**" />
     <None Remove="Zen.Operator\**" />
+    <None Remove="Zen.Remote\**" />
     <EmbeddedResource Include="prompt.txt" LogicalName="Zen.prompt.txt" />
     <Resource Include="Assets\ZenIcon.ico" />
   </ItemGroup>
