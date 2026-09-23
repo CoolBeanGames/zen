@@ -114,6 +114,20 @@ public sealed class ProjectStore
         document.TagCatalog ??= [];
         document.CustomCardTypes ??= [];
         document.Clusters ??= [];
+        document.Signatures ??= [];
+        var signatureIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var signature in document.Signatures)
+        {
+            if (string.IsNullOrWhiteSpace(signature.Id) || !signatureIds.Add(signature.Id))
+            {
+                signature.Id = Guid.NewGuid().ToString("N");
+                signatureIds.Add(signature.Id);
+            }
+            signature.Message = (signature.Message ?? string.Empty).Trim();
+            signature.TaskId = string.IsNullOrWhiteSpace(signature.TaskId) ? "N/A" : signature.TaskId.Trim();
+            signature.Agent = string.IsNullOrWhiteSpace(signature.Agent) ? "Unknown" : signature.Agent.Trim();
+            if (signature.SignedAt == default) signature.SignedAt = DateTimeOffset.UtcNow;
+        }
         var seenClusterIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var cluster in document.Clusters.ToList())
         {

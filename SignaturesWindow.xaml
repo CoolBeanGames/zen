@@ -1,0 +1,96 @@
+<Window x:Class="Zen.SignaturesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Project signatures" Width="720" Height="720" MinWidth="590" MinHeight="540"
+        WindowStartupLocation="CenterOwner" Background="#0B0D12" Foreground="#F4F6FA">
+    <Grid Margin="22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="0,0,0,16">
+            <TextBlock Text="PROJECT SIGNATURES" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
+            <TextBlock Text="Agent and user sign-offs for work completed in this project." Foreground="#8992A5" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="DATE" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,0,0,5"/>
+                <DatePicker x:Name="DateFilter" SelectedDateChanged="Filter_Changed" Padding="7,4"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                <TextBlock Text="AGENT" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ComboBox x:Name="AgentFilter" SelectionChanged="Filter_Changed" Padding="7,5"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                <TextBlock Text="EXACT TASK ID" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox x:Name="TaskFilter" TextChanged="Filter_Changed" Padding="8,6" ToolTip="Enter an exact task ID, or N/A for user signatures"/>
+            </StackPanel>
+            <Button Grid.Column="3" Content="Clear" Click="ClearFilters_Click" Padding="11,6" VerticalAlignment="Bottom"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Border Background="#12151C" BorderBrush="#262C38" BorderThickness="1" CornerRadius="10" Padding="9">
+                <Grid>
+                    <ScrollViewer x:Name="SignatureScroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                  ScrollChanged="SignatureScroller_ScrollChanged" SizeChanged="SignatureScroller_SizeChanged">
+                        <ItemsControl x:Name="SignatureList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#1D222C" BorderBrush="#2A303D" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Agent}" Foreground="#B8AEFF" FontSize="11" FontWeight="Bold"/>
+                                                    <Border Background="#2A303D" CornerRadius="4" Padding="6,2" Margin="8,0,0,0">
+                                                        <TextBlock Text="{Binding TaskId, StringFormat=TASK {0}}" Foreground="#C9CFDA" FontSize="9" FontWeight="SemiBold"/>
+                                                    </Border>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding DateLabel}" Foreground="#8992A5" FontSize="10"/>
+                                                    <TextBlock Text="  ·  " Foreground="#50596A" FontSize="10"/>
+                                                    <TextBlock Text="{Binding TimeLabel}" Foreground="#8992A5" FontSize="10"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" LineHeight="19" Margin="0,9,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <TextBlock x:Name="EmptyText" Text="No signatures match these filters." Foreground="#8992A5"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Panel.ZIndex="2" Margin="0,0,10,0">
+                        <Button x:Name="ScrollTopButton" Content="↑ Top" Click="ScrollTop_Click" Padding="9,6" Margin="0,0,0,6" Visibility="Collapsed"/>
+                        <Button x:Name="ScrollBottomButton" Content="↓ Bottom" Click="ScrollBottom_Click" Padding="9,6" Visibility="Collapsed"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="3" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="ADD USER SIGNATURE  ·  TASK N/A  ·  USER" Foreground="#8992A5" FontSize="9" FontWeight="Bold" Margin="0,0,0,6"/>
+                <TextBox x:Name="UserMessageInput" MinHeight="58" MaxHeight="100" AcceptsReturn="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" Padding="9,7" VerticalContentAlignment="Top"/>
+                <TextBlock x:Name="ValidationText" Text="Enter a signature message." Foreground="#FF7F91" FontSize="10" Margin="0,5,0,0" Visibility="Collapsed"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="12,19,0,0" VerticalAlignment="Top">
+                <Button Content="Add signature" Click="AddSignature_Click" Padding="15,9" Background="#8B7CFF" Foreground="White"/>
+                <Button Content="Close" Click="Close_Click" Padding="15,7" Margin="0,7,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

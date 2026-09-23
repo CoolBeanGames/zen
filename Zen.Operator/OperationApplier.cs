@@ -201,6 +201,9 @@ public static class OperationApplier
                 if (operation.Payload["latestExePath"] is JsonNode exeNode) document.LatestExePath = exeNode.GetValue<string>();
                 if (operation.Payload["latestReleasePath"] is JsonNode releaseNode) document.LatestReleasePath = releaseNode.GetValue<string>();
                 break;
+            case "addSignature":
+                AddSignature(document, operation);
+                break;
             case "createCluster":
                 CreateCluster(document, operation);
                 break;
@@ -315,6 +318,26 @@ public static class OperationApplier
             default:
                 throw new InvalidOperationException($"Unknown queued operation kind '{operation.Kind}'.");
         }
+    }
+
+    private static void AddSignature(ProjectDocument document, QueuedWrite operation)
+    {
+        var message = Require(operation, "message").Trim();
+        var agent = Require(operation, "agent").Trim();
+        var taskToken = Require(operation, "taskId").Trim();
+        var signedAtText = Require(operation, "signedAt").Trim();
+        if (message.Length == 0) throw new InvalidOperationException("A signature message cannot be empty.");
+        if (agent.Length == 0) throw new InvalidOperationException("A signature agent cannot be empty.");
+        var card = FindCard(document, taskToken) ?? throw new InvalidOperationException($"Task '{taskToken}' was not found.");
+        if (!DateTimeOffset.TryParse(signedAtText, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var signedAt))
+            throw new InvalidOperationException("The signature date and time is invalid.");
+        document.Signatures.Add(new ProjectSignature
+        {
+            Message = message,
+            Agent = agent,
+            TaskId = card.Id,
+            SignedAt = signedAt
+        });
     }
 
     private static void EditTask(ProjectDocument document, QueuedWrite operation) => WithCard(document, operation, card =>

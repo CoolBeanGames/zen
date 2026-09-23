@@ -27,6 +27,7 @@ public sealed class ProjectDocument
     public ObservableCollection<ProjectTag> TagCatalog { get; set; } = [];
     public ObservableCollection<CustomCardDefinition> CustomCardTypes { get; set; } = [];
     public ObservableCollection<ClusterDefinition> Clusters { get; set; } = [];
+    public ObservableCollection<ProjectSignature> Signatures { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 
     // One-way migration support for project files created by the earlier schema.
@@ -39,6 +40,15 @@ public sealed class ProjectDocument
             if (value is { Count: > 0 } && Branches.Count == 0) Branches = value;
         }
     }
+}
+
+public sealed class ProjectSignature
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public string Message { get; set; } = string.Empty;
+    public string TaskId { get; set; } = "N/A";
+    public string Agent { get; set; } = "User";
+    public DateTimeOffset SignedAt { get; set; } = DateTimeOffset.UtcNow;
 }
 
 public sealed class ClusterDefinition

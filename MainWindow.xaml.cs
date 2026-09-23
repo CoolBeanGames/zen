@@ -164,6 +164,7 @@ public partial class MainWindow : Window
             _recentProjects.Remember(store.RootDirectory, document.Name);
             ReloadButton.IsEnabled = true;
             LaunchProjectButton.IsEnabled = true;
+            SignaturesButton.IsEnabled = true;
             OpenProjectFolderButton.IsEnabled = true;
             _periodicReloadTimer.Start();
         }
@@ -582,6 +583,12 @@ public partial class MainWindow : Window
         _pendingClickCard = null;
         ShowCardMenu((Border)sender, card);
         e.Handled = true;
+    }
+
+    private void Signatures_Click(object sender, RoutedEventArgs e)
+    {
+        if (_document is null) return;
+        new SignaturesWindow(_document, SaveProject) { Owner = this }.ShowDialog();
     }
 
     private void ClusterHeader_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

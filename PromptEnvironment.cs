@@ -30,6 +30,7 @@ public static class PromptEnvironment
         updatedPrompt = EnsureMergeControlInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureClusterInstructions(updatedPrompt);
+        updatedPrompt = EnsureSignatureInstructions(updatedPrompt);
         updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
         settings.GlobalPrompt = updatedPrompt;
@@ -214,6 +215,18 @@ public static class PromptEnvironment
             "- A locked or awaiting-feedback cluster makes every member task ineligible. When cluster feedback is needed, add a cluster note first, set `--awaiting`, and stop work in that cluster until it is cleared.\r\n" +
             "- `cluster move` and `cluster archive` act on the entire group. Never archive a cluster whose `doNotArchive` value is true. Deleting a cluster keeps its tasks and only removes their grouping.\r\n" +
             "- A launch scoped to a cluster authorizes only that cluster's member tasks. Respect its order, requirements, notes, locks, feedback state, and commit/build/release flags.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureSignatureInstructions(string prompt)
+    {
+        const string heading = "SIGNATURES";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "SIGNATURES\r\n" +
+            "- After a task's work, requirements, and enabled commit/build/release/merge flags have succeeded, add one short project signature before archiving it: `zen-operator signature add --message <summary> --agent <agent-name> --task <id-or-index> --at <ISO-8601-date-time>`. Identify yourself accurately (for example Codex, Claude, or Gemini), provide the current time with offset, and keep the message concise.\r\n" +
+            "- `zen-operator signatures` lists the project's signatures in chronological order. Signatures are project-level history and do not replace task notes, requirement updates, or completion state. User-entered signatures are created by Zen with task `N/A`, agent `User`, and an automatic timestamp.\r\n\r\n";
         const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;

@@ -48,9 +48,35 @@ int Run(string[] arguments)
                 document.NextCardIndex,
                 document.LatestExePath,
                 document.LatestReleasePath,
+                SignatureCount = document.Signatures.Count,
                 document.TagCatalog,
                 Clusters = document.Clusters.Select(cluster => DescribeCluster(document, cluster))
             });
+            return 0;
+        }
+
+        case "signatures":
+        {
+            var document = store.OpenOrCreate();
+            PrintJson(document.Signatures.OrderBy(signature => signature.SignedAt));
+            return 0;
+        }
+
+        case "signature" when arguments.Length >= 2 && arguments[1] == "add":
+        {
+            var message = OptionValue(arguments, "--message") ?? throw new InvalidOperationException("--message is required");
+            var agent = OptionValue(arguments, "--agent") ?? throw new InvalidOperationException("--agent is required");
+            var taskId = OptionValue(arguments, "--task") ?? throw new InvalidOperationException("--task is required");
+            var signedAt = OptionValue(arguments, "--at") ?? throw new InvalidOperationException("--at is required (ISO-8601 date and time)");
+            if (!DateTimeOffset.TryParse(signedAt, out _)) throw new InvalidOperationException("--at must be a valid ISO-8601 date and time");
+            Enqueue(root, "addSignature", new JsonObject
+            {
+                ["message"] = message,
+                ["agent"] = agent,
+                ["taskId"] = taskId,
+                ["signedAt"] = signedAt
+            });
+            Console.WriteLine($"ok: added {agent} signature for task {taskId}");
             return 0;
         }
 
@@ -872,7 +898,10 @@ void PrintUsage()
     (you and the GUI, or multiple agents) through one queue, not to restrict what you can do.
 
       prompt                                   print the canonical agent instructions
-      project                                   print project id/name/nextCardIndex/paths/tagCatalog/clusters
+      project                                   print project id/name/nextCardIndex/paths/signatureCount/tagCatalog/clusters
+      signatures                                list project signatures in chronological order
+      signature add --message <text> --agent <name> --task <id-or-index> --at <ISO-8601>
+                                                 sign off completed work on a task
       branches                                  list branches (id, title, git branch, locked, task count)
       clusters                                  list project clusters and their member tasks
       cluster <id-or-name>                      print one cluster
