@@ -25,6 +25,7 @@ public static class PromptEnvironment
     public static void Sync(SettingsStore store, ZenSettings settings)
     {
         var updatedPrompt = EnsureBuildPathInstructions(settings.GlobalPrompt);
+        updatedPrompt = EnsureOperatorPathFallbackInstructions(updatedPrompt);
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureMergeControlInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
@@ -139,6 +140,52 @@ public static class PromptEnvironment
             "- Every card has a global `isAwaitingFeedback` state. Set it with `zen-operator feedback <task> waiting` only after adding a clear note that explains what user input is needed. Then run `progress <task> stop` and do not continue that card until the user responds and the state is cleared with `feedback <task> clear`.\r\n" +
             "- Awaiting-feedback cards glow green in Zen and are excluded from the eligible queue. When processing a branch or project, continue with other eligible cards if their work does not depend on the pending answer; otherwise stop and report the dependency.\r\n\r\n";
         const string nextHeading = "LOCKS AND ELIGIBILITY";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    public static string OperatorPointerPath => Path.Combine(Directory, "operator-path.txt");
+
+    public static void SyncOperatorPath(SettingsStore store, ZenSettings settings)
+    {
+        var operatorDirectory = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var operatorExePath = Path.Combine(operatorDirectory, "zen-operator.exe");
+        if (!File.Exists(operatorExePath)) return;
+
+        const EnvironmentVariableTarget target = EnvironmentVariableTarget.User;
+        var entries = (Environment.GetEnvironmentVariable("PATH", target) ?? string.Empty)
+            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+        var changed = false;
+        if (!string.IsNullOrEmpty(settings.OperatorPathEntry) && !SamePath(settings.OperatorPathEntry, operatorDirectory))
+            changed |= entries.RemoveAll(entry => SamePath(entry, settings.OperatorPathEntry)) > 0;
+        if (!entries.Any(entry => SamePath(entry, operatorDirectory)))
+        {
+            entries.Add(operatorDirectory);
+            changed = true;
+        }
+        if (changed) Environment.SetEnvironmentVariable("PATH", string.Join(Path.PathSeparator, entries), target);
+        if (!string.Equals(settings.OperatorPathEntry, operatorDirectory, StringComparison.OrdinalIgnoreCase))
+        {
+            settings.OperatorPathEntry = operatorDirectory;
+            store.Save(settings);
+        }
+        System.IO.Directory.CreateDirectory(Directory);
+        if (!File.Exists(OperatorPointerPath) || File.ReadAllText(OperatorPointerPath) != operatorExePath)
+        {
+            var temporaryPath = OperatorPointerPath + ".tmp";
+            File.WriteAllText(temporaryPath, operatorExePath);
+            File.Move(temporaryPath, OperatorPointerPath, true);
+        }
+    }
+
+    private static string EnsureOperatorPathFallbackInstructions(string prompt)
+    {
+        const string marker = "operator-path.txt";
+        if (prompt.Contains(marker, StringComparison.Ordinal)) return prompt;
+        const string instructions =
+            "- If the `zen-operator` command is not found on PATH, read `operator-path.txt` next to this canonical prompt for the absolute path to the current `zen-operator.exe`, and invoke it directly.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
     }
