@@ -38,7 +38,6 @@ public sealed class ProjectStore
         Normalize(document);
         HydrateFiles(document);
         HydrateTags(document);
-        Save(document);
         return document;
     }
 
@@ -107,6 +106,15 @@ public sealed class ProjectStore
         document.CustomCardTypes ??= [];
         document.Clusters ??= [];
         document.Signatures ??= [];
+        document.AppliedOperatorRequestIds ??= [];
+        var appliedRequestIds = document.AppliedOperatorRequestIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .TakeLast(2048)
+            .ToList();
+        document.AppliedOperatorRequestIds.Clear();
+        foreach (var id in appliedRequestIds) document.AppliedOperatorRequestIds.Add(id);
         var signatureIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var signature in document.Signatures)
         {

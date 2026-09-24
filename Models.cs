@@ -44,6 +44,7 @@ public sealed class ProjectDocument
     public ObservableCollection<CustomCardDefinition> CustomCardTypes { get; set; } = [];
     public ObservableCollection<ClusterDefinition> Clusters { get; set; } = [];
     public ObservableCollection<ProjectSignature> Signatures { get; set; } = [];
+    public ObservableCollection<string> AppliedOperatorRequestIds { get; set; } = [];
     public ObservableCollection<BoardColumn> Branches { get; set; } = [];
 
     // One-way migration support for project files created by the earlier schema.
