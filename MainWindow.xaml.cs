@@ -459,24 +459,38 @@ public partial class MainWindow : Window
         var instruction = File.Exists(PromptEnvironment.PromptPath)
             ? $"Ignore any prompt.txt inside the project folder. Read only the current canonical instructions at \"{PromptEnvironment.PromptPath}\", then {scopeInstruction}"
             : $"Read prompt.txt, then {scopeInstruction}";
-        var quotedInstruction = QuotePowerShellLiteral(instruction);
-        var command = agent switch
+        ProcessStartInfo startInfo;
+        if (agent == "gemini")
         {
-            "codex" => $"& 'codex' --dangerously-bypass-approvals-and-sandbox {quotedInstruction}",
-            "claude" => $"& 'claude' --dangerously-skip-permissions {quotedInstruction}",
-            "gemini" => $"& 'agy' --dangerously-skip-permissions -i {quotedInstruction}",
-            _ => throw new ArgumentOutOfRangeException(nameof(agent), agent, "Unknown agent")
-        };
-        var encodedCommand = Convert.ToBase64String(Encoding.Unicode.GetBytes(command));
-        try
+            startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/D /K agy --dangerously-skip-permissions -i {QuoteCommandPromptLiteral(instruction)}",
+                WorkingDirectory = _store.RootDirectory,
+                UseShellExecute = true
+            };
+        }
+        else
         {
-            Process.Start(new ProcessStartInfo
+            var quotedInstruction = QuotePowerShellLiteral(instruction);
+            var command = agent switch
+            {
+                "codex" => $"& 'codex' --dangerously-bypass-approvals-and-sandbox {quotedInstruction}",
+                "claude" => $"& 'claude' --dangerously-skip-permissions {quotedInstruction}",
+                _ => throw new ArgumentOutOfRangeException(nameof(agent), agent, "Unknown agent")
+            };
+            var encodedCommand = Convert.ToBase64String(Encoding.Unicode.GetBytes(command));
+            startInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
                 Arguments = $"-NoLogo -NoExit -EncodedCommand {encodedCommand}",
                 WorkingDirectory = _store.RootDirectory,
                 UseShellExecute = true
-            });
+            };
+        }
+        try
+        {
+            Process.Start(startInfo);
         }
         catch (Exception exception)
         {
@@ -1918,6 +1932,7 @@ public partial class MainWindow : Window
     }
 
     private static string QuotePowerShellLiteral(string value) => $"'{value.Replace("'", "''")}'";
+    private static string QuoteCommandPromptLiteral(string value) => $"\"{value.Replace("\"", "'")}\"";
 
     private void ClusterSuggestions_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
