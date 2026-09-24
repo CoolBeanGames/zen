@@ -214,8 +214,18 @@ public static class PromptEnvironment
     private static string EnsureSignatureInstructions(string prompt)
     {
         const string heading = "SIGNATURES";
-        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string startupInstruction = "- At the start of every agent session, before selecting, starting, or executing any task, run `zen-operator signatures` and read the complete project signature history for context.";
+        if (prompt.Contains(startupInstruction, StringComparison.Ordinal)) return prompt;
+        var headingIndex = prompt.IndexOf(heading, StringComparison.Ordinal);
+        if (headingIndex >= 0)
+        {
+            var headingLineEnd = prompt.IndexOf('\n', headingIndex + heading.Length);
+            return headingLineEnd >= 0
+                ? prompt.Insert(headingLineEnd + 1, startupInstruction + "\r\n")
+                : prompt + "\r\n" + startupInstruction + "\r\n";
+        }
         const string instructions = "SIGNATURES\r\n" +
+            startupInstruction + "\r\n" +
             "- After a task's work, requirements, and enabled commit/build/release/merge flags have succeeded, add one short project signature before archiving it: `zen-operator signature add --message <summary> --agent <agent-name> --task <id-or-index> --at <ISO-8601-date-time>`. Identify yourself accurately (for example Codex, Claude, or Gemini), provide the current time with offset, and keep the message concise.\r\n" +
             "- `zen-operator signatures` lists the project's signatures in chronological order. Signatures are project-level history and do not replace task notes, requirement updates, or completion state. User-entered signatures are created by Zen with task `N/A`, agent `User`, and an automatic timestamp.\r\n\r\n";
         const string nextHeading = "DATA SHAPE AND OWNERSHIP";

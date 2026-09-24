@@ -22,6 +22,11 @@ CLUSTERS
 - `cluster move` and `cluster archive` act on the entire group. Never archive a cluster whose `doNotArchive` value is true. Deleting a cluster keeps its tasks and only removes their grouping.
 - A launch scoped to a cluster authorizes only that cluster's member tasks. Respect its order, requirements, notes, locks, feedback state, and commit/build/release flags.
 
+SIGNATURES
+- At the start of every agent session, before selecting, starting, or executing any task, run `zen-operator signatures` and read the complete project signature history for context.
+- After a task's work, requirements, and enabled commit/build/release/merge flags have succeeded, add one short project signature before archiving it: `zen-operator signature add --message <summary> --agent <agent-name> --task <id-or-index> --at <ISO-8601-date-time>`. Identify yourself accurately, provide the current time with offset, and keep the message concise.
+- Signatures are project-level history and do not replace task notes, requirement updates, or completion state. User-entered signatures use task `N/A`, agent `User`, and an automatic timestamp.
+
 DATA SHAPE AND OWNERSHIP
 - The database hierarchy is `branches[] -> tasks[]`.
 - A task belongs to the branch object that contains it. Do not duplicate one task across branches.
