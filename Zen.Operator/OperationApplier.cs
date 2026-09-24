@@ -14,6 +14,8 @@ public static class OperationApplier
                 WithCard(document, operation, card =>
                 {
                     var tag = Require(operation, "tag");
+                    if (tag.Equals("in progress", StringComparison.OrdinalIgnoreCase) && TaskBlockingRules.IsBlocked(document, card))
+                        throw new InvalidOperationException($"Task #{card.Index} is blocked and cannot be started until every blocker is complete.");
                     if (!card.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(tag);
                 });
                 break;
@@ -94,6 +96,10 @@ public static class OperationApplier
                     else if (field.Type.Equals("cluster", StringComparison.OrdinalIgnoreCase))
                     {
                         SetCardCluster(document, card, value);
+                    }
+                    else if (field.Type.Equals("blocking", StringComparison.OrdinalIgnoreCase))
+                    {
+                        TaskBlockingRules.SetBlockers(document, card, TaskBlockingRules.ParseIds(value));
                     }
                     else if (field.Type.Equals("list", StringComparison.OrdinalIgnoreCase))
                     {
@@ -294,6 +300,10 @@ public static class OperationApplier
             case "editTask":
                 EditTask(document, operation);
                 break;
+            case "setTaskBlockers":
+                WithCard(document, operation, card =>
+                    TaskBlockingRules.SetBlockers(document, card, ReadTaskIndexes(operation.Payload["blockedByTaskIds"])));
+                break;
             case "setTaskLocked":
                 WithCard(document, operation, card => card.IsLocked = operation.Payload["isLocked"]!.GetValue<bool>());
                 break;
@@ -349,6 +359,8 @@ public static class OperationApplier
         if (payload["startedDate"] is JsonNode startedNode) card.StartedDate = ParseDateOrClear(startedNode);
         if (payload["priority"] is JsonNode priorityNode) card.Priority = ParsePriorityOrClear(priorityNode);
         if (payload["cluster"] is JsonNode clusterNode) SetCardCluster(document, card, clusterNode.GetValue<string>());
+        if (payload["blockedByTaskIds"] is JsonNode blockedByNode)
+            TaskBlockingRules.SetBlockers(document, card, ReadTaskIndexes(blockedByNode));
         if (payload["commit"] is JsonNode commitNode) card.Flags.Commit = commitNode.GetValue<bool>();
         if (payload["build"] is JsonNode buildNode) card.Flags.Build = buildNode.GetValue<bool>();
         if (payload["release"] is JsonNode releaseNode) card.Flags.Release = releaseNode.GetValue<bool>();
@@ -676,7 +688,12 @@ public static class OperationApplier
         {
             branch.Tasks.Add(card);
         }
+        if (payload["blockedByTaskIds"] is JsonNode blockedByNode)
+            TaskBlockingRules.SetBlockers(document, card, ReadTaskIndexes(blockedByNode));
     }
+
+    private static IReadOnlyList<int> ReadTaskIndexes(JsonNode? node) =>
+        node?.AsArray().Select(item => item?.GetValue<int>() ?? 0).ToList() ?? [];
 
     private static string Require(QueuedWrite operation, string key) =>
         operation.Payload[key]?.GetValue<string>() ?? throw new InvalidOperationException($"Missing required field '{key}'.");

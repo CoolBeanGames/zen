@@ -18,7 +18,7 @@ public partial class CardDesignerWindow : Window
     private bool _loading;
     private bool _paletteDragArmed;
     private Guid? _lastPaletteDropToken;
-    private static readonly string[] FieldTypes = ["text", "label", "number", "checkbox", "dropdown", "list", "tags", "cluster", "files"];
+    private static readonly string[] FieldTypes = ["text", "label", "number", "checkbox", "dropdown", "list", "tags", "cluster", "blocking", "files"];
 
     private sealed record PaletteDrag(string Type, Guid Token);
     private enum DesignerSurface { Open, Expanded, Compact }
@@ -63,7 +63,8 @@ public partial class CardDesignerWindow : Window
         var type = drag.Type;
         var point=e.GetPosition(DesignCanvas);
         var order = _fields.Count;
-        var field=new CustomFieldDefinition { Name=type switch { "label" => "Label", "dropdown" => "Choice", "checkbox" => "Option", "list" => "Items", "tags" => "Tags", "cluster" => "Cluster", "files" => "Files", _ => "Field" }, Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
+        var field=new CustomFieldDefinition { Name=type switch { "label" => "Label", "dropdown" => "Choice", "checkbox" => "Option", "list" => "Items", "tags" => "Tags", "cluster" => "Cluster", "blocking" => "Blocked by", "files" => "Files", _ => "Field" }, Type=type, X=Math.Max(0,Snap(point.X-108)), Y=Math.Max(0,Snap(point.Y-36)), ExpandedX=12, ExpandedY=12+order*72, CompactX=12, CompactY=12+order*60 };
+        if (type=="blocking") field.Height=96;
         if (type=="label") field.DefaultValue="Informational text";
         if (type=="dropdown") { field.Options.Add("Option 1"); field.Options.Add("Option 2"); }
         if (type=="list") field.DefaultValue="List item\nAnother item";
@@ -114,6 +115,9 @@ public partial class CardDesignerWindow : Window
 
         if (field.Type == "cluster")
             return BuildLabeledPreview(field.Name, new Border { Background=new SolidColorBrush(Color.FromRgb(81,72,144)), CornerRadius=new CornerRadius(6), Padding=new Thickness(8,5,8,5), Child=new TextBlock { Text="Cluster", Foreground=mainBrush, FontWeight=FontWeights.SemiBold } }, headerBrush);
+
+        if (field.Type == "blocking")
+            return BuildLabeledPreview(field.Name, new Border { Background=textBoxBrush, BorderBrush=new SolidColorBrush(Color.FromRgb(139,124,255)), BorderThickness=new Thickness(1), CornerRadius=new CornerRadius(5), Padding=new Thickness(8,5,8,5), Child=new TextBlock { Text="#123 — Blocking task", Foreground=mainBrush, FontSize=11 } }, headerBrush);
 
         var grid = new Grid { IsHitTestVisible=false };
         grid.RowDefinitions.Add(new RowDefinition { Height=GridLength.Auto });

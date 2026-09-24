@@ -20,6 +20,8 @@ dotnet run
 - Automatically reload external JSON changes and normalize completed cards into `Archived`
 - Add task, note, break, and priority-bug cards from one compact menu
 - Track optional start dates, due dates, and priority on task cards
+- Add comma-separated blocking task IDs with validation, title autocomplete, agent eligibility enforcement, and directional board connectors
+- Reuse the same blocking dependencies in custom cards through the Card Studio `blocking` field type
 - Drag cards between columns with a raised, pointer-following card preview
 - Single-click a card to toggle its compact tag-and-title view
 - Double-click a card to edit its title, task prompt, tags, attachments, requirements, and action flags inline

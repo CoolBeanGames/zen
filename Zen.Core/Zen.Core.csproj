@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="prompt.txt" LogicalName="Zen.prompt.txt" />
+    <Compile Include="..\TaskBlocking.cs" Link="TaskBlocking.cs" />
   </ItemGroup>
 </Project>

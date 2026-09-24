@@ -46,6 +46,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<TaskRequirement> _editingRequirements = [];
     private readonly ObservableCollection<TaskNote> _editingNotes = [];
     private readonly ObservableCollection<CustomFieldValue> _editingCustomValues = [];
+    private readonly List<TaskBlockingEditor> _editingCustomBlockingEditors = [];
     private readonly ObservableCollection<string> _editingFileNames = [];
     private readonly List<string> _pendingUploadPaths = [];
     private readonly List<string> _temporaryClipboardPaths = [];
@@ -801,6 +802,8 @@ public partial class MainWindow : Window
             menu.Items.Add(new MenuItem { Header = "Launch — task locked", IsEnabled = false });
         else if (column.IsLocked)
             menu.Items.Add(new MenuItem { Header = "Launch — branch locked", IsEnabled = false });
+        else if (_document is not null && TaskBlockingRules.IsBlocked(_document, card))
+            menu.Items.Add(new MenuItem { Header = $"Launch — blocked by {card.BlockedByLabel}", IsEnabled = false });
         else
             menu.Items.Add(CreateLaunchMenu($"Process only task #{card.Index} ({card.Id}) in branch '{column.Branch ?? column.Title}'."));
         menu.IsOpen = true;
@@ -1312,12 +1315,14 @@ public partial class MainWindow : Window
             return;
         }
         _editingCard = card;
+        _editingCustomBlockingEditors.Clear();
         EditIdentityText.Text = $"{card.IndexLabel}  ·  ID {card.Id.ToUpperInvariant()}";
         EditTitleInput.Text = card.Title;
         EditTagsInput.Text = string.Join(", ", card.Tags.Where(tag =>
             !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) &&
             !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
         EditClusterInput.Text = card.Cluster?.Name ?? string.Empty;
+        EditBlockingInput.Configure(_document!, card, ResolveEditingClusterId, card.BlockedByTaskIds);
         ClusterSuggestions.Visibility = Visibility.Collapsed;
         EditBugFlag.IsChecked = card.IsBug;
         EditInProgressFlag.IsChecked = card.Tags.Contains("in progress", StringComparer.OrdinalIgnoreCase);
@@ -1338,7 +1343,7 @@ public partial class MainWindow : Window
         var customDefinition = _document?.CustomCardTypes.FirstOrDefault(item => item.Id == card.CustomTypeId);
         if (customDefinition is not null)
             foreach (var field in customDefinition.Fields)
-                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "label" ? field.DefaultValue : field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : field.Type == "cluster" ? card.Cluster?.Name ?? string.Empty : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
+                _editingCustomValues.Add(new CustomFieldValue { FieldId = field.Id, Name = field.Name, Value = field.Type == "label" ? field.DefaultValue : field.Type == "tags" ? string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase))) : field.Type == "cluster" ? card.Cluster?.Name ?? string.Empty : field.Type == "blocking" ? string.Join(", ", card.BlockedByTaskIds) : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue) });
         EditCustomFieldsList.ItemsSource = _editingCustomValues;
         EditCustomFieldsHost.Visibility = Visibility.Collapsed;
         var isCustomCard = customDefinition is not null;
@@ -1371,6 +1376,7 @@ public partial class MainWindow : Window
         EditStartedDate.SelectedDate = card.StartedDate;
         EditDueDate.SelectedDate = card.DueDate;
         EditPriority.SelectedIndex = card.Priority.HasValue ? (int)card.Priority.Value + 1 : 0;
+        EditValidationText.Text = "A title is required.";
         EditValidationText.Visibility = Visibility.Collapsed;
         var availableEditorHeight = Math.Max(420, RootLayout.ActualHeight - 24);
         EditorShell.MinHeight = Math.Min(620, availableEditorHeight);
@@ -1427,6 +1433,8 @@ public partial class MainWindow : Window
                 input = BuildCustomTagEditor(value, mainBrush, textBoxBrush);
             else if (field.Type == "cluster")
                 input = BuildCustomClusterEditor(value, mainBrush, textBoxBrush);
+            else if (field.Type == "blocking")
+                input = BuildCustomBlockingEditor(value);
             else if (field.Type == "files")
                 input = BuildCustomFileEditor(mainBrush, textBoxBrush);
             else
@@ -1567,6 +1575,7 @@ public partial class MainWindow : Window
             suggestions.ItemsSource=matches;
             suggestions.SelectedIndex=matches.Count > 0 ? 0 : -1;
             suggestions.Visibility=matches.Count > 0 && !matches.Any(name => name.Equals(token, StringComparison.OrdinalIgnoreCase)) ? Visibility.Visible : Visibility.Collapsed;
+            foreach (var editor in _editingCustomBlockingEditors) editor.RefreshValidation();
         };
         text.PreviewKeyDown += (_, args) =>
         {
@@ -1588,6 +1597,24 @@ public partial class MainWindow : Window
         return root;
     }
 
+    private FrameworkElement BuildCustomBlockingEditor(CustomFieldValue value)
+    {
+        var editor = new TaskBlockingEditor();
+        editor.Configure(_document!, _editingCard!, ResolveEditingClusterId, _editingCard!.BlockedByTaskIds);
+        editor.ValueChanged += (_, _) =>
+        {
+            value.Value = editor.Text;
+            var definition = _document?.CustomCardTypes.FirstOrDefault(type => type.Id == _editingCard?.CustomTypeId);
+            foreach (var otherValue in _editingCustomValues.Where(item =>
+                         definition?.Fields.Any(field => field.Id == item.FieldId && field.Type == "blocking") == true))
+                otherValue.Value = editor.Text;
+            foreach (var otherEditor in _editingCustomBlockingEditors.Where(item => !ReferenceEquals(item, editor)))
+                if (otherEditor.Text != editor.Text) otherEditor.Text = editor.Text;
+        };
+        _editingCustomBlockingEditors.Add(editor);
+        return editor;
+    }
+
     private static Brush TryCreateBrush(string value, string fallback)
     {
         try { return (Brush)new BrushConverter().ConvertFromString(value)!; }
@@ -1605,7 +1632,8 @@ public partial class MainWindow : Window
         foreach (var staleFieldId in _editingCard.CustomValues.Keys.Where(id => !activeFieldIds.Contains(id)).ToList())
             _editingCard.CustomValues.Remove(staleFieldId);
         foreach (var field in definition.Fields)
-            _editingCard.CustomValues[field.Id] = pendingValues.GetValueOrDefault(field.Id, _editingCard.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue));
+            if (field.Type != "blocking")
+                _editingCard.CustomValues[field.Id] = pendingValues.GetValueOrDefault(field.Id, _editingCard.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue));
         SaveProject();
         OpenCardEditor(_editingCard, new Border());
     }
@@ -1620,6 +1648,18 @@ public partial class MainWindow : Window
         if (IsCardEffectivelyLocked(_editingCard))
         {
             CloseCardEditor();
+            return;
+        }
+
+        var blockingEditor = _editingCard.Kind != CardKind.Task
+            ? null
+            : _editingCard.CustomTypeId is null ? EditBlockingInput : _editingCustomBlockingEditors.FirstOrDefault();
+        IReadOnlyList<int> blockedByTaskIds = _editingCard.BlockedByTaskIds.ToList();
+        if (blockingEditor is not null && !blockingEditor.TryGetIds(out blockedByTaskIds, out var blockingError))
+        {
+            EditValidationText.Text = blockingError;
+            EditValidationText.Visibility = Visibility.Visible;
+            blockingEditor.FocusInput();
             return;
         }
 
@@ -1664,7 +1704,7 @@ public partial class MainWindow : Window
         {
             var definition = customDefinition?.Fields.FirstOrDefault(field => field.Id == value.FieldId);
             if (definition?.Type == "cluster") AssignCluster(_editingCard, value.Value);
-            else _editingCard.CustomValues[value.FieldId] = value.Value;
+            else if (definition?.Type != "blocking") _editingCard.CustomValues[value.FieldId] = value.Value;
         }
         if (customDefinition?.Fields.Any(field => field.Type == "tags") == true)
         {
@@ -1678,6 +1718,8 @@ public partial class MainWindow : Window
                     if (!_editingCard.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) _editingCard.Tags.Add(tag);
             }
         }
+        if (blockingEditor is not null)
+            TaskBlockingRules.SetBlockers(_document!, _editingCard, blockedByTaskIds);
 
         if (_store is not null)
         {
@@ -1838,6 +1880,22 @@ public partial class MainWindow : Window
         ClusterSuggestions.SelectedIndex = matches.Count > 0 ? 0 : -1;
         ClusterSuggestions.Visibility = matches.Count > 0 && !matches.Any(name => name.Equals(token, StringComparison.OrdinalIgnoreCase))
             ? Visibility.Visible : Visibility.Collapsed;
+        EditBlockingInput?.RefreshValidation();
+        foreach (var editor in _editingCustomBlockingEditors) editor.RefreshValidation();
+    }
+
+    private string? ResolveEditingClusterId()
+    {
+        if (_document is null || _editingCard is null) return null;
+        var customDefinition = _document.CustomCardTypes.FirstOrDefault(type => type.Id == _editingCard.CustomTypeId);
+        var token = customDefinition?.Fields.FirstOrDefault(field => field.Type == "cluster") is { } clusterField
+            ? _editingCustomValues.FirstOrDefault(value => value.FieldId == clusterField.Id)?.Value
+            : _editingCard.CustomTypeId is null ? EditClusterInput.Text : _editingCard.ClusterId;
+        if (string.IsNullOrWhiteSpace(token)) return null;
+        var cluster = _document.Clusters.FirstOrDefault(item =>
+            item.Id.Equals(token.Trim(), StringComparison.OrdinalIgnoreCase) ||
+            item.Name.Equals(token.Trim(), StringComparison.OrdinalIgnoreCase));
+        return cluster?.Id ?? $"new:{token.Trim()}";
     }
 
     private void EditClusterInput_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -2029,7 +2087,7 @@ public partial class MainWindow : Window
                 foreach (var field in definition.Fields)
                 {
                     if (field.Type == "cluster") AssignCluster(card, field.DefaultValue);
-                    else card.CustomValues[field.Id] = field.DefaultValue;
+                    else if (field.Type != "blocking") card.CustomValues[field.Id] = field.DefaultValue;
                     if (field.Type == "tags")
                         foreach (var tag in field.DefaultValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                             if (!card.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)) card.Tags.Add(tag);

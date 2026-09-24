@@ -305,6 +305,8 @@ int Run(string[] arguments)
                 ["merge"] = arguments.Contains("--merge")
             };
             if (OptionValue(arguments, "--cluster") is { } cluster) payload["cluster"] = cluster;
+            if (OptionValue(arguments, "--blocked-by") is { } blockedBy)
+                payload["blockedByTaskIds"] = TaskIndexArray(blockedBy);
             Enqueue(root, "addTask", payload);
             Console.WriteLine($"ok: created task '{title}' on branch {branchId}");
             return 0;
@@ -320,6 +322,8 @@ int Run(string[] arguments)
             if (OptionValue(arguments, "--started") is { } started) payload["startedDate"] = started;
             if (OptionValue(arguments, "--priority") is { } priority) payload["priority"] = priority;
             if (OptionValue(arguments, "--cluster") is { } cluster) payload["cluster"] = cluster;
+            if (OptionValue(arguments, "--blocked-by") is { } blockedBy)
+                payload["blockedByTaskIds"] = TaskIndexArray(blockedBy);
             if (arguments.Contains("--commit")) payload["commit"] = true;
             if (arguments.Contains("--no-commit")) payload["commit"] = false;
             if (arguments.Contains("--build")) payload["build"] = true;
@@ -330,6 +334,14 @@ int Run(string[] arguments)
             if (arguments.Contains("--no-merge")) payload["merge"] = false;
             Enqueue(root, "editTask", payload);
             Console.WriteLine($"ok: edited task {id}");
+            return 0;
+        }
+
+        case "task" when arguments.Length >= 4 && arguments[1] == "blockers" && arguments[2] == "set":
+        {
+            var ids = OptionValue(arguments, "--ids") ?? throw new InvalidOperationException("--ids is required (use 'clear' to remove every blocker)");
+            Enqueue(root, "setTaskBlockers", new JsonObject { ["taskId"] = arguments[3], ["blockedByTaskIds"] = TaskIndexArray(ids) });
+            Console.WriteLine($"ok: set blockers on task {arguments[3]}");
             return 0;
         }
 
@@ -747,6 +759,9 @@ IEnumerable<string> OptionValues(string[] arguments, string name)
         if (arguments[i] == name) yield return arguments[i + 1];
 }
 
+JsonArray TaskIndexArray(string value) =>
+    new(TaskBlockingRules.ParseIds(value).Select(index => (JsonNode)index).ToArray());
+
 ClusterDefinition RequireCluster(ProjectDocument document, string idOrName)
 {
     var byId = document.Clusters.FirstOrDefault(cluster => cluster.Id.Equals(idOrName, StringComparison.OrdinalIgnoreCase));
@@ -825,6 +840,11 @@ object DescribeTask(ProjectDocument document, TaskCard card)
         card.Tags,
         card.ClusterId,
         Cluster = string.IsNullOrWhiteSpace(card.ClusterId) ? null : document.Clusters.Where(cluster => cluster.Id.Equals(card.ClusterId, StringComparison.OrdinalIgnoreCase)).Select(cluster => new { cluster.Id, cluster.Name, cluster.Color, cluster.IsLocked, cluster.IsAwaitingFeedback }).FirstOrDefault(),
+        card.BlockedByTaskIds,
+        BlockingTasks = card.BlockedByTaskIds.Select(index => document.Branches.SelectMany(branch => branch.Tasks.Select(task => new { Branch = branch, Task = task }))
+            .Where(item => item.Task.Index == index)
+            .Select(item => new { item.Task.Id, item.Task.Index, item.Task.Title, item.Task.IsDone, IsArchived = item.Branch.IsArchive })
+            .FirstOrDefault()).ToList(),
         card.Files,
         card.Requirements,
         card.Notes,
@@ -861,6 +881,8 @@ object DescribeCustomField(ProjectDocument document, TaskCard card, CustomFieldD
                     ? field.DefaultValue
                     : field.Type.Equals("cluster", StringComparison.OrdinalIgnoreCase)
                         ? document.Clusters.Where(cluster => cluster.Id.Equals(card.ClusterId, StringComparison.OrdinalIgnoreCase)).Select(cluster => new { cluster.Id, cluster.Name, cluster.Color }).FirstOrDefault()
+                    : field.Type.Equals("blocking", StringComparison.OrdinalIgnoreCase)
+                        ? card.BlockedByTaskIds.ToList()
                 : card.CustomValues.GetValueOrDefault(field.Id, field.DefaultValue);
     return new
     {
@@ -928,12 +950,15 @@ void PrintUsage()
       tasks [--branch <id>] [--eligible]        list tasks, optionally filtered
       task <id-or-index>                        print one task
       task create --branch <id> --title <t> --task <t> [--cluster <id|name>] [--tag <t>]* [--requirement <r>]*
-                  [--commit] [--build] [--release] [--merge]
+                  [--blocked-by <1,2,...>] [--commit] [--build] [--release] [--merge]
                                                  create a plain task
       task edit <id-or-index> [--title <t>] [--task <t>] [--cluster <id|name|clear>] [--due <date|clear>]
                 [--started <date|clear>] [--priority low|normal|high|critical|clear]
+                [--blocked-by <1,2,...|clear>]
                 [--commit|--no-commit] [--build|--no-build] [--release|--no-release] [--merge|--no-merge]
                                                  edit any field on an existing task
+      task blockers set <id-or-index> --ids <1,2,...|clear>
+                                                 replace a task's blocking dependencies
       task lock|unlock <id-or-index>            lock or unlock a task
       task delete <id-or-index>                 permanently delete a task
       task move <id-or-index> --to <branchId>   move a task to another branch

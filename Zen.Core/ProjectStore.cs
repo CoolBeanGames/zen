@@ -201,6 +201,7 @@ public sealed class ProjectStore
                 if (!processedCardIds.Add(card.Id)) continue;
                 card.Tags ??= [];
                 card.Files ??= [];
+                card.BlockedByTaskIds ??= [];
                 card.CustomValues ??= [];
                 card.Requirements ??= [];
                 card.Notes ??= [];
@@ -212,6 +213,7 @@ public sealed class ProjectStore
                 if (card.Kind == CardKind.Note)
                 {
                     card.ClusterId = null;
+                    card.BlockedByTaskIds.Clear();
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
@@ -226,6 +228,7 @@ public sealed class ProjectStore
                 else if (card.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
                 {
                     card.ClusterId = null;
+                    card.BlockedByTaskIds.Clear();
                     card.Title = string.Empty;
                     card.Task = string.Empty;
                     card.Tags.Clear();
@@ -278,6 +281,7 @@ public sealed class ProjectStore
                 foreach (var card in orderedTasks) column.Tasks.Add(card);
             }
         }
+        TaskBlockingRules.PruneInvalidDependencies(document);
         document.NextCardIndex = Math.Max(document.NextCardIndex, maximumIndex + 1);
     }
 

@@ -355,7 +355,7 @@
                                         </ItemsControl.GroupStyle>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type local:TaskCard}">
-                                                    <Border BorderThickness="1" CornerRadius="10" Padding="0" Margin="0,0,0,9" ClipToBounds="True"
+                                                    <Border Tag="{Binding}" BorderThickness="1" CornerRadius="10" Padding="0" Margin="0,0,0,9" ClipToBounds="True"
                                                             AllowDrop="True" DragEnter="TaskCard_DragEnter" DragOver="TaskCard_DragOver"
                                                             DragLeave="TaskCard_DragLeave" Drop="TaskCard_Drop"
                                                             Cursor="Hand" PreviewMouseLeftButtonDown="TaskCard_PreviewMouseLeftButtonDown"
@@ -670,6 +670,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                     </ItemsControl>
+                                    <local:DependencyConnectorOverlay Grid.Row="1" Margin="11,0" Panel.ZIndex="8"/>
 
                                 </Grid>
                             </Border>
@@ -746,6 +747,8 @@
                              TextChanged="EditClusterInput_TextChanged" PreviewKeyDown="EditClusterInput_PreviewKeyDown"/>
                     <ListBox x:Name="ClusterSuggestions" Visibility="Collapsed" MaxHeight="100" Background="#20252F" BorderThickness="0"
                              Foreground="{StaticResource TextBrush}" MouseLeftButtonUp="ClusterSuggestions_MouseLeftButtonUp"/>
+                    <TextBlock Text="BLOCKED BY TASK IDS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
+                    <local:TaskBlockingEditor x:Name="EditBlockingInput"/>
                     <TextBlock Text="TAGS" Foreground="{StaticResource MutedBrush}" FontSize="10" FontWeight="Bold" Margin="0,14,0,6"/>
                     <TextBox x:Name="EditTagsInput" Style="{StaticResource EditorField}" ToolTip="Separate tags with commas; press Tab to accept a suggestion"
                              TextChanged="EditTagsInput_TextChanged" PreviewKeyDown="EditTagsInput_PreviewKeyDown"/>

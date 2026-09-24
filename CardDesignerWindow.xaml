@@ -56,6 +56,9 @@
         <Button Tag="cluster" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Stretch">
           <Border IsHitTestVisible="False" Background="#302A55" BorderBrush="#8B7CFF" BorderThickness="1" CornerRadius="5" Padding="8,5"><TextBlock Text="CLUSTER" FontSize="9" FontWeight="Bold"/></Border>
         </Button>
+        <Button Tag="blocking" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Stretch">
+          <Border IsHitTestVisible="False" Background="#241F39" BorderBrush="#8B7CFF" BorderThickness="1" CornerRadius="5" Padding="8,5"><TextBlock Text="BLOCKED BY  #123" FontSize="9" FontWeight="Bold"/></Border>
+        </Button>
         <Button Tag="files" PreviewMouseLeftButtonDown="Palette_PreviewMouseLeftButtonDown" PreviewMouseMove="Palette_PreviewMouseMove" Background="Transparent" BorderThickness="0" Padding="2" Margin="0,9,0,0" HorizontalContentAlignment="Stretch">
           <Border IsHitTestVisible="False" Background="#1D222C" BorderBrush="#394151" BorderThickness="1" CornerRadius="5" Padding="8,5"><TextBlock Text="＋ Attach files" FontSize="11"/></Border>
         </Button>
@@ -69,7 +72,7 @@
       <Border x:Name="Inspector" Grid.Column="4" Background="#161A22" BorderBrush="#394151" BorderThickness="1" CornerRadius="12" Padding="16" Visibility="Collapsed">
         <StackPanel><TextBlock Text="INSPECTOR" Foreground="#8B7CFF" FontSize="10" FontWeight="Bold"/>
           <TextBlock Text="NAME" Foreground="#8992A5" FontSize="9" Margin="0,15,0,4"/><TextBox x:Name="FieldName" TextChanged="InspectorChanged" Padding="8"/>
-          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="label"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="cluster"/><ComboBoxItem Content="files"/></ComboBox>
+          <TextBlock Text="TYPE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><ComboBox x:Name="FieldType" SelectionChanged="InspectorChanged"><ComboBoxItem Content="text"/><ComboBoxItem Content="label"/><ComboBoxItem Content="number"/><ComboBoxItem Content="checkbox"/><ComboBoxItem Content="dropdown"/><ComboBoxItem Content="list"/><ComboBoxItem Content="tags"/><ComboBoxItem Content="cluster"/><ComboBoxItem Content="blocking"/><ComboBoxItem Content="files"/></ComboBox>
           <TextBlock Text="DEFAULT VALUE" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="DefaultValue" TextChanged="InspectorChanged" Padding="8"/>
           <StackPanel x:Name="OptionsHost"><TextBlock Text="DROPDOWN OPTIONS (comma separated)" Foreground="#8992A5" FontSize="9" Margin="0,12,0,4"/><TextBox x:Name="OptionsInput" TextChanged="InspectorChanged" Padding="8"/></StackPanel>
           <CheckBox x:Name="ExpandedVisible" Content="Visible on expanded card" Checked="InspectorChanged" Unchecked="InspectorChanged" Margin="0,14,0,0"/>

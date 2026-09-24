@@ -53,6 +53,12 @@ SIGNATURES
 - After a task's work, requirements, and enabled commit/build/release/merge flags have succeeded, add one short project signature before archiving it: `zen-operator signature add --message <summary> --agent <agent-name> --task <id-or-index> --at <ISO-8601-date-time>`. Identify yourself accurately, provide the current time with offset, and keep the message concise.
 - Signatures are project-level history and do not replace task notes, requirement updates, or completion state. User-entered signatures use task `N/A`, agent `User`, and an automatic timestamp.
 
+BLOCKING DEPENDENCIES
+- `blockedByTaskIds` contains numeric task indexes that must finish first. `task`, `tasks`, `eligible`, and custom-card reads report these indexes and their resolved task details.
+- Set dependencies with `zen-operator task blockers set <id-or-index> --ids <1,2,...|clear>`. `task create` and `task edit` also accept `--blocked-by <1,2,...|clear>`. A custom field of type `blocking` reads and writes the same built-in dependency collection through `custom set`.
+- Every blocker must be a valid, open task in the same branch and the same cluster. An unclustered task may only depend on another unclustered task. Self-dependencies, circular dependencies, archived cards, non-task cards, missing IDs, other branches, and other clusters are invalid.
+- Never work on, start, or mark progress on a task while any blocker remains unfinished. Always use `eligible` rather than bypassing this rule. Completing or archiving a blocker satisfies and removes that dependency.
+
 DATA SHAPE AND OWNERSHIP
 - The database hierarchy is `branches[] -> tasks[]`.
 - A task belongs to the branch object that contains it. Do not duplicate one task across branches.

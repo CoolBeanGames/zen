@@ -230,6 +230,7 @@ public sealed class ProjectStore
                 if (!processedCardIds.Add(card.Id)) continue;
                 card.Tags ??= [];
                 card.Files ??= [];
+                card.BlockedByTaskIds ??= [];
                 card.CustomValues ??= [];
                 card.Requirements ??= [];
                 card.Notes ??= [];
@@ -241,6 +242,7 @@ public sealed class ProjectStore
                 if (card.Kind == CardKind.Note)
                 {
                     card.ClusterId = null;
+                    card.BlockedByTaskIds.Clear();
                     card.Tags.Clear();
                     card.Files.Clear();
                     card.Requirements.Clear();
@@ -253,6 +255,7 @@ public sealed class ProjectStore
                 else if (card.Kind is CardKind.Break or CardKind.Cleanup or CardKind.Merge)
                 {
                     card.ClusterId = null;
+                    card.BlockedByTaskIds.Clear();
                     card.Title = string.Empty;
                     card.Task = string.Empty;
                     card.Tags.Clear();
@@ -303,6 +306,7 @@ public sealed class ProjectStore
                 foreach (var card in orderedTasks) column.Tasks.Add(card);
             }
         }
+        TaskBlockingRules.PruneInvalidDependencies(document);
         document.NextCardIndex = Math.Max(document.NextCardIndex, maximumIndex + 1);
     }
 
@@ -395,6 +399,8 @@ public sealed class ProjectStore
             value = string.Join(", ", card.Tags.Where(tag => !tag.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Equals("in progress", StringComparison.OrdinalIgnoreCase)));
         else if (field.Type == "cluster")
             value = card.Cluster?.Name ?? "No cluster";
+        else if (field.Type == "blocking")
+            value = card.BlockedByTaskIds.Count == 0 ? "No blockers" : card.BlockedByLabel;
         var imagePath = field.Type == "files" ? card.Files.FirstOrDefault(file => file.IsImage)?.AbsolutePath ?? string.Empty : string.Empty;
         var tagViews = field.Type == "tags"
             ? card.TagViews.Where(tag => !tag.Name.Equals("bug", StringComparison.OrdinalIgnoreCase) && !tag.Name.Equals("in progress", StringComparison.OrdinalIgnoreCase))

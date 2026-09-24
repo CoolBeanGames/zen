@@ -244,6 +244,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public ObservableCollection<CustomCompactField> CustomCompactFields { get; } = [];
     [JsonIgnore] public ObservableCollection<CustomCompactField> CustomExpandedFields { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
+    public ObservableCollection<int> BlockedByTaskIds { get; set; } = [];
     public string? ClusterId { get; set; }
     [JsonIgnore] public ClusterDefinition? Cluster { get; internal set; }
     [JsonIgnore] public string BoardGroupKey => Cluster?.Id ?? $"task:{Id}";
@@ -327,6 +328,8 @@ public sealed class TaskCard : INotifyPropertyChanged
     [JsonIgnore] public bool HasRequirements => Requirements.Count > 0;
     [JsonIgnore] public double RequirementProgressFraction => Requirements.Count == 0 ? 0 : (double)Requirements.Count(r => r.IsDone) / Requirements.Count;
     [JsonIgnore] public bool HasNotes => Notes.Count > 0;
+    [JsonIgnore] public bool HasBlockers => BlockedByTaskIds.Count > 0;
+    [JsonIgnore] public string BlockedByLabel => string.Join(", ", BlockedByTaskIds.Select(index => $"#{index}"));
     [JsonIgnore] public string NotesCountLabel => Notes.Count == 1 ? "1 note" : $"{Notes.Count} notes";
     [JsonIgnore] public bool HasCustomCompactFields => CustomCompactFields.Count > 0;
     [JsonIgnore] public double CompactLayoutHeight { get; internal set; } = 96;
@@ -542,6 +545,7 @@ public sealed class CustomCompactField
         "list" => string.Join(Environment.NewLine, CustomListCodec.Parse(Value).Select(item => $"• {item.Replace("\r", " ").Replace("\n", " ")}")),
         "files" => string.IsNullOrWhiteSpace(Value) ? "No files attached" : Value,
         "tags" => string.IsNullOrWhiteSpace(Value) ? "No tags" : Value,
+        "blocking" => string.IsNullOrWhiteSpace(Value) ? "No blockers" : Value,
         _ => Value
     };
     public double X { get; set; }

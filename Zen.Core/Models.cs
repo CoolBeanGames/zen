@@ -207,6 +207,7 @@ public sealed class TaskCard : INotifyPropertyChanged
     public ObservableCollection<string> Tags { get; set; } = [];
     [JsonIgnore] public ObservableCollection<TagChip> TagViews { get; } = [];
     public ObservableCollection<CardFile> Files { get; set; } = [];
+    public ObservableCollection<int> BlockedByTaskIds { get; set; } = [];
     public string? ClusterId { get; set; }
     public string? CustomTypeId { get; set; }
     public Dictionary<string, string> CustomValues { get; set; } = [];

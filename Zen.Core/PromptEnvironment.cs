@@ -29,6 +29,7 @@ public static class PromptEnvironment
         updatedPrompt = EnsureBuiltInCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureCustomCardOperatorInstructions(updatedPrompt);
         updatedPrompt = EnsureClusterInstructions(updatedPrompt);
+        updatedPrompt = EnsureBlockingInstructions(updatedPrompt);
         updatedPrompt = EnsureSignatureInstructions(updatedPrompt);
         updatedPrompt = EnsureAwaitingFeedbackInstructions(updatedPrompt);
         var promptChanged = !string.Equals(settings.GlobalPrompt, updatedPrompt, StringComparison.Ordinal);
@@ -228,6 +229,20 @@ public static class PromptEnvironment
             startupInstruction + "\r\n" +
             "- After a task's work, requirements, and enabled commit/build/release/merge flags have succeeded, add one short project signature before archiving it: `zen-operator signature add --message <summary> --agent <agent-name> --task <id-or-index> --at <ISO-8601-date-time>`. Identify yourself accurately (for example Codex, Claude, or Gemini), provide the current time with offset, and keep the message concise.\r\n" +
             "- `zen-operator signatures` lists the project's signatures in chronological order. Signatures are project-level history and do not replace task notes, requirement updates, or completion state. User-entered signatures are created by Zen with task `N/A`, agent `User`, and an automatic timestamp.\r\n\r\n";
+        const string nextHeading = "DATA SHAPE AND OWNERSHIP";
+        var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
+        return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;
+    }
+
+    private static string EnsureBlockingInstructions(string prompt)
+    {
+        const string heading = "BLOCKING DEPENDENCIES";
+        if (prompt.Contains(heading, StringComparison.Ordinal)) return prompt;
+        const string instructions = "BLOCKING DEPENDENCIES\r\n" +
+            "- `blockedByTaskIds` contains numeric task indexes that must finish first. `task`, `tasks`, `eligible`, and custom-card reads report these indexes and their resolved task details.\r\n" +
+            "- Set dependencies with `zen-operator task blockers set <id-or-index> --ids <1,2,...|clear>`. `task create` and `task edit` also accept `--blocked-by <1,2,...|clear>`. A custom field of type `blocking` reads and writes the same built-in dependency collection through `custom set`.\r\n" +
+            "- Every blocker must be a valid, open task in the same branch and the same cluster. An unclustered task may only depend on another unclustered task. Self-dependencies, circular dependencies, archived cards, non-task cards, missing IDs, other branches, and other clusters are invalid.\r\n" +
+            "- Never work on, start, or mark progress on a task while any blocker remains unfinished. Always use `eligible` rather than bypassing this rule. Completing or archiving a blocker satisfies and removes that dependency.\r\n\r\n";
         const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);
         return insertionPoint >= 0 ? prompt.Insert(insertionPoint, instructions) : prompt.TrimEnd() + "\r\n\r\n" + instructions;

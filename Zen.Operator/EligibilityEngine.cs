@@ -18,6 +18,7 @@ public static class EligibilityEngine
             if (!string.IsNullOrWhiteSpace(card.ClusterId) && clusters.TryGetValue(card.ClusterId, out var cluster) &&
                 (cluster.IsLocked || cluster.IsAwaitingFeedback)) continue;
             if (card.Kind == CardKind.Note) continue;
+            if (TaskBlockingRules.IsBlocked(document, card)) continue;
             eligible.Add(card);
         }
         return eligible.OrderByDescending(card => card.Tags.Contains("bug", StringComparer.OrdinalIgnoreCase)).ToList();

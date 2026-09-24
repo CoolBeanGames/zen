@@ -8,6 +8,7 @@ internal sealed class CreateTaskRequest
     public string Task { get; set; } = string.Empty;
     public List<string> Tags { get; set; } = [];
     public List<string> Requirements { get; set; } = [];
+    public string? BlockedBy { get; set; }
     public TaskFlagsRequest Flags { get; set; } = new();
 }
 
@@ -26,6 +27,7 @@ internal sealed class EditTaskRequest
     public string? RestoreBranchId { get; set; }
     public List<RequirementEditRequest> Requirements { get; set; } = [];
     public Dictionary<string, object?> CustomFields { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public string? BlockedBy { get; set; }
 }
 
 internal sealed class TaskFlagsRequest
@@ -58,6 +60,7 @@ internal sealed class TaskMutationService(OperatorClient client, ProjectRegistry
         var title = Required(request.Title, "Title", 300);
         var task = Limited(request.Task, "Task", 100_000);
         var arguments = new List<string> { "task", "create", "--branch", request.BranchId, "--title", title, "--task", task };
+        if (!string.IsNullOrWhiteSpace(request.BlockedBy)) arguments.AddRange(["--blocked-by", request.BlockedBy]);
         foreach (var tag in NormalizeTags(request.Tags)) { arguments.Add("--tag"); arguments.Add(tag); }
         foreach (var requirement in request.Requirements.Select(value => value.Trim()).Where(value => value.Length > 0).Take(100))
         { arguments.Add("--requirement"); arguments.Add(Limited(requirement, "Requirement", 10_000)); }
@@ -80,6 +83,8 @@ internal sealed class TaskMutationService(OperatorClient client, ProjectRegistry
             arguments.AddRange(["--title", Required(request.Title, "Title", 300), "--task", Limited(request.Task, "Task", 100_000)]);
         }
         arguments.AddRange(["--started", NormalizeDate(request.StartedDate), "--due", NormalizeDate(request.DueDate), "--priority", NormalizePriority(request.Priority)]);
+        if (request.BlockedBy is not null)
+            arguments.AddRange(["--blocked-by", string.IsNullOrWhiteSpace(request.BlockedBy) ? "clear" : request.BlockedBy]);
         AddBooleanFlag(arguments, "commit", request.Flags.Commit);
         AddBooleanFlag(arguments, "build", request.Flags.Build);
         AddBooleanFlag(arguments, "release", request.Flags.Release);
