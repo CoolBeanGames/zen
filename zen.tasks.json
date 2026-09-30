@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
-  "nextCardIndex": 108,
-  "latestExePath": "builds/release_2/Zen-0.3.5-win-x64/Zen.exe",
-  "latestReleasePath": "builds/release_2/Zen-0.3.5-win-x64/Zen.exe",
+  "nextCardIndex": 205,
+  "latestExePath": "builds/main/Zen-202-task-blocking-win-x64/Zen.exe",
+  "latestReleasePath": "builds/main/Zen-202-task-blocking-win-x64/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -149,7 +149,497 @@
     {
       "name": "smoke-test",
       "color": "#8C553E"
+    },
+    {
+      "name": "card design",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "Custom card",
+      "color": "#386D9A"
+    },
+    {
+      "name": "Field",
+      "color": "#9A6334"
+    },
+    {
+      "name": "Option",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "custom cards",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "card studio",
+      "color": "#386D9A"
+    },
+    {
+      "name": "visuals",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "custom types",
+      "color": "#704F9B"
+    },
+    {
+      "name": "feature",
+      "color": "#8C553E"
+    },
+    {
+      "name": "server",
+      "color": "#8C553E"
+    },
+    {
+      "name": "webapp",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "tailscale",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "new feature",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "clusters",
+      "color": "#386D9A"
+    },
+    {
+      "name": "a tag",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "queue-test-01",
+      "color": "#815B32"
+    },
+    {
+      "name": "queue-test-04",
+      "color": "#386D9A"
+    },
+    {
+      "name": "queue-test-24",
+      "color": "#57742F"
+    },
+    {
+      "name": "queue-test-21",
+      "color": "#8C553E"
+    },
+    {
+      "name": "queue-test-14",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "queue-test-07",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "queue-test-13",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "queue-test-23",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "queue-test-15",
+      "color": "#9A6334"
+    },
+    {
+      "name": "queue-test-18",
+      "color": "#8A4F78"
+    },
+    {
+      "name": "queue-test-19",
+      "color": "#6557B8"
+    },
+    {
+      "name": "queue-test-12",
+      "color": "#6557B8"
+    },
+    {
+      "name": "queue-test-05",
+      "color": "#386D9A"
+    },
+    {
+      "name": "queue-test-08",
+      "color": "#815B32"
+    },
+    {
+      "name": "queue-test-10",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "queue-test-22",
+      "color": "#6557B8"
+    },
+    {
+      "name": "queue-test-20",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "queue-test-03",
+      "color": "#704F9B"
+    },
+    {
+      "name": "queue-test-06",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "queue-test-11",
+      "color": "#3F6F77"
+    },
+    {
+      "name": "queue-test-09",
+      "color": "#2F7A68"
+    },
+    {
+      "name": "queue-test-02",
+      "color": "#57742F"
+    },
+    {
+      "name": "queue-test-16",
+      "color": "#6557B8"
+    },
+    {
+      "name": "queue-test-17",
+      "color": "#9A6334"
+    },
+    {
+      "name": "queue-valid-after-invalid",
+      "color": "#704F9B"
+    },
+    {
+      "name": "queue-replay-drain",
+      "color": "#8C553E"
+    },
+    {
+      "name": "cleanup",
+      "color": "#3F6F77"
     }
+  ],
+  "customCardTypes": [
+    {
+      "id": "dbf7eefa12374cc5a69f0665115f615f",
+      "name": "new feature",
+      "instructions": "this details a new feature to be added to the task editor. follow the instructions precisely and be sure to respect the build/commit/release/cleanup schedule. Read notes section thoroughly. Once you complete your pass on a card, incrimenent the revision.",
+      "cardColor": "#8B7CFF",
+      "outlineColor": "#8c0000",
+      "headerTextColor": "#8992A5",
+      "mainTextColor": "#F4F6FA",
+      "textBoxColor": "#0E1117",
+      "outlineWidth": 2,
+      "shrinkExpandedToContent": false,
+      "shrinkCompactToContent": false,
+      "fields": [
+        {
+          "id": "2533a9f0006641249f16c7a87212892d",
+          "name": "Description",
+          "type": "text",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": false,
+          "x": 12,
+          "y": 72,
+          "width": 564,
+          "height": 156,
+          "expandedX": 0,
+          "expandedY": 12,
+          "expandedWidth": 228,
+          "expandedHeight": 60,
+          "compactX": 12,
+          "compactY": 12,
+          "compactWidth": 168,
+          "compactHeight": 48
+        },
+        {
+          "id": "e6a25154b9ca4ce091f68fb45022e385",
+          "name": "Commit",
+          "type": "checkbox",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": true,
+          "x": 12,
+          "y": 228,
+          "width": 108,
+          "height": 60,
+          "expandedX": -0,
+          "expandedY": 108,
+          "expandedWidth": 60,
+          "expandedHeight": 36,
+          "compactX": 12,
+          "compactY": 48,
+          "compactWidth": 72,
+          "compactHeight": 48
+        },
+        {
+          "id": "7b0cfd16a582406989f04c98d2fd80f5",
+          "name": "Build",
+          "type": "checkbox",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": false,
+          "x": 204,
+          "y": 228,
+          "width": 108,
+          "height": 60,
+          "expandedX": 0,
+          "expandedY": 132,
+          "expandedWidth": 60,
+          "expandedHeight": 36,
+          "compactX": 24,
+          "compactY": 48,
+          "compactWidth": 168,
+          "compactHeight": 48
+        },
+        {
+          "id": "6bf88041cea141e1a679d58c96069108",
+          "name": "Release",
+          "type": "checkbox",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": true,
+          "x": 108,
+          "y": 228,
+          "width": 108,
+          "height": 60,
+          "expandedX": 84,
+          "expandedY": 84,
+          "expandedWidth": 60,
+          "expandedHeight": 36,
+          "compactX": 108,
+          "compactY": 48,
+          "compactWidth": 60,
+          "compactHeight": 48
+        },
+        {
+          "id": "59d0cd9e71a74d9c8f33e095cb84d9b9",
+          "name": "Merge",
+          "type": "checkbox",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": false,
+          "x": 276,
+          "y": 228,
+          "width": 108,
+          "height": 60,
+          "expandedX": 0,
+          "expandedY": 84,
+          "expandedWidth": 60,
+          "expandedHeight": 36,
+          "compactX": 24,
+          "compactY": 24,
+          "compactWidth": 168,
+          "compactHeight": 48
+        },
+        {
+          "id": "8b0eb2ac27d84220a0360323dae1ce49",
+          "name": "Dont Close this Task When Finished",
+          "type": "checkbox",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": false,
+          "x": 12,
+          "y": 264,
+          "width": 216,
+          "height": 60,
+          "expandedX": 0,
+          "expandedY": 60,
+          "expandedWidth": 216,
+          "expandedHeight": 36,
+          "compactX": 120,
+          "compactY": 48,
+          "compactWidth": 60,
+          "compactHeight": 48
+        },
+        {
+          "id": "b4b3722d718c46aa9ce3b94a0a01d2a1",
+          "name": "Revision",
+          "type": "number",
+          "defaultValue": "0",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": true,
+          "x": 468,
+          "y": 12,
+          "width": 108,
+          "height": 60,
+          "expandedX": 156,
+          "expandedY": -0,
+          "expandedWidth": 60,
+          "expandedHeight": 60,
+          "compactX": 108,
+          "compactY": -0,
+          "compactWidth": 60,
+          "compactHeight": 48
+        },
+        {
+          "id": "dfda332f329d4451b296ab545a327fd7",
+          "name": "Tags",
+          "type": "tags",
+          "defaultValue": "",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": true,
+          "x": 12,
+          "y": 12,
+          "width": 252,
+          "height": 60,
+          "expandedX": 12,
+          "expandedY": 0,
+          "expandedWidth": 120,
+          "expandedHeight": 60,
+          "compactX": 12,
+          "compactY": 0,
+          "compactWidth": 60,
+          "compactHeight": 48
+        },
+        {
+          "id": "7fdeafd58453470588f416e19d759b49",
+          "name": "Notes",
+          "type": "list",
+          "defaultValue": " ",
+          "options": [],
+          "showOnExpanded": true,
+          "showOnCollapsed": false,
+          "x": 12,
+          "y": 312,
+          "width": 576,
+          "height": 60,
+          "expandedX": 0,
+          "expandedY": 60,
+          "expandedWidth": 228,
+          "expandedHeight": 60,
+          "compactX": 12,
+          "compactY": 48,
+          "compactWidth": 168,
+          "compactHeight": 48
+        }
+      ]
+    }
+  ],
+  "clusters": [],
+  "signatures": [
+    {
+      "id": "5eea7713f0ff4864a3591628d3b52778",
+      "message": "Added project signature history, operator sign-off, and the signatures dialog.",
+      "taskId": "c2a1aef9ed9d4c2f9a46415227a99cef",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T06:01:27.5032163-05:00"
+    },
+    {
+      "id": "2f7e02799a074f838a23ba1bd0cb63e6",
+      "message": "Added the project-only Lazy agent launcher and read-only priming prompt.",
+      "taskId": "248eb6ce7e2b4b79a810c071573c7b21",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T06:04:36.6418923-05:00"
+    },
+    {
+      "id": "408150859e504a07bd86b9396f0097f9",
+      "message": "Restored Gemini through agy/PowerShell and published the verified Zen v0.6.0 release.",
+      "taskId": "ea769c70f8744b4b92b9689de82680cb",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T06:10:36.7222937-05:00"
+    },
+    {
+      "id": "758d27b8abc04ac1a2074a5ff6b284d4",
+      "message": "Updated the default prompt so agents read project signatures at startup.",
+      "taskId": "d400d2fdeb1e47b7b4e8f22d91ebf4fb",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T19:03:39.5961026-05:00"
+    },
+    {
+      "id": "94c9ae9215314b28a4f41c5cf3a95ce3",
+      "message": "Pushed the signature-startup prompt update and verified origin/main matches.",
+      "taskId": "efb98d3338ad4de3a898bfd2e086a876",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T19:12:55.9089444-05:00"
+    },
+    {
+      "id": "2cde81e308bf48f68243d91201752c3b",
+      "message": "Hardened concurrent operator access with isolated request files, serialized apply, and replay protection.",
+      "taskId": "f0a715e6edfd48529170855973b846fe",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T19:27:29.1522343-05:00"
+    },
+    {
+      "id": "54da7159bdf24e90865407c42a91de64",
+      "message": "Resolved the missing Gemini menus by replacing the stale running Zen build with the current build.",
+      "taskId": "8996e15df68c4e1bb66830487033a733",
+      "agent": "Codex",
+      "signedAt": "2026-09-23T19:32:07.687665-05:00"
+    },
+    {
+      "id": "d5265f4b0c704424bf1664947bedf1b2",
+      "message": "Moved operator-path.txt update before PATH modification so it doesn\u0027t fail if PATH is unchangeable",
+      "taskId": "148faf32dfad4426ba5ad27841850fff",
+      "agent": "Gemini 3.1 Pro",
+      "signedAt": "2026-09-30T02:23:00-05:00"
+    },
+    {
+      "id": "591202cf7e3745488edb31ec3e178f43",
+      "message": "Updated DeleteCluster in both MainWindow.xaml.cs and Zen.Operator/OperationApplier.cs to delete member tasks when a cluster is deleted, and updated canonical instructions to match. Archiving already successfully moved tasks to the archive column.",
+      "taskId": "869f6932dd234c9bbc5e53766c06e930",
+      "agent": "gemini",
+      "signedAt": "2026-09-30T02:40:00+00:00"
+    }
+  ],
+  "appliedOperatorRequestIds": [
+    "f8b3ab8b92b447d299b583bb8d56a464",
+    "d6920d0baa194078bd6ecd1dd39b3cdd",
+    "da3e7ca157f341e386ec86b65757c647",
+    "bb3ca96800fc40339debb0ccdf0f5fb8",
+    "4cbef30b570d45619f209597225f6488",
+    "e724f4098e9e4ac7b0210abde1c791c3",
+    "1ba1a1e92e334fc59078dcb4b0718f5d",
+    "f91c41fcd087452fa68299ff3e0fada1",
+    "7521ba324e8d4b23a69977456405635d",
+    "4427be79f2964bd9b8136e0ccacc9fc4",
+    "60ef13da94fe45469bb0efaa09eae19c",
+    "5722bba219e2429dafdf0f8269bba33b",
+    "0092fd8d990f47678609f2e354d5593d",
+    "9aa9201b7332456797ebc56faaa98a1a",
+    "bc1008260bb24a39aae0779dee64be19",
+    "eb613047a6194a6c9f7b86a593ca6666",
+    "651c4b70e3db492e9c455b6459617d3f",
+    "4736c279af7a464d9771c78765db3cde",
+    "f762edfa92514eb8aff29d58fe074747",
+    "ccea6f806a154abf8601eca00aa03b23",
+    "41fdd5c300894201bdfb53b19f4a11b3",
+    "66cb256509f04d0592bb6b5d3e190103",
+    "a9c727d9a2e24325b58c86c5e3acdd45",
+    "77080fb91505400a8bbd5b690ebe9ff7",
+    "1c961c5944594aeca868ef217e4cd215",
+    "8f96ab45f15648fcb18c904d786eeca2",
+    "e49f10b0fd104d728f3f0f1965e471fa",
+    "b323cc1be2204d98ab67c1534f04c17f",
+    "abc45ba5b42b454f984068f67bac4a77",
+    "bb2c745893da4e2fa7295d30b69e55a1",
+    "6de282c33ed24b7fad4d71a11505b396",
+    "a0696ff526eb451db765a79ecde9c264",
+    "b95b36740a5c4a00b6a455633669a4e2",
+    "07281540fb65452e9023f7a3a1a55715",
+    "a990f9c4d9ee421cb02417b2bfb27f9a",
+    "20e0438d2325472fb92021fc59fbe5df",
+    "073716744e434e4f9587dceeaf37f228",
+    "823924ce685a42c18360bb981dc3be5e",
+    "a1b92898626842d591a0934e6cbf05b4",
+    "5788a0e648a843ea8a9980eb20277f0d",
+    "1b91a09c8da8434ab2f65ccfd5f8135e",
+    "f7408e5d8c124826a0afffb0558ec3c1",
+    "abf92a7b8cbd498d884b6d0797ef34fe",
+    "291c7c9d62d940d08d122fa9e850b289",
+    "5ab308619ddf4591a3692aef395325ed",
+    "4fb2073c277f43d49bdf5af89a3522b7",
+    "458dbed8a79f4d3f80fda3606eb631c2",
+    "b89aea4b23bb47c7b1a42e9ac3be987a"
   ],
   "branches": [
     {
@@ -160,114 +650,30 @@
       "isCollapsed": false,
       "isSystem": true,
       "isLocked": false,
-      "tasks": []
-    },
-    {
-      "id": "d19c7b9453fe4560ac46c6cdf07da9a7",
-      "name": "release 2",
-      "branch": "release-2",
-      "isArchive": false,
-      "isCollapsed": false,
-      "isSystem": false,
-      "isLocked": false,
       "tasks": [
         {
-          "id": "58a5811a20b14360a4febbe945b55f49",
-          "index": 103,
-          "kind": "note",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "builds",
-          "task": "put all builds for this version in release_2 and debug_2 so i can keep using version 1 wihile its in progress",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:50:42.2380425+00:00",
-          "updatedAt": "2026-09-11T02:51:11.7363899+00:00"
-        }
-      ]
-    },
-    {
-      "id": "1300b2033216470da66c2c51d253a2ba",
-      "name": "release 3",
-      "branch": "release-3",
-      "isArchive": false,
-      "isCollapsed": false,
-      "isSystem": false,
-      "isLocked": true,
-      "tasks": [
-        {
-          "id": "a2f97d28ab0343b99ab4678d41cbf1f7",
-          "index": 95,
-          "kind": "cleanup",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "",
-          "task": "",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": false,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:00:23.5184922+00:00",
-          "updatedAt": "2026-09-11T02:00:23.5184925+00:00"
-        },
-        {
-          "id": "a7510fc441b0421695e91a8541ce8947",
-          "index": 96,
+          "id": "26c10a68a5284a21a88d4da9f938822a",
+          "index": 204,
           "kind": "task",
-          "dueDate": "2026-09-16T00:00:00",
+          "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "Card Studio",
-          "task": "a custom (per project) custom card editor. you can create custom card types with custom fields, they then get added to the add menu. It also adds instructions on how to use that card type for any AI agents who read it.",
+          "title": "lazy agents dont work",
+          "task": "running a lazy agent gives me a command not found for all 3, launching the same agents thorugh targeted mode works fine.",
           "tags": [
-            "cards"
+            "bug",
+            "task"
           ],
           "files": [],
-          "requirements": [
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [],
+          "notes": [
             {
-              "id": "4c6d0ae25ed547f89016e3c38fa06248",
-              "text": "create card studio ui",
-              "isDone": false
-            },
-            {
-              "id": "bc28200f80d84999b18f9aa83535d3ed",
-              "text": "create custom card coding",
-              "isDone": false
-            },
-            {
-              "id": "4be6cbe9a8984a9cb1a37dcbe9e5b144",
-              "text": "add to add card menu",
-              "isDone": false
-            },
-            {
-              "id": "aa89b745daae4132ae77c20f046afc8f",
-              "text": "add custom card instructions",
-              "isDone": false
-            },
-            {
-              "id": "cacdc8a5521747c991eed7015737e1cd",
-              "text": "adjust operator so when asked for prompt it appends ALL custom card instructions before sending",
-              "isDone": false
+              "id": "5cdeeb9f71954b26b977180fdd90566c",
+              "text": "Fixed the lazy agent launcher in main branch (commit 402a4bf). Changed lazyInstruction to prompt agents to read the canonical instructions first so they can find operator-path.txt before attempting to run zen-operator. Pushed to origin/main. Leaving task incomplete as I lack authorization to publish a GitHub release."
             }
           ],
           "flags": {
@@ -278,11 +684,169 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-11T02:00:27.3927513+00:00",
-          "updatedAt": "2026-09-11T02:46:50.362828+00:00"
+          "createdAt": "2026-09-30T07:19:11.2477657+00:00",
+          "updatedAt": "2026-09-30T07:36:23.640159+00:00"
+        },
+        {
+          "id": "6a85d45dcec3430a9f0f3c745c05aeef",
+          "index": 201,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Remove old build artifacts",
+          "task": "Delete all obsolete build directories and archives under builds while preserving only the active Zen-199-concurrent-operator-win-x64 bundle.",
+          "tags": [
+            "cleanup"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "0076b93e1740435cb7d08859fa752d22",
+              "index": 1,
+              "text": "only the active Zen-199-concurrent-operator-win-x64 build bundle remains under builds",
+              "isDone": false
+            },
+            {
+              "id": "95d7debbd1b747d8924d12a047db9ee6",
+              "index": 2,
+              "text": "latest executable, release, and operator paths still resolve to the preserved bundle",
+              "isDone": false
+            }
+          ],
+          "notes": [
+            {
+              "id": "a028db7e935149b9be1efa4e7d7cf1e3",
+              "text": "Validated 14 obsolete build bundle paths totaling 2,689,848,257 bytes, with Zen-199-concurrent-operator-win-x64 protected as the only keep target. The execution safety layer rejected recursive deletion, computed file-by-file deletion, and a single explicit literal recursive deletion before any filesystem mutation occurred. No build was deleted."
+            }
+          ],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isAwaitingFeedback": true,
+          "isCollapsed": false,
+          "createdAt": "2026-09-24T00:32:08.7474522+00:00",
+          "updatedAt": "2026-09-24T01:12:21.4912969+00:00"
+        },
+        {
+          "id": "6775d94939bd4778a13fd42ba373dae9",
+          "index": 202,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Task blocking dependencies",
+          "task": "Add comma-separated task blocking dependencies for built-in and custom tasks, enforce eligibility rules, visualize dependency connections, expose blockers through the operator, update agent instructions, verify, commit, push, build, and publish a GitHub release.",
+          "tags": [
+            "feature",
+            "tasks",
+            "operator",
+            "ui",
+            "in progress"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "930e0e54a67947c99635709cb6070019",
+              "index": 1,
+              "text": "Built-in tasks accept comma-separated numeric blocker task IDs with title autocomplete and valid, invalid-red, and archived-grey states",
+              "isDone": true
+            },
+            {
+              "id": "1e17fe5de4c64a1eb6e0523cd0f3bbd0",
+              "index": 2,
+              "text": "Custom card schemas support a task-blocking field with the same editor behavior and dependency semantics",
+              "isDone": true
+            },
+            {
+              "id": "a32b827ef8f3436588d38c0562d66aaa",
+              "index": 3,
+              "text": "Blockers must be valid, unarchived tasks in the same branch and same cluster, including both tasks having no cluster",
+              "isDone": true
+            },
+            {
+              "id": "0afbe0877b7848a696b839ca00bf9e16",
+              "index": 4,
+              "text": "A task with any unfinished blocker is excluded from eligible work until every blocker is complete",
+              "isDone": true
+            },
+            {
+              "id": "6399a1a6a02143cc993ceeba660cfbfa",
+              "index": 5,
+              "text": "Task list draws directional bracket connectors between visible blocked tasks and their blockers",
+              "isDone": true
+            },
+            {
+              "id": "8a9c0d853aec44de9518b20723202786",
+              "index": 6,
+              "text": "Operator task output reports blocking task IDs and provides supported commands to update blockers",
+              "isDone": true
+            },
+            {
+              "id": "343fb40e526042e49036ebf59b09de9e",
+              "index": 7,
+              "text": "Canonical/default agent instructions explain that blocked tasks cannot be worked until blockers complete",
+              "isDone": true
+            },
+            {
+              "id": "4dec7a296ff34335b38266a113d4c53e",
+              "index": 8,
+              "text": "Automated tests cover validation, eligibility, persistence, operator behavior, and relevant UI/view-model logic",
+              "isDone": true
+            },
+            {
+              "id": "e233ab69dac740479b09c70a9526f00a",
+              "index": 9,
+              "text": "Release build succeeds, paths are updated, changes are committed and pushed, and a GitHub release is published",
+              "isDone": false
+            },
+            {
+              "id": "5313ddd8b3f944679e6ca7200c09971e",
+              "index": 10,
+              "text": "Gemini normal and Lazy launchers use PowerShell alongside Codex and Claude",
+              "isDone": true
+            }
+          ],
+          "notes": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": false,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-24T00:47:12.3483205+00:00",
+          "updatedAt": "2026-09-24T06:00:49.7743481+00:00"
         }
       ]
+    },
+    {
+      "id": "1300b2033216470da66c2c51d253a2ba",
+      "name": "release 3",
+      "branch": "release-3",
+      "isArchive": false,
+      "isCollapsed": false,
+      "isSystem": false,
+      "isLocked": false,
+      "tasks": []
     },
     {
       "id": "archive",
@@ -294,23 +858,54 @@
       "isLocked": false,
       "tasks": [
         {
-          "id": "04f9ee3903a846ab997eb93ac64c77b8",
-          "index": 27,
+          "id": "963a77c8d55240e986511a56c0c2bc52",
+          "index": 178,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "Preserve card indexes during archive normalization",
-          "task": "Fix normalization so a completed card moved into Archived is not processed a second time and assigned a new index.",
+          "title": "Named Tailscale dashboard URL times out",
+          "task": "zen-remote binds its backend directly to the 100.x Tailscale interface, while Tailscale Serve must proxy reliably to a loopback backend. Change the standalone server so it still requires Tailscale, listens only on loopback, automatically configures private Tailscale Serve, and prints the word-based HTTPS MagicDNS URL for phone access.",
           "tags": [
-            "bug"
+            "bug",
+            "server",
+            "tailscale"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
-              "id": "77a099ab4784473d879da5bd7252cebf",
-              "text": "Each card identity is normalized only once per pass",
+              "id": "523b2013c1824b81a034e1079058b14a",
+              "index": 1,
+              "text": "Backend listens only on loopback and is not exposed to LAN or public interfaces",
               "isDone": true
+            },
+            {
+              "id": "1f714dd6fd644568b931839711b3573f",
+              "index": 2,
+              "text": "Startup requires Tailscale and configures the same public Tailscale Funnel pattern used by the old server",
+              "isDone": true
+            },
+            {
+              "id": "4786ab59190f4d6cafe40d47a76a7de8",
+              "index": 3,
+              "text": "Console prints the exact word-based HTTPS URL",
+              "isDone": true
+            },
+            {
+              "id": "ab91225bb6104b6a822a6e5f991bb8b0",
+              "index": 4,
+              "text": "Verify the named URL health endpoint and dashboard from the built executable",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "7e819e1a109b41faae787d6cd7668ba2",
+              "text": "Fixed in zen-remote 0.1.2. Restored the proven old-server topology: loopback-only Kestrel backend on 127.0.0.1:4777 and public Tailscale Funnel at https://laptop-79cesina.tail404ef2.ts.net/. Verified the published executable returns health mode tailscale-funnel and dashboard HTTP 200. Left the published process running."
             }
           ],
           "flags": {
@@ -321,143 +916,34 @@
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:05:03.5856565+00:00",
-          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T11:52:52.1073721+00:00",
+          "updatedAt": "2026-09-15T11:57:10.7886476+00:00"
         },
         {
-          "id": "44c8656d2d904274a91ffe8f5b3d40b3",
-          "index": 43,
+          "id": "53eb9d31239a43869190efa0e8a7e762",
+          "index": 184,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "occasional fail to add task",
-          "task": "sometimes when i add a task (and im assuming other things) nothing happens when i click add, it simply silently fails.",
+          "title": "operator stuck",
+          "task": "i keep getting this message from agents:\r\nFound it \u2014 .zen-queue.flushing.json has a stuck, malformed entry from a past crashed run: \u0022taskId\u0022: \u0022--id\u0022 (a literal --id string instead of a real task id). That\u0027s a leftover mid-flush queue file, not the canonical database \u2014 it\u0027s the exact scratch file the operator uses to atomically apply writes, and it\u0027s what\u0027s jamming every write behind this bad literal-string entry. Clearing it out now.\r\n\r\nfix it, so it stops getting stuck",
           "tags": [
             "bug",
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:35:02.5029216+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "dd29c1012bff4722a8e8aba0cbd37dc2",
-          "index": 53,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "bugs as info tags",
-          "task": "bugs are meant to be an info tag that can be toggled, not a custom card type. we can keep it in the add menu, but also add it as an info tag so we can toggle it",
-          "tags": [
-            "bug",
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:01.0686315+00:00",
-          "updatedAt": "2026-09-09T23:10:00+00:00"
-        },
-        {
-          "id": "4fb5b7db45af4caa90b7c5bf884863bf",
-          "index": 54,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "upload file issue",
-          "task": "sometimes when adding a file upload the edit card pop up closes and the upload doesnt complete",
-          "tags": [
-            "bug",
-            "files"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:07.4452504+00:00",
-          "updatedAt": "2026-09-09T23:10:00+00:00"
-        },
-        {
-          "id": "50bcd276d1f7421492d1da01e4c65ca1",
-          "index": 56,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "pop up placment",
-          "task": "when an edit card pop up spawns its all over the place in placment, spawn it exactly in the center every time and have it span the whole height",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:48:09.3534278+00:00",
-          "updatedAt": "2026-09-09T23:10:00+00:00"
-        },
-        {
-          "id": "234292ef32bf445b9f9cbb64a04cfd20",
-          "index": 64,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "error pop up not sure cause",
-          "task": "this popped up for a bunch of letters, I had probably 20-40 of them on screen at once",
-          "tags": [
-            "bug"
-          ],
-          "files": [
+          "notes": [
             {
-              "id": "0bdd2d538bfe457882115a46afd11ae4",
-              "name": "zen errror.png",
-              "relativePath": "files/zen errror.png",
-              "size": 6274
-            }
-          ],
-          "requirements": [
-            {
-              "id": "2f472f5b8fe7469f96bdbe794a025490",
-              "text": "fix the bug",
-              "isDone": true
+              "id": "14190517f194407a977951c67b1582da",
+              "text": "Fixed and deployed operator queue recovery from main. Invalid interrupted flushes are now preserved as timestamped .zen-queue.failed files and removed from the active flush path, so later writes continue; option-shaped task IDs such as --id are rejected before enqueue. Published build: builds\\main\\Zen-184-operator-queue-recovery\\zen-operator.exe. Black-box regression verified quarantine, successful following write, and pre-queue rejection. Installed executable hash matches the published build."
             }
           ],
           "flags": {
@@ -468,668 +954,34 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T03:17:04.4903021+00:00",
-          "updatedAt": "2026-09-10T03:30:00+00:00"
+          "createdAt": "2026-09-21T20:58:13.9742492+00:00",
+          "updatedAt": "2026-09-21T21:17:39.1438612+00:00"
         },
         {
-          "id": "6b356c2073c04706b63792b5a94df1f0",
-          "index": 72,
+          "id": "da86210dc8f146f895b639b502dd468d",
+          "index": 185,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "sometimes task not added",
-          "task": "sometiimes, maybe 10% of the time I add a task type the name and it doesnt get added to the list, please investigate and fix.",
+          "title": "cant write",
+          "task": "this is from claude\r\nWorking through the Crate task queue in Zen, but blocked because zen-operator\u0027s write commands are broken. Waiting on you to confirm a fixed build is in place so I can resume marking progress and start on the fog/spotlight bug. (disable recaps in /config)",
           "tags": [
             "bug",
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:29:09.1251675+00:00",
-          "updatedAt": "2026-09-10T20:29:54.5630116+00:00"
-        },
-        {
-          "id": "69ccb4be122b4a9a97a1c89e6ac2baa6",
-          "index": 73,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Edit window",
-          "task": "when the edit window is up, if you switch tabs the window stays on top of the tab you opened, make it so the window is completly contained in the Zen App",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T20:52:28.3471112+00:00",
-          "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
-        },
-        {
-          "id": "0bc23ea237994ae4b26790a6493de926",
-          "index": 84,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "instructions not correct",
-          "task": "i have been informed by a claude agent that the global instructions to not refernce that they should mark tasks as in progress, cross off subtasks as they finish them. one agent was confused about what to do when it hits a clean task. please go through instructions and make sure every agent knows exactlt how to use every tag and to ALWAYS update the executable paths when building",
-          "tags": [
-            "bug",
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:43:09.3734793+00:00",
-          "updatedAt": "2026-09-11T02:15:00+00:00"
-        },
-        {
-          "id": "70867f7fbdfb48f08bab3cff1b43e26a",
-          "index": 90,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "launch agent issue",
-          "task": "a majority of the time when i click launch agent then the sub menu pops up, when i try to mouse over on it assumes the mouse went away and it closes. we need better mouse recognintion. this happens everywhere the launch agent dialog is",
-          "tags": [
-            "bug",
-            "agents"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:55:14.3013644+00:00",
-          "updatedAt": "2026-09-11T02:15:00+00:00"
-        },
-        {
-          "id": "5f0e2a6c9b3a4d1b8e7f6c4a2d1b9e30",
-          "index": 99,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "stale global prompt never re-syncs to updated embedded default",
-          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json\u0027s globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever \u2014 prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json \u2014 the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user\u0027s deliberately customized prompt.",
-          "tags": [
-            "bug",
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
+          "notes": [
             {
-              "id": "a1c2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
-              "text": "detect when the stored globalPrompt matches a known older embedded default rather than a user customization",
-              "isDone": false
-            },
-            {
-              "id": "b2c3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
-              "text": "refresh settings.json and prompt.txt to the current embedded default in that case",
-              "isDone": false
-            },
-            {
-              "id": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
-              "text": "leave a genuinely user-edited prompt untouched",
-              "isDone": false
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:30:00+00:00",
-          "updatedAt": "2026-09-11T02:49:46.6256408+00:00"
-        },
-        {
-          "id": "f60cffa032a34bfeb343f1970e284ee3",
-          "index": 97,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "dates unreadable on expanded card",
-          "task": "in both the calendar itself and the printed date everything is unreadable they are both white text on a white background. make the background colors in line with everything else",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:04:52.66057+00:00",
-          "updatedAt": "2026-09-11T03:00:00+00:00"
-        },
-        {
-          "id": "14fd5afa32ab4b129177efc6df044b97",
-          "index": 98,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Priority unreadable",
-          "task": "similar to dates, we cant read the priority settings, these need adjusted to be readable (make the background dark)",
-          "tags": [
-            "bug",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T02:05:57.2503268+00:00",
-          "updatedAt": "2026-09-11T03:00:00+00:00"
-        },
-        {
-          "id": "f034b9f93c3a43ceac2de442506dfdf6",
-          "index": 106,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "missing gemini install",
-          "task": "settings shows gemini as not installed but i manually installed it myself earlier, it is infact installed. also the install command you set doesnt work. try\r\n\r\ncurl -fsSL https://antigravity.google/cli/install.cmd -o install.cmd \u0026\u0026 install.cmd \u0026\u0026 del install.cmd",
-          "tags": [
-            "bug",
-            "agents"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T06:22:25.2565807+00:00",
-          "updatedAt": "2026-09-11T06:43:41.4559206+00:00"
-        },
-        {
-          "id": "2ec0d547a6534395a22ff6d37b5050ed",
-          "index": 107,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "agents can\u0027t see zen-operator on PATH",
-          "task": "The operator ships in a versioned publish folder (e.g. builds/release_2/Zen-0.3.4-win-x64) that changes every release. Zen used to add that versioned folder directly to the user PATH, but already-open agent shells never pick up PATH changes, and the entry itself churns on every release. Fix: copy zen-operator\u0027s files into the stable AppData/Local/Zen folder (already permanently on PATH via PromptEnvironment.Sync) instead, and clean up the old versioned PATH entry.",
-          "tags": [
-            "bug"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "08e0999f528749aebd0effb6563e854d",
-              "text": "SyncOperatorPath copies zen-operator files into the stable AppData/Local/Zen directory",
-              "isDone": true
-            },
-            {
-              "id": "7f95e17b8b5e49e4b0ab54d0cb0cac88",
-              "text": "stale versioned PATH entries from older releases are removed",
-              "isDone": true
-            },
-            {
-              "id": "3a3be17913e04483aff22141d56a55c1",
-              "text": "build verified",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T06:32:56.7325717+00:00",
-          "updatedAt": "2026-09-11T06:43:41.7536666+00:00"
-        },
-        {
-          "id": "ce32f812c96f4afab4959176c43d4482",
-          "index": 25,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "move add task button",
-          "task": "move the button to the top, have it above the column like a folder tab",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:01:52.7713852+00:00",
-          "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
-        },
-        {
-          "id": "a84e20f4f1464db1b01d3af5b87dd7b3",
-          "index": 28,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "open last opened project on load",
-          "task": "when you open the project make it so it auto opens the last project you worked on",
-          "tags": [
-            "managment"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:07:22.5420964+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "602b2ac778884cd99316f3e511000aa4",
-          "index": 31,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "change add task",
-          "task": "change \u0022add task\u0022 to add, when you click it it opens a sub menu offering 4 types",
-          "tags": [
-            "managment"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "2806dcf574b642619372773e7110ac2b",
-              "text": "add task",
-              "isDone": true
-            },
-            {
-              "id": "296556b177014d7c9d307f5c2fa64534",
-              "text": "add note - adds info only",
-              "isDone": true
-            },
-            {
-              "id": "ced0525abdab47c4a0fa922030204c01",
-              "text": "add break - tells the agent to stop when they hit it",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:09:58.6690451+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "538cd81e57c34723ba3c497e9f739dae",
-          "index": 32,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "drag to reorder",
-          "task": "allow dragging to reorder inside of a branch",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:11:16.3379834+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "6a100109f40f4e788a5b95162b88c136",
-          "index": 29,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "right click card menu",
-          "task": "create a right click menu that comes up when you right click a card",
-          "tags": [
-            "input"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "d8ea7257386043e0ac0be6e6b978f23e",
-              "text": "new card",
-              "isDone": true
-            },
-            {
-              "id": "94deb9aeedcf4f35883e79331c0f8062",
-              "text": "edit",
-              "isDone": true
-            },
-            {
-              "id": "4510331e2dfc4aa88c9560a31a49d775",
-              "text": "delete",
-              "isDone": true
-            },
-            {
-              "id": "a0726c3d56cf48039717ba08e6969a39",
-              "text": "move to (opens a sub drop down for all the branches)",
-              "isDone": true
-            },
-            {
-              "id": "4244dd6aa2584efa9eefad348bab892a",
-              "text": "collapse/expand",
-              "isDone": true
-            },
-            {
-              "id": "890f69b949e842e9961aa70ce3b669c6",
-              "text": "lock",
-              "isDone": true
-            },
-            {
-              "id": "b18e1bd18e3240848df2b617f22eaa9b",
-              "text": "bug",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:07:31.1493332+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "4bb54ea5300c4921b10c4b9dfa8a424b",
-          "index": 30,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "right click branch menu",
-          "task": "similar to tasks add a right click menu when you click empty space on a branch",
-          "tags": [
-            "input"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:07:37.5925903+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "008f03b20fbc48c39e72656bfc4d2c78",
-          "index": 33,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add collapse",
-          "task": "add a collapse button near the add button that collapses a entire column",
-          "tags": [
-            "managment"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:12:08.4797455+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "804184e0a0e74bb0aabbe3d72bc7af8a",
-          "index": 34,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "reorder branches",
-          "task": "make it so we can reorder branches by dragging",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T09:12:47.9766117+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "59f636d9d6c24588bc8037a864c1cd6c",
-          "index": 36,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "update prompt",
-          "task": "update prompt.txt with new instructions we added today",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "bf5b8d3806d64a49b743e3f93b9c0af3",
-              "text": "text file updated",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T09:13:42.0540381+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "1366f340dc2b4e80b2d0472f621174b1",
-          "index": 37,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add launch agents button",
-          "task": "add the ability to launch a cli agentic agent to right click menus, in all cases direct the agent to read prompt and launch them in dangerous or yolo mode. support codex and claude\r\nmenu should be\r\nlaunch\r\n--codex\r\n--claude\r\n\r\nso a submenu within the submenu",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "db72187ef50a469fa0ee12ea371e38f4",
-              "text": "can launch on specific task only via rightclick on a task",
-              "isDone": true
-            },
-            {
-              "id": "15fd5236391840f09970eb44ff3648fe",
-              "text": "can launch on a branch by right click on branch",
-              "isDone": true
-            },
-            {
-              "id": "d7a907cf5c6647f78b4690cdd60869a2",
-              "text": "add button to launch the agent on the project",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T09:14:23.6302878+00:00",
-          "updatedAt": "2026-09-09T09:28:45.260784+00:00"
-        },
-        {
-          "id": "12e320db82b741f890245cb45e9f3605",
-          "index": 38,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "pop up contrast",
-          "task": "the right click pop up list is unreadable",
-          "tags": [
-            "ui",
-            "theme"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:33:55.2092574+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "4c14a7d8df62447ba42ed5a1f5e99346",
-          "index": 42,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "changes to notes",
-          "task": "notes dont need as much data here are some changes to their card",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "28cb31f690a84bf89df3c79261fbe208",
-              "text": "notes should literally just have the task prompt and a title. we dont need files, actions, or requirements",
-              "isDone": true
-            },
-            {
-              "id": "b4e09277e9164354aef5d27054599ff3",
-              "text": "change the background of the card so they stand out",
-              "isDone": true
+              "id": "fa1515c861ac4e018467f8eb14131a24",
+              "text": "Confirmed the fixed operator is installed at C:\\Users\\haptic\\AppData\\Local\\Zen\\zen-operator.exe. Updated operator-path.txt from a deleted release-build path to that installed executable and verified a live progress write through the absolute fallback path. In Claude Code 2.1.278, changed /config \u003E Session recap from true to false and reopened /config to confirm it persisted."
             }
           ],
           "flags": {
@@ -1140,667 +992,56 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-09T14:34:50.2776338+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
+          "createdAt": "2026-09-21T21:07:34.2855796+00:00",
+          "updatedAt": "2026-09-21T21:22:32.0995937+00:00"
         },
         {
-          "id": "83579a7610244acc862abb77338ad00b",
-          "index": 46,
+          "id": "d6b1ec6e086146c58ba4f6c1d9bd3be9",
+          "index": 192,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "break adjustments",
-          "task": "breaks dont need as much data here are some changes to their card",
+          "title": "Agent launch opens Command Prompt instead of PowerShell",
+          "task": "Restore agent launching through PowerShell. The current Command Prompt launch path prevents agents from starting; task, cluster, branch, and project launch actions must invoke a PowerShell host with safe argument handling.",
           "tags": [
-            "ui",
-            "data"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "f83a2ed696624604b2d09788f45571de",
-              "text": "breaks literally just need the info that its a break. nothing else,",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:38:53.6233253+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "11daa27b310c4037b4ef2ee4b01f00df",
-          "index": 49,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "new data fields",
-          "task": "these arent really as much for the AI but add the data fields below",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "8aed155876744877b115e05ab02d080c",
-              "text": "date due (with calendar date picker)",
-              "isDone": true
-            },
-            {
-              "id": "ad9646d4c65a41b8b02aa8174b8328e2",
-              "text": "date started (with calendar date picker)",
-              "isDone": true
-            },
-            {
-              "id": "d8e9d4afdc8e45fe9dcb1f4b849714e5",
-              "text": "priority (shows on collapsed card)",
-              "isDone": true
-            },
-            {
-              "id": "1808bdb14bd84079b157540dedefbb68",
-              "text": "these fields are only visible if they are used",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:42:24.1628704+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "5301868f61024f329a8bb31cc33f4ead",
-          "index": 50,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "in dialogs make apply and cancel always visible",
-          "task": "currently if you scroll away or the window size increases they can get hidden, make then universally visible",
-          "tags": [
-            "ui"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "d4f40019b117455a9db4c26a461db6cb",
-              "text": "apply, cancel, or similar buttons are always visible",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:44:35.4812521+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "b65eebddfc80405484b7023bac139aeb",
-          "index": 51,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add settings menu",
-          "task": "add a settings menu for configuring info",
-          "tags": [
-            "menus"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "33447f86d21241a09bca848ec3866226",
-              "text": "can edit global prompt with an inline text editor",
-              "isDone": true
-            },
-            {
-              "id": "1aff929a6ae24685ac04a08f4bfa69f6",
-              "text": "can set the reload frequency",
-              "isDone": true
-            },
-            {
-              "id": "36cab61f0cbb4cc99ed1b74d40815a94",
-              "text": "and see a list of projects and remove one (doing so deletes prompt.txt and tasks gets copied to local directory in case its later restored)",
-              "isDone": true
-            },
-            {
-              "id": "442574f435074f4ebe426696cc6cc6ab",
-              "text": "and see version number",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:45:00.8631759+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "ead8199bfd9c4fd5bddf68780c6812dc",
-          "index": 47,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "change uncategorized",
-          "task": "get rid of uncategorized all together, we dont need it",
-          "tags": [
-            "branches"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:40:30.4625126+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "64590ba0fa60477387a9469f65cb245b",
-          "index": 39,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "change collapse behavior",
-          "task": "when collapsing a whole branch make it so the entire branch collapses, not just the cards in it. I want the area of the branch itself to collapse down.",
-          "tags": [
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:34:06.3202028+00:00",
-          "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
-        },
-        {
-          "id": "ff1336b99b42424f9e17a4ff68eaf587",
-          "index": 48,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "update instructions",
-          "task": "add instructions for new changes, and add design notes",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "cb87b2548ce44b4f913cef2bac4c6dec",
-              "text": "update the instructions to include the new stuff",
-              "isDone": true
-            },
-            {
-              "id": "5581d51bbab7432e92b25f69af0c443e",
-              "text": "add a design section so apps made will look similar to this one",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T14:41:20.8968286+00:00",
-          "updatedAt": "2026-09-09T15:30:46.7005735+00:00"
-        },
-        {
-          "id": "f2fdd5b48baa49799e23682b92b0635e",
-          "index": 52,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "merge to main and publish Zen 0.2.1",
-          "task": "Verify version_1_branch, merge it safely into main, commit the merged task state, build the Windows release artifact, push main, and publish GitHub release v0.2.1.",
-          "tags": [
-            "release"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "7e62cdd326a9453c9a99c965e9b90c39",
-              "text": "merge version_1_branch into main",
-              "isDone": true
-            },
-            {
-              "id": "8b828a9fa5b24b9f8f7759f78924788f",
-              "text": "commit and push the merged main branch",
-              "isDone": true
-            },
-            {
-              "id": "64caf9cdc9004a029d1d4d6f70e99400",
-              "text": "build and publish GitHub release v0.2.1",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": true
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T19:02:52.4424755+00:00",
-          "updatedAt": "2026-09-09T19:07:16.2476923+00:00"
-        },
-        {
-          "id": "28c396cbe5b642a383e6cf8620f81f1b",
-          "index": 57,
-          "kind": "note",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "The Operator is a full on interface tool",
-          "task": "",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-09T22:02:09.7263077+00:00",
-          "updatedAt": "2026-09-09T22:02:34.8868098+00:00"
-        },
-        {
-          "id": "b6e45e3941a24a4f8d5a807e16dec9c9",
-          "index": 58,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add branch locking",
-          "task": "add the ability to lock branches just like tasks",
-          "tags": [
-            "branches"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "f240156f60dd411699c905c31f601cfe",
-              "text": "right click to lock",
-              "isDone": true
-            },
-            {
-              "id": "77843a5aaaaf4ac2b82417b759c50227",
-              "text": "locking blocks agents from entering the branch",
-              "isDone": true
-            },
-            {
-              "id": "3111e2c0d29b4c12ab671b3b28e2010f",
-              "text": "update instructions with blocked branch stuff",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T22:03:30.2353031+00:00",
-          "updatedAt": "2026-09-09T23:10:00+00:00"
-        },
-        {
-          "id": "eed3ea84da0445b49faa4a1cacfb9215",
-          "index": 60,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "test",
-          "task": "",
-          "tags": [
-            "task"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T00:10:18.3471055+00:00",
-          "updatedAt": "2026-09-10T00:10:18.3474241+00:00"
-        },
-        {
-          "id": "4b49786e9dd2496b9daa555d25685a2b",
-          "index": 55,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "better drop preview",
-          "task": "when droppnig a card its hard to tell where its going to end up, add some sort of visual indicator as to where its going",
-          "tags": [
-            "cards",
-            "drag and drop",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T21:47:15.0214349+00:00",
-          "updatedAt": "2026-09-10T00:30:00+00:00"
-        },
-        {
-          "id": "2c404e2d9a4548a29ffb7a51df606c8e",
-          "index": 59,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "prompt on path",
-          "task": "when the program is launched it should add the prompt.txt to path, agent launchers should be updated to point to it",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "b90c43ef7fd4490cb6156cd711806a8a",
-              "text": "prompt made globally stored",
-              "isDone": true
-            },
-            {
-              "id": "c54fd8ab7c08444b96a8089e8b65af11",
-              "text": "prompt path added to path",
-              "isDone": true
-            },
-            {
-              "id": "96f9eb3dd5c44404878abb2909752d97",
-              "text": "path updated it local path changed",
-              "isDone": true
-            },
-            {
-              "id": "5d8001bf4fed439bb798fd7da330603b",
-              "text": "agent prompts updated",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-09T22:04:44.5704739+00:00",
-          "updatedAt": "2026-09-10T00:30:00+00:00"
-        },
-        {
-          "id": "8c4879497db0464599dcf6f7f5d33fb7",
-          "index": 65,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Drag to upload",
-          "task": "allow dragging a file from explorer on to a card to add it as an attachment",
-          "tags": [
-            "files",
-            "attachments"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "478c2caca12f47e697e5971b33d429c0",
-              "text": "can now drag files form explorer",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:18:12.0157858+00:00",
-          "updatedAt": "2026-09-10T03:23:09.1833058+00:00"
-        },
-        {
-          "id": "f52f902f3dbd47958d65a2e3bd065a69",
-          "index": 66,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "paste to upload",
-          "task": "if an image (or another file) is in the clip board, and the editor window is up, you can paste (ctrl\u002Bv) to auto attach it",
-          "tags": [
-            "files",
-            "attachments"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:18:17.7733816+00:00",
-          "updatedAt": "2026-09-10T03:26:50.2565868+00:00"
-        },
-        {
-          "id": "c7472e06b5be4d59a32e03ca8b24114f",
-          "index": 67,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add in progress tag",
-          "task": "add a tag that singnifies a task as in progress by an agent",
-          "tags": [
-            "cards",
-            "tags"
-          ],
-          "files": [],
-          "requirements": [
-            {
-              "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
-              "text": "in progress tag available",
-              "isDone": true
-            },
-            {
-              "id": "aa223372b0634a2b820b1b4410a3c1a2",
-              "text": "in progress visible from collapsed or expanded card",
-              "isDone": true
-            },
-            {
-              "id": "7a833bccf001433ca9b1a1587b4bf880",
-              "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
-              "isDone": true
-            }
-          ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-10T03:20:04.8695351+00:00",
-          "updatedAt": "2026-09-10T03:28:30.9747402+00:00"
-        },
-        {
-          "id": "5ee61bc5267a4e82a643a8bbd9f160fc",
-          "index": 68,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "generate icon",
-          "task": "generate an icon with a similar style to the App ui that incorporates the name without actually putting text on it.",
-          "tags": [
-            "images",
-            "graphics",
+            "bug",
+            "agents",
             "application"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
-              "id": "c7697634c7594853b964542106b42fb7",
-              "text": "image generated",
+              "id": "eb69d96a2cae4a1f96219ec792067b7e",
+              "index": 1,
+              "text": "agent launch starts a PowerShell host rather than cmd.exe",
               "isDone": true
             },
             {
-              "id": "d7fbac564b524e3ab703b2e126f3cff5",
-              "text": "icon updated on exe, taskbar, and title bar",
+              "id": "516863d5ee59460389d21710b279ac53",
+              "index": 2,
+              "text": "the generated launch command safely preserves the project working directory and scoped prompt text",
+              "isDone": true
+            },
+            {
+              "id": "7298897b08eb4e5d85cc948798c9e4dc",
+              "index": 3,
+              "text": "task, cluster, branch, and project launch actions all use the repaired PowerShell path",
               "isDone": true
             }
           ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T03:22:19.0706512+00:00",
-          "updatedAt": "2026-09-10T03:32:46.3288031+00:00"
-        },
-        {
-          "id": "8627ee6bb05749a3b54c7d51e1a43ad7",
-          "index": 69,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "launch buttons",
-          "task": "I want two buttons, 1 to launch the most recent build, and 1 to launch the latest release build. The paths to these should be stored in the json file by the agent working on the app. latest release points to the newest .exe period regardless of what it is. latest release only points to release builds.\r\n\r\nif you clikc the button and nothing is there, fail gracefully and remove the path.\r\n\r\nif there is no path in the json the buttons should be greyed out.\r\n\r\nplace the buttons to the left of the arrow scroll buttons (by new column and launch agent)",
-          "tags": [
-            "buttons",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [
+          "notes": [
             {
-              "id": "5e20834ee87342c6b8ba76c90fb7e7bc",
-              "text": "latest release button added",
-              "isDone": true
-            },
-            {
-              "id": "b880bbdbf0b847a5a20cdbfbc3ce2679",
-              "text": "latest exe button added",
-              "isDone": true
-            },
-            {
-              "id": "7877f856270345818c5c24070f0a3154",
-              "text": "instructions updated so agents know to set these",
-              "isDone": true
+              "id": "f96339b90f344a82a3df12a6298f31c1",
+              "text": "Restored every project, branch, cluster, and task agent launch to a visible PowerShell host. Launch commands now use PowerShell single-quoted literals inside -EncodedCommand, preserving spaces, double quotes, apostrophes, and multiline scoped prompts. Verified zero-warning builds, an adversarial quoting round-trip, self-contained publish, app launch, and current operator pointer refresh. Commit: 4881f52. Build: builds\\main\\Zen-192-powershell-agent-launch-win-x64\\Zen.exe."
             }
           ],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T03:36:05.4475532+00:00",
-          "updatedAt": "2026-09-10T03:48:00+00:00"
-        },
-        {
-          "id": "f4418f561fda4e139c6520111861f9a2",
-          "index": 70,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "On the top left...",
-          "task": "on the top left is a small icon and the word \u0027Zen\u0027 please change the icon to match the application icon",
-          "tags": [
-            "icon",
-            "ui"
-          ],
-          "files": [],
-          "requirements": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1809,24 +1050,132 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:25:07.2464703+00:00",
-          "updatedAt": "2026-09-10T20:25:44.6495693+00:00"
+          "createdAt": "2026-09-23T05:54:53.3071453+00:00",
+          "updatedAt": "2026-09-23T05:59:18.5336082+00:00"
         },
         {
-          "id": "8444f20c3ba549cf83be5a33578b8bd9",
-          "index": 71,
+          "id": "9ed71e60546d4ddf82ab075f6511a45a",
+          "index": 193,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "make the prompt more explicit",
-          "task": "when prompting an AI agent make it explicitly clear to ignore any local prompt.txt and only download the current one. and in prompt.txt make it clear that they need to \r\n1.) mark items as in progress when they start\r\n2.) mark subtasks done as done when they finish them not all at once\r\n3.) update paths in the tasks file for releases and builds\r\n\r\na lot of agents have been ignoring these",
+          "title": "Zen launch can leave stale operator pointer",
+          "task": "Make launch-time operator synchronization update the canonical operator-path.txt to the operator beside the running Zen executable before any best-effort PATH or settings work can fail, and keep the pointer update atomic.",
           "tags": [
-            "task"
+            "bug",
+            "operator",
+            "application"
           ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "7342b48996c740ed98f1a47e637afea6",
+              "index": 1,
+              "text": "Zen launch rewrites operator-path.txt to the existing zen-operator.exe beside the running executable",
+              "isDone": true
+            },
+            {
+              "id": "6867724835d745c284de4d66282740a7",
+              "index": 2,
+              "text": "PATH or settings synchronization failures cannot prevent the pointer refresh",
+              "isDone": true
+            },
+            {
+              "id": "f454ea4dfe834c49b382726be2a47652",
+              "index": 3,
+              "text": "the pointer update remains atomic and does not publish a nonexistent operator path",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "aaf12ee3a38c451ab24c811c4ca308b4",
+              "text": "Zen now refreshes operator-path.txt to the operator beside the running executable before any best-effort user-PATH or settings synchronization. The pointer uses a unique atomic temporary file and rechecks operator existence before replacement. Verified build #192 pointer changed to build #193 on launch and no temp file remained. Debug and self-contained Release builds passed. Commit: fb06637. Build: builds\\main\\Zen-193-current-operator-path-win-x64\\Zen.exe."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T05:59:53.7668885+00:00",
+          "updatedAt": "2026-09-23T06:05:14.6910919+00:00"
+        },
+        {
+          "id": "ea769c70f8744b4b92b9689de82680cb",
+          "index": 196,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Restore Gemini agent launching",
+          "task": "Restore Gemini to every normal and Lazy agent chooser. Gemini must launch through the agy command in its risky or yolo mode, and Codex, Claude, and Gemini must all use PowerShell rather than Command Prompt. Produce and publish the final GitHub release after verification, then push main.",
+          "tags": [
+            "bug",
+            "agents",
+            "application"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "42750934912f42529a6e9e988b4b6501",
+              "index": 1,
+              "text": "Gemini appears beside Codex and Claude in normal project, branch, cluster, and task launch menus",
+              "isDone": true
+            },
+            {
+              "id": "0731c30c3efb40d2acf2dc9659e0fa29",
+              "index": 2,
+              "text": "Gemini appears in the project-only Lazy launcher",
+              "isDone": true
+            },
+            {
+              "id": "b50f9993003e4f98938b1991e964fdb7",
+              "index": 3,
+              "text": "Gemini invokes agy with its supported risky or yolo mode",
+              "isDone": true
+            },
+            {
+              "id": "5db5e8594cb44337be692085656c8918",
+              "index": 4,
+              "text": "Codex, Claude, and Gemini all launch through PowerShell with safe prompt quoting",
+              "isDone": true
+            },
+            {
+              "id": "f86b2e2c84a840ebaf19bf4b7e208bca",
+              "index": 5,
+              "text": "final versioned self-contained release contains Zen and zen-operator executables",
+              "isDone": true
+            },
+            {
+              "id": "3afb5f9246124e62b480c9fe4d2cffcf",
+              "index": 6,
+              "text": "main and the final release tag are pushed and a GitHub release is published",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "e21de3af55684fde99c375594408dd7f",
+              "text": "Restored Gemini in all normal and Lazy choosers through agy --dangerously-skip-permissions -i. Codex, Claude, and Gemini share the encoded PowerShell launcher. Built and smoke-tested v0.6.0, refreshed the operator pointer, pushed main and v0.6.0, and published https://github.com/CoolBeanGames/zen/releases/tag/v0.6.0. Commit d077d1d."
+            }
+          ],
           "flags": {
             "commit": true,
             "build": true,
@@ -1835,33 +1184,148 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:25:59.1926674+00:00",
-          "updatedAt": "2026-09-10T20:27:52.1957645+00:00"
+          "createdAt": "2026-09-23T10:49:54.4911051+00:00",
+          "updatedAt": "2026-09-23T11:10:38.0003309+00:00"
         },
         {
-          "id": "1bb107bb011846f591a9116f6cde4031",
-          "index": 74,
+          "id": "f0a715e6edfd48529170855973b846fe",
+          "index": 199,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "cleanup task",
-          "task": "add a cleanup task button to the add menu, a cleanup task tells the agent to clean up old files/releases and keep only the most recent builds (not zips) this does not need descriptions, extra prompts, tags, info tags, or actions",
+          "title": "Isolate concurrent operator requests",
+          "task": "Replace the shared operator queue batch with one atomic request file per mutation, serialize application safely, discard permanently invalid requests, retain transient failures, prevent crash replays, and make operator reads truly read-only so multiple agents cannot overwrite each other.",
           "tags": [
-            "task"
+            "operator",
+            "data",
+            "bug"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
-              "id": "47bb9d61e8964ceabd9e129e4e0bf295",
-              "text": "cleanup task made",
+              "id": "35148e1cebd34265a40c655d15ee2b6e",
+              "index": 1,
+              "text": "each mutation is atomically published as its own uniquely named queue request file",
               "isDone": true
             },
             {
-              "id": "f1c804b994b748a3b6c651ca285a1994",
-              "text": "instructions updated",
+              "id": "39da4e6f5600405abd38dd5938a4b65f",
+              "index": 2,
+              "text": "a shared apply lock processes requests serially against the freshest project state and deletes successful files",
               "isDone": true
+            },
+            {
+              "id": "aa95d6a609c148b3b2122dd5bb8f0878",
+              "index": 3,
+              "text": "permanently invalid requests are deleted without blocking later requests while transient failures remain retryable",
+              "isDone": true
+            },
+            {
+              "id": "998de2d253d8485f84b7b74982d91e7c",
+              "index": 4,
+              "text": "stable request ids prevent an already-saved additive operation from being replayed after a crash",
+              "isDone": true
+            },
+            {
+              "id": "13984f8d27a941f2931a17fa09824c8e",
+              "index": 5,
+              "text": "operator read commands do not save or overwrite project state",
+              "isDone": true
+            },
+            {
+              "id": "d3aeb01b3c1047bfbedfb6206627cc7c",
+              "index": 6,
+              "text": "legacy shared queue files are safely migrated into isolated request files",
+              "isDone": true
+            },
+            {
+              "id": "5810764b83e740498cdbbb3bc37747e6",
+              "index": 7,
+              "text": "parallel integration verification shows concurrent operator requests are preserved without queue leftovers",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "e9ead7f896bb4a40a6d2fd3e95da4e10",
+              "text": "Implemented isolated request-file queue, replay ledger, read-only operator reads, and legacy migration. Debug builds pass. Initial 48-process mixed read/write stress test preserved all 24 writes and left no queue files; two process exit states need investigation before completion."
+            },
+            {
+              "id": "ff62f641eaf84e508a8ee680c4e953a6",
+              "text": "Replaced shared batches with atomic one-request files, a serialized fresh-state drain, immediate invalid-request deletion, transient retry retention, a 2,048-id replay ledger, read-only operator reads, and legacy migration. Verification: 64 concurrent processes (32 reads/32 writes) had zero failures/timeouts and preserved all writes; invalid request exit 1 did not block the next valid request; duplicate request ID applied once; no queue leftovers. Debug and self-contained Release builds passed; commit b03ac56."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-24T00:16:05.1465951+00:00",
+          "updatedAt": "2026-09-24T00:27:30.3411483+00:00"
+        },
+        {
+          "id": "8996e15df68c4e1bb66830487033a733",
+          "index": 200,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Gemini missing from launch dropdowns",
+          "task": "Gemini is not visible in either the normal project agent launcher or the project-only Lazy agent launcher in the Zen instance the user is running. Diagnose the live executable/menu state and make Gemini reliably visible beside Codex and Claude in both dropdowns.",
+          "tags": [
+            "bug",
+            "agents",
+            "ui"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "99f066c1eeea4962bcf8d0dc78719433",
+              "index": 1,
+              "text": "Gemini is visibly present in the normal project launch dropdown",
+              "isDone": true
+            },
+            {
+              "id": "200178cacc8545c7b0a1c59f3c1be324",
+              "index": 2,
+              "text": "Gemini is visibly present in the project-only Lazy launch dropdown",
+              "isDone": true
+            },
+            {
+              "id": "04e7141293134fb4a194a7d25e71f7fa",
+              "index": 3,
+              "text": "the live current build is verified through the actual Windows UI",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "8920e4f7ee30402692167273fc6cf1f9",
+              "text": "Root cause: the visible running process was builds/main/Zen-195-lazy-agent-win-x64/Zen.exe (v0.5-era build made before Gemini restoration). Opened the current Zen-197-signature-startup-win-x64/Zen.exe, whose shared launcher contains Codex, Claude, and Gemini. Native WPF UI attachment is unavailable in this session, so visual confirmation is requested from the user."
+            },
+            {
+              "id": "8f0460b6082c4d3782c1a3e5f2739c5e",
+              "text": "With user approval, closed the remaining stale Zen-195/Zen-197 process and launched Zen-199-concurrent-operator-win-x64/Zen.exe visibly. Process verification shows exactly one Zen instance and it is the current build. Awaiting user confirmation that Gemini is visible in both menus."
+            },
+            {
+              "id": "c5a58216328644708b086fd0590ac06d",
+              "text": "User visually confirmed Gemini is present in both the normal and Lazy launch dropdowns after switching from the stale Zen-195 process to the current Zen-199 build."
             }
           ],
           "flags": {
@@ -1872,128 +1336,205 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": true,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:53:23.5909818+00:00",
-          "updatedAt": "2026-09-10T20:54:56.4832664+00:00"
+          "createdAt": "2026-09-24T00:21:17.788632+00:00",
+          "updatedAt": "2026-09-24T00:32:08.4669023+00:00"
         },
         {
-          "id": "0eb149c77a8340678c6cf677d51a0276",
-          "index": 75,
+          "id": "148faf32dfad4426ba5ad27841850fff",
+          "index": 203,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "explorer button",
-          "task": "add a button to launch the project folder",
+          "title": "Operator availability",
+          "task": "claude reports that operator points to a old or unavailable file. make sure whenever zen launches that it automatically adds and/or updates the path for the CURRENT operator",
           "tags": [
-            "ui",
-            "buttons"
+            "bug",
+            "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
-            "commit": true,
+            "commit": false,
             "build": false,
             "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:53:41.9451618+00:00",
-          "updatedAt": "2026-09-10T20:55:15.9013868+00:00"
+          "createdAt": "2026-09-30T07:18:24.702013+00:00",
+          "updatedAt": "2026-09-30T07:23:47.5494273+00:00"
         },
         {
-          "id": "ea3dcb9210354ec9babf0dce30de061a",
-          "index": 76,
+          "id": "a7dbd9b1c07a4c5fa51e917957908339",
+          "index": 177,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "floating add button",
-          "task": "make the \u0022add\u0022 button always visible even as you scroll (when at the top of the screen it should appear EXACTLY as it is now, but as soon as it starts to get cut off, have it start floating. if you scroll back up it should return to how it is now.",
+          "title": "Tailscale task dashboard server",
+          "task": "Create a separate server executable that discovers Zen projects on this machine, obtains project and task data exclusively by invoking zen-operator, and serves a read-only web application showing tasks across all discovered projects. Make it suitable for access through Tailscale without changing the Zen desktop application or zen-operator.",
           "tags": [
-            "buttons",
-            "ui"
+            "feature",
+            "server",
+            "webapp"
           ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "56ece5c8fada4ad49fb294d19b14a70b",
+              "index": 1,
+              "text": "Do not modify Zen desktop application or zen-operator source",
+              "isDone": true
+            },
+            {
+              "id": "b3895c1357ad41a0a85954a1867b5b8e",
+              "index": 2,
+              "text": "Read project and task information exclusively through zen-operator commands",
+              "isDone": true
+            },
+            {
+              "id": "c569c346df964a4f9d153e413e9b6e08",
+              "index": 3,
+              "text": "Show tasks grouped by project and branch in a responsive web interface",
+              "isDone": true
+            },
+            {
+              "id": "009b06a0bcb54f149c74d1c21f94ff89",
+              "index": 4,
+              "text": "Always require Tailscale and bind only to the machine Tailscale IPv4 address for phone access",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "d8bd80f13f314165b98fbffd0e344cf6",
+              "text": "Built and verified the standalone zen-remote.exe. It always requires Tailscale, binds only to the Tailscale IPv4, discovers Zen known projects plus optional --project paths, and obtains project/branch/task payloads exclusively through zen-operator. Published build: builds\\main\\Zen-177-remote-dashboard-win-x64\\zen-remote.exe. Live test loaded Crate, Scribe, Sink, and zen with zero errors."
+            }
+          ],
           "flags": {
             "commit": true,
-            "build": false,
+            "build": true,
             "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:55:23.3525128+00:00",
-          "updatedAt": "2026-09-10T20:57:15.1827123+00:00"
+          "createdAt": "2026-09-15T11:41:40.9947172+00:00",
+          "updatedAt": "2026-09-15T11:46:54.2856557+00:00"
         },
         {
-          "id": "0e234be35f1a42ba9bd9d07caf6d1329",
-          "index": 77,
+          "id": "df2ab488d9a54d0f89c6165471639d90",
+          "index": 179,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "add text reduction",
-          "task": "currently in the add menu the entires are like \u0022add-\u003Enote - informational note\u0022 i only want them to say \u0022note\u0022 or whatever the entry is, not what it does",
+          "title": "Add project and task pages to Zen Remote",
+          "task": "Update only the standalone Zen Remote dashboard so the home page lists projects, every project has its own navigable page, and every task has its own detail page showing the complete data returned by zen-operator. Preserve the working Tailscale Funnel setup and phone-friendly layout.",
           "tags": [
-            "buttons"
+            "feature",
+            "server",
+            "webapp"
           ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "685375ef5a52457e9a760c61d6c65477",
+              "index": 1,
+              "text": "Home page shows discovered projects as navigable entries",
+              "isDone": true
+            },
+            {
+              "id": "8c742715abc047c18fb251894c947644",
+              "index": 2,
+              "text": "Each project has a stable URL and a page grouping its tasks by branch",
+              "isDone": true
+            },
+            {
+              "id": "edefe2f95f474685a5721b26ec8ae553",
+              "index": 3,
+              "text": "Each task has a stable URL and a detailed view of prompt, custom fields, tags, flags, requirements, notes, files, identity, and status",
+              "isDone": true
+            },
+            {
+              "id": "e4b7825ebf8248d4ae55d1eb87a9bb3f",
+              "index": 4,
+              "text": "Navigation and layouts work on phone-sized screens",
+              "isDone": true
+            },
+            {
+              "id": "631fe40dd62a4212a6647e8751477570",
+              "index": 5,
+              "text": "Do not modify Zen desktop or zen-operator source",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "ed361707a77f4edbada09274a6a55ef9",
+              "text": "Implemented and deployed Zen Remote v0.2.0. The root is now a project index; project pages use /project/{projectId}; task detail pages use /project/{projectId}/task/{taskId}. Detail pages show operator-provided prompt, custom fields, tags, action flags, requirements, notes, files, identity, timestamps, and status. Verified live project and task URLs return HTTP 200 through Funnel. Persistent process 13072 is running."
+            }
+          ],
           "flags": {
             "commit": true,
             "build": true,
-            "release": true,
+            "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-10T20:55:36.3177954+00:00",
-          "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
+          "createdAt": "2026-09-15T12:00:26.7997101+00:00",
+          "updatedAt": "2026-09-15T12:05:26.1232996+00:00"
         },
         {
-          "id": "49a2a9fc3a5940cca1bceb327f8c2e3c",
-          "index": 83,
+          "id": "50a679b48d3f4f9b865bb1f5fc64440c",
+          "index": 158,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "cleanup",
-          "task": "cleanup should do old builds AND build artifacts, basically any data not essential",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T21:38:17.6716909+00:00",
-          "updatedAt": "2026-09-10T22:12:00+00:00"
-        },
-        {
-          "id": "0cfb39280da849efb7c62519db3c02e2",
-          "index": 78,
-          "kind": "cleanup",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "",
+          "title": "edit design button",
           "task": "",
           "tags": [],
           "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": "dbf7eefa12374cc5a69f0665115f615f",
+          "customValues": {
+            "2533a9f0006641249f16c7a87212892d": "Add an edit card design button to the bottom of the custom card pop up only (buttom left, in the same bar as cancel and apply) clicking it should follow the steps in notes.",
+            "e6a25154b9ca4ce091f68fb45022e385": "True",
+            "7b0cfd16a582406989f04c98d2fd80f5": "True",
+            "6bf88041cea141e1a679d58c96069108": "True",
+            "59d0cd9e71a74d9c8f33e095cb84d9b9": "",
+            "8b0eb2ac27d84220a0360323dae1ce49": "False",
+            "b4b3722d718c46aa9ce3b94a0a01d2a1": "0",
+            "dfda332f329d4451b296ab545a327fd7": "",
+            "7fdeafd58453470588f416e19d759b49": "[\u00221.) open design studio\u0022,\u00222.) open the current cards template\u0022,\u00223.) allow the user to edit/save the design\u0022,\u00224.) return to the previously opened card\u0022,\u0022Implemented in v0.4.11. Please confirm that Edit card design appears only on custom cards, at the bottom-left beside Cancel and Apply, and returns to the same opened card after saving.\u0022,\u0022Approved, close this\u0022]"
+          },
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -2002,193 +1543,793 @@
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-10T21:37:18.1832015+00:00",
-          "updatedAt": "2026-09-10T22:18:00+00:00"
+          "isAwaitingFeedback": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-15T03:44:57.618577+00:00",
+          "updatedAt": "2026-09-15T12:32:59.6442294+00:00"
         },
         {
-          "id": "ec6fa1b602b24b7bb4a152477743cd47",
-          "index": 85,
+          "id": "f5f69d9df0684a4bb5dac61c4db8aa34",
+          "index": 159,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "reuquirements display",
-          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
+          "title": "global awaiting feedback",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": "dbf7eefa12374cc5a69f0665115f615f",
+          "customValues": {
+            "2533a9f0006641249f16c7a87212892d": "add a global, awaiting feedback toggle (next to the name in the exposed card) if this is checked it means the AI has posted a note and wants feedback before proceeding. Add a Green glow around cards with this check, so its obvious, ",
+            "e6a25154b9ca4ce091f68fb45022e385": "True",
+            "7b0cfd16a582406989f04c98d2fd80f5": "True",
+            "6bf88041cea141e1a679d58c96069108": "True",
+            "59d0cd9e71a74d9c8f33e095cb84d9b9": "",
+            "8b0eb2ac27d84220a0360323dae1ce49": "False",
+            "b4b3722d718c46aa9ce3b94a0a01d2a1": "0",
+            "dfda332f329d4451b296ab545a327fd7": "",
+            "7fdeafd58453470588f416e19d759b49": "[\u00221.) add toggle next to name \\u0022awaiting feedback\\u0022\u0022,\u00222.) add green glow if its set to true\u0022,\u00223.) update instructions telling agents if something needs my attention to set that to true and stop execution, unless they can move onto the next task\u0022,\u00224.) test it on this task, it should be available to EVERY card\u0022,\u0022Awaiting feedback test: please confirm that the green glow and the global toggle communicate the waiting state clearly.\u0022,\u0022make the green glow bigger, we will revisit. It needs to look more like a glow, right now its an outline\u0022]"
+          },
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-15T03:46:35.2213695+00:00",
+          "updatedAt": "2026-09-15T12:33:00.4461466+00:00"
+        },
+        {
+          "id": "bd2e7b85fc4f4697972318ca8c6d78a7",
+          "index": 165,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "New Color Options",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": "dbf7eefa12374cc5a69f0665115f615f",
+          "customValues": {
+            "2533a9f0006641249f16c7a87212892d": "We Want to add new color options to custom cards. Ill list them in notes",
+            "e6a25154b9ca4ce091f68fb45022e385": "True",
+            "7b0cfd16a582406989f04c98d2fd80f5": "True",
+            "6bf88041cea141e1a679d58c96069108": "True",
+            "59d0cd9e71a74d9c8f33e095cb84d9b9": "",
+            "8b0eb2ac27d84220a0360323dae1ce49": "True",
+            "b4b3722d718c46aa9ce3b94a0a01d2a1": "0",
+            "dfda332f329d4451b296ab545a327fd7": "",
+            "7fdeafd58453470588f416e19d759b49": "[\u00221.) text header color\u0022,\u00222.) text main color\u0022,\u00223.) text box color\u0022,\u0022Implemented in v0.4.15. Added persisted Header Text, Main Text, and Text Box color settings to the Card Designer. All three update the designer preview and are applied to opened custom-card editors plus compact and expanded board cards. Release includes Zen.exe and zen-operator.exe. Please test the new settings and leave feedback here; I left this card open as requested.\u0022,\u0022approved to close this\u0022]"
+          },
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-15T04:19:50.9075296+00:00",
+          "updatedAt": "2026-09-15T12:33:01.2349494+00:00"
+        },
+        {
+          "id": "8b5465cfac6f4371b962d772f67a5891",
+          "index": 166,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "color picker",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": "dbf7eefa12374cc5a69f0665115f615f",
+          "customValues": {
+            "2533a9f0006641249f16c7a87212892d": "add actual color pickers for the color settings on the custom cards",
+            "e6a25154b9ca4ce091f68fb45022e385": "True",
+            "7b0cfd16a582406989f04c98d2fd80f5": "True",
+            "6bf88041cea141e1a679d58c96069108": "True",
+            "59d0cd9e71a74d9c8f33e095cb84d9b9": "",
+            "8b0eb2ac27d84220a0360323dae1ce49": "True",
+            "b4b3722d718c46aa9ce3b94a0a01d2a1": "0",
+            "dfda332f329d4451b296ab545a327fd7": "",
+            "7fdeafd58453470588f416e19d759b49": "[\u0022Implemented in v0.4.16. Every custom-card color now has a visual picker button. The dialog includes a live preview, RGB sliders, exact hex editing, and common color swatches; selecting a color immediately updates the Card Designer preview. Please test it and leave feedback here; this card remains open as requested.\u0022]"
+          },
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T04:21:10.4442796+00:00",
+          "updatedAt": "2026-09-15T12:33:01.9977077+00:00"
+        },
+        {
+          "id": "74cda13b1e3d44ccb4827103008132c7",
+          "index": 167,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Additional Elements and Options",
+          "task": "",
+          "tags": [],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": "dbf7eefa12374cc5a69f0665115f615f",
+          "customValues": {
+            "2533a9f0006641249f16c7a87212892d": "Add the following new custom elements, and edits made to existing ones",
+            "e6a25154b9ca4ce091f68fb45022e385": "True",
+            "7b0cfd16a582406989f04c98d2fd80f5": "True",
+            "6bf88041cea141e1a679d58c96069108": "True",
+            "59d0cd9e71a74d9c8f33e095cb84d9b9": "",
+            "8b0eb2ac27d84220a0360323dae1ce49": "True",
+            "b4b3722d718c46aa9ce3b94a0a01d2a1": "0",
+            "dfda332f329d4451b296ab545a327fd7": "",
+            "7fdeafd58453470588f416e19d759b49": "[\u00221.) Label, informational only text, dont allow edit\u0022,\u00222.) Check buttons should just show there status on the main screen but be toggleable on the edit screen\u0022,\u00223.) if we show a list on contact view, just make it a list_name: #_of_entries\u0022,\u00224.) if we upload an image and have it set to show on compact/expanded cards, make it a resizable preview\u0022,\u0022Implemented in v0.4.17. Added a Label element whose text is editable only in the designer and read-only on task cards and through zen-operator. Checkboxes show status without toggling on compact/expanded board cards but remain toggleable in the opened editor. Compact lists now render as list_name: entry_count. Image attachments shown through a Files field now fill that field on compact and expanded cards, so the designer field dimensions control the preview size. Please test these behaviors and leave feedback here; this card remains open as requested.\u0022,\u0022Better except for the bug i implemented, ill check on this as I see the bug is fixed and circle back\u0022,\u0022also I want these list boxes to word wrap as you type not just keep flowing horizontally and then word wrap on submit\u0022]"
+          },
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T04:22:14.3765559+00:00",
+          "updatedAt": "2026-09-15T12:33:02.7315056+00:00"
+        },
+        {
+          "id": "9a70cd7da6b143babe622f65599fa00e",
+          "index": 181,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": "normal",
+          "title": "Zen Remote mutation smoke test edited",
+          "task": "Edited through zen-operator via Zen Remote.",
+          "tags": [
+            "testing",
+            "verified"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "dec7faf7a692466c8f4ee365f3c7d65a",
+              "index": 1,
+              "text": "Existing requirement edited through API",
+              "isDone": true
+            },
+            {
+              "id": "d18ba704744f46da8487387781f7970d",
+              "index": 2,
+              "text": "Second requirement added through API",
+              "isDone": false
+            }
+          ],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T12:39:53.8240383+00:00",
+          "updatedAt": "2026-09-15T12:41:44.7371102+00:00"
+        },
+        {
+          "id": "bad65c5ff7cd49759c10ddd4dca43358",
+          "index": 180,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Enable task creation and editing in Zen Remote",
+          "task": "Extend only the standalone Zen Remote web app with authenticated task creation and editing. All reads and writes must go through zen-operator. Add phone-friendly forms for choosing a project and branch, creating standard tasks, and editing existing task fields, tags, flags, requirements, and status. Preserve the working Tailscale Funnel deployment.",
+          "tags": [
+            "feature",
+            "server",
+            "webapp",
+            "operator"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "d10dced037a74213b7107d0e0427b65b",
+              "index": 1,
+              "text": "Require an access token for every mutation endpoint exposed through Funnel",
+              "isDone": true
+            },
+            {
+              "id": "b57cfe3b4fd04115bfa5915e66c614b7",
+              "index": 2,
+              "text": "Create tasks by invoking zen-operator in the selected project directory",
+              "isDone": true
+            },
+            {
+              "id": "b433d2c0cdca4f769a9d889c1e6ef526",
+              "index": 3,
+              "text": "Edit existing tasks by invoking zen-operator commands rather than reading or writing zen.tasks.json",
+              "isDone": true
+            },
+            {
+              "id": "d22526e398a245ada14593d4479e0e92",
+              "index": 4,
+              "text": "Provide responsive create and edit forms on project and task pages",
+              "isDone": true
+            },
+            {
+              "id": "92af03045b8f45f487e6e00ae2b4c732",
+              "index": 5,
+              "text": "Validate project, branch, task, and writable fields server-side",
+              "isDone": true
+            },
+            {
+              "id": "71d1137a1ca244cc965d5ad6ebed1dcb",
+              "index": 6,
+              "text": "Do not modify Zen desktop or zen-operator source",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "3a0bb362238a477a8610873f5bf2808d",
+              "text": "Implemented and deployed Zen Remote v0.3.0. Added token-authenticated task creation and editing forms. Server validates discovered projects, branches, tasks, locks, dates, priorities, and field limits, then invokes zen-operator for all mutations. Smoke test: unauthenticated create returned 401; authenticated API created task 181; edit updated title, prompt, priority, tags, Build flag, feedback state, and requirements; completion archived it. Persistent Funnel process 22324 is live."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T12:32:48.8515061+00:00",
+          "updatedAt": "2026-09-15T12:43:37.0990195+00:00"
+        },
+        {
+          "id": "5c88defc02564a9ead9692bb5bf98216",
+          "index": 183,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Zen Remote unauthenticated write smoke test - edited",
+          "task": "Temporary verification task edited without a token.",
+          "tags": [
+            "server",
+            "smoke-test"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "f97ae4da13d94f84b70b065c38ebe542",
+              "index": 1,
+              "text": "Created and edited through unauthenticated Zen Remote API",
+              "isDone": true
+            }
+          ],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T17:57:44.4339212+00:00",
+          "updatedAt": "2026-09-15T17:58:42.5137819+00:00"
+        },
+        {
+          "id": "3696af43ae1746208e08e4137b7e1f64",
+          "index": 182,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Remove Zen Remote write token",
+          "task": "Remove the access-token requirement from Zen Remote. Creating and editing tasks through the public Tailscale Funnel URL should work immediately without a prompt or authentication. Preserve server-side validation and continue routing every mutation through zen-operator.",
+          "tags": [
+            "server",
+            "webapp",
+            "operator"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "483bb6b8280f411d84626b53cb4bd1b4",
+              "index": 1,
+              "text": "Remove authentication checks from mutation endpoints",
+              "isDone": true
+            },
+            {
+              "id": "9cfcd9b5358447d6af58613bdf1fa502",
+              "index": 2,
+              "text": "Remove the browser token prompt and stored token behavior",
+              "isDone": true
+            },
+            {
+              "id": "d0c94cbb9cf04f91a6c6c61ad4c73b35",
+              "index": 3,
+              "text": "Keep project, branch, task, lock, and field validation",
+              "isDone": true
+            },
+            {
+              "id": "d527b5a263cc4c14a921f0c8b1900607",
+              "index": 4,
+              "text": "Keep all mutations routed through zen-operator",
+              "isDone": true
+            },
+            {
+              "id": "0c20867794bc4710b114f6c47614201b",
+              "index": 5,
+              "text": "Do not modify Zen desktop or zen-operator source",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "a3278b97bc8c40d8a0118c8288c979c2",
+              "text": "Removed the server and browser token flow completely. Unauthenticated create and edit requests were verified end to end through zen-operator; invalid public writes now reach normal validation (400) rather than authentication (401). Debug and published builds passed, and the public Funnel health endpoint is live on v0.3.1. Commit: 30ec4e1."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-15T17:55:04.8216275+00:00",
+          "updatedAt": "2026-09-15T18:00:56.8121023+00:00"
+        },
+        {
+          "id": "4b1878536bbd4a72a8ddf57c54f1e44b",
+          "index": 186,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Clusters System",
+          "task": "While working with claude it keeps referring to similar systems as \u0022Clusters\u0022 so lets make that a think. In the primary task view add a new section similar to tags called \u0022Cluster\u0022. This should have autocomplete for all known clusters in the current project. When you add a task to a cluster they get grouped together under one sub task, almost like a whole branch. See requirements for more details.",
+          "tags": [
+            "new feature"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "c88622f6d87247389a2333e2421a702c",
+              "index": 1,
+              "text": "cluster UI in card details",
+              "isDone": true
+            },
+            {
+              "id": "68f4ee4f18644187b0f2a40b98b556ec",
+              "index": 2,
+              "text": "cluster added to custom card fields",
+              "isDone": true
+            },
+            {
+              "id": "db1b7db8996649d2a5cfb14ac7334ee6",
+              "index": 3,
+              "text": "cluster grouping in branch view",
+              "isDone": true
+            },
+            {
+              "id": "98cca3d739204cf8923211bb09433189",
+              "index": 4,
+              "text": "collapsing/expanding clusters",
+              "isDone": true
+            },
+            {
+              "id": "0d0924d5b7c94b72a657230e6b22e48e",
+              "index": 5,
+              "text": "right click menu for clusters (delete, acchive, lock)",
+              "isDone": true
+            },
+            {
+              "id": "41a971ee4ef54988a867e2eb74652966",
+              "index": 6,
+              "text": "drag entire cluster (re-order , archive, change branch)",
+              "isDone": true
+            },
+            {
+              "id": "23203c9b1ab544c89b046d4097eadc83",
+              "index": 7,
+              "text": "cluster editor popup (name, description, tags, commit, build, release)",
+              "isDone": true
+            },
+            {
+              "id": "a1a13a92c29841e6b55ebad49bb2f9fe",
+              "index": 8,
+              "text": "ability to set cluster color",
+              "isDone": true
+            },
+            {
+              "id": "3e088aa87c7b40ffbf8d241b1098db1c",
+              "index": 9,
+              "text": "ability to delpy AI agent to a specific cluster",
+              "isDone": true
+            },
+            {
+              "id": "1e6104edf8684d6d85a8f6ed59d0ec8d",
+              "index": 10,
+              "text": "requirements section just like tasks for clusers",
+              "isDone": true
+            },
+            {
+              "id": "5e8dd3e01fd8492fa01b36dbf717aa4b",
+              "index": 11,
+              "text": "notes just like tasks for clusters",
+              "isDone": true
+            },
+            {
+              "id": "36fc65e236234ad7a3a03706fd8da2f6",
+              "index": 12,
+              "text": "awaiting feedback for clusters",
+              "isDone": true
+            },
+            {
+              "id": "7061847b9ed049f08be12cb840470ac6",
+              "index": 13,
+              "text": "do not archive option for lusters",
+              "isDone": true
+            },
+            {
+              "id": "5e677a7c178f4dd4b5c4a3e72d195b6c",
+              "index": 14,
+              "text": "update instructions to include clusters",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "bffec59865e94d3d888d6ff17a40fcdd",
+              "text": "Implemented the project-wide Clusters System in Zen 0.5.0. Tasks now have cluster autocomplete and branch grouping; cluster headers collapse, drag/reorder/move/archive, lock, and launch scoped agents; the cluster editor supports name, description, color, tags, commit/build/release flags, requirements, notes, awaiting feedback, and do-not-archive. Custom cards now support a cluster field. Added complete zen-operator cluster reads/writes and cluster-aware eligibility, plus canonical instructions. Verified Debug and Release rebuilds, operator end-to-end mutations, lock/feedback eligibility, custom-field membership, archive/delete semantics, and both framework and single-file app launches. Merged release-2/release-3 histories into main without downgrading the tree. Commits: f9b3ddf, 3cbfc80. Published GitHub release: https://github.com/CoolBeanGames/zen/releases/tag/v0.5.0."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": true,
+          "createdAt": "2026-09-23T00:15:15.2108156+00:00",
+          "updatedAt": "2026-09-23T01:04:12.9200887+00:00"
+        },
+        {
+          "id": "080ae0c8359d404ebf2cc5c58719fe38",
+          "index": 189,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Enrich cluster previews",
+          "task": "Apply each cluster selected color as a visible accent to member task cards, indent clustered tasks slightly, enrich expanded cluster headers with a four-line description preview, cluster tags, and action or state chips, and render collapsed clusters as name-only headers.",
           "tags": [
             "ui",
             "cards",
-            "subtasks"
+            "clusters"
           ],
           "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
-          "updatedAt": "2026-09-11T02:25:00+00:00"
-        },
-        {
-          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
-          "index": 86,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "better in progress indicator",
-          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
-          "tags": [
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
-          "updatedAt": "2026-09-11T02:35:00+00:00"
-        },
-        {
-          "id": "17ffe087a86c40eb979c8aac0fcb16de",
-          "index": 89,
-          "kind": "cleanup",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "",
-          "task": "",
-          "tags": [],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": false,
-            "build": false,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:48:47.6752282+00:00",
-          "updatedAt": "2026-09-11T01:48:47.6752285+00:00"
-        },
-        {
-          "id": "ca82182be58b4704b279af520cb1f6c0",
-          "index": 87,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Operator",
-          "task": "The operator is the new single entry point for all tasks to agents (including you) once it is built requests are sent to the operator and it replies with data. \r\n\r\nthe operator is a CLI tool. When the program is launched first check the windows \u0027path\u0027 if the operator isnt there OR the path doesnt match update/add it so all agents can freely access it.\r\n\r\nwhen the operator is requested to add data it is added to a queue, then the whole queue is copied, the original queue is cleared, and  the copy is flushed to the json file before being deleted. in requirements i will outline basic jobs of the operator, you will then implement the specific commands.",
-          "tags": [
-            "operator",
-            "tasks",
-            "projects"
-          ],
-          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
-              "id": "08edbbf3dfcf477ca92d04155ce8a202",
-              "text": "get the prompt",
+              "id": "f9464a2e665a484ab7e470da6bb8499f",
+              "index": 1,
+              "text": "member task cards visibly use the cluster color without obscuring task state",
               "isDone": true
             },
             {
-              "id": "9b383607ab21499b9b3a9465788c0da8",
-              "text": "get all tasks",
+              "id": "776b9ffd62eb47f2a02e309cff2a9fb4",
+              "index": 2,
+              "text": "clustered tasks are indented slightly beneath the cluster header",
               "isDone": true
             },
             {
-              "id": "4d96ce3adce44340b006a561cbe23550",
-              "text": "get a specific task",
+              "id": "5fac2eb14802427181a60d19829bda51",
+              "index": 3,
+              "text": "expanded cluster header shows at most the first four description lines",
               "isDone": true
             },
             {
-              "id": "22e6e580f2f646bd9c57b2ced7fc52ce",
-              "text": "write 1 tag",
+              "id": "aef254b6371c45359afb73078dbb3d5b",
+              "index": 4,
+              "text": "expanded cluster header shows cluster tags below the description",
               "isDone": true
             },
             {
-              "id": "a99044165322430fbca62565ec894e19",
-              "text": "write many tags",
+              "id": "88cd9069359d46e0a3d6ef73976e39fc",
+              "index": 5,
+              "text": "expanded cluster header shows commit, merge, build, release, and relevant state chips",
               "isDone": true
             },
             {
-              "id": "4d23e7d70cd14985b89acca8b9ed3d4d",
-              "text": "archive tasks",
+              "id": "48b5e2c3ba604d729edff862dece88ba",
+              "index": 6,
+              "text": "collapsed cluster header shows only the cluster name",
               "isDone": true
-            },
+            }
+          ],
+          "notes": [
             {
-              "id": "dc6667f12cd84db6aa325c96ceaef841",
-              "text": "read notes",
-              "isDone": true
+              "id": "2d423772421c4339b9d4ff533e9c1749",
+              "text": "Implemented rich expanded cluster previews, name-only collapsed headers, member-card color accents and indentation, plus merge support in the cluster editor/operator. Verified Debug builds for Zen and zen-operator, Release self-contained publishes, git diff checks, and a six-second launch smoke test. Commit: 211bc42. Build: builds\\main\\Zen-189-cluster-previews-win-x64\\Zen.exe."
             }
           ],
           "flags": {
             "commit": true,
             "build": true,
-            "release": true,
+            "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:48:34.7198243+00:00",
-          "updatedAt": "2026-09-11T04:46:33.6086234+00:00"
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T01:10:35.8252331+00:00",
+          "updatedAt": "2026-09-23T01:18:58.5913091+00:00"
         },
         {
-          "id": "d77b786a6e114a558b2c128eb5dc3ef4",
-          "index": 88,
+          "id": "e131792661004886837a85ff3538b45e",
+          "index": 190,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "Update Instructions",
-          "task": "update the instructions to explain to all agents how to use the operator and to NEVER edit or read tasks.json manually",
+          "title": "Outline locked clusters",
+          "task": "When a cluster is locked, draw one amber lock outline around the entire cluster block and continue treating every member task as locked for editing, movement, and agent eligibility.",
           "tags": [
-            "tasks"
+            "ui",
+            "clusters",
+            "cards"
           ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "53a20b0d692745d9baa65f1a85dcf87d",
+              "index": 1,
+              "text": "locked expanded clusters have one yellow outline surrounding the header and all member task cards",
+              "isDone": true
+            },
+            {
+              "id": "19d83186c1384318b984970f0bfa1a73",
+              "index": 2,
+              "text": "locked collapsed clusters retain the yellow outline around their name-only header",
+              "isDone": true
+            },
+            {
+              "id": "89787dce6a4c4c95873a3030062b7650",
+              "index": 3,
+              "text": "cluster locking prevents member task editing, dragging, moving, and agent eligibility without changing each task own lock value",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "590603388d954fd4b941ec3a36dc9dc2",
+              "text": "Locked clusters now render one amber outline around the complete expanded cluster and around the name-only header when collapsed. Member tasks are effectively locked across edit, delete, move, collapse, bug-toggle, attachment, drag, and launch UI paths; eligibility was already cluster-lock-aware. Debug and self-contained Release builds passed with zero warnings, plus launch smoke test. Commit: 88b64c6. Build: builds\\main\\Zen-190-locked-cluster-outline-win-x64\\Zen.exe."
+            }
+          ],
           "flags": {
             "commit": true,
             "build": true,
-            "release": true,
+            "release": false,
             "merge": false
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:48:45.3001752+00:00",
-          "updatedAt": "2026-09-11T04:46:34.5318339+00:00"
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T01:36:24.5386332+00:00",
+          "updatedAt": "2026-09-23T05:54:40.4266406+00:00"
         },
         {
-          "id": "9e12b21c6a8340b6b195ff593c528a09",
-          "index": 91,
+          "id": "c2a1aef9ed9d4c2f9a46415227a99cef",
+          "index": 194,
           "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "Gemini",
-          "task": "Similar to claude and codex add support for gemini through antigravity",
+          "title": "Project signatures",
+          "task": "Add project-level signatures so agents sign off after completing work through zen-operator, and users can browse, filter, navigate, and add signatures from a dedicated project dialog.",
           "tags": [
+            "feature",
+            "operator",
+            "ui"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "15a641e4670d4a78b6eb3e40bc6d825b",
+              "index": 1,
+              "text": "persist project-level signatures with message, date and time, task id, and agent identity",
+              "isDone": true
+            },
+            {
+              "id": "e788e6b0065341329ff8b57cbe928a41",
+              "index": 2,
+              "text": "zen-operator can list signatures and add an agent signature with all required metadata",
+              "isDone": true
+            },
+            {
+              "id": "335fefe412a44483ac8aaf88c46bcde1",
+              "index": 3,
+              "text": "canonical instructions tell agents to add a short signature after each completed task",
+              "isDone": true
+            },
+            {
+              "id": "3ce3339dbdfa4139b9fe3860db1a920b",
+              "index": 4,
+              "text": "project main page has a Signatures button opening a scrollable signature dialog",
+              "isDone": true
+            },
+            {
+              "id": "191294f4756d44ebb93e7b35c8ec4a47",
+              "index": 5,
+              "text": "users can add a signature whose task id is N/A, agent is User, and timestamp is automatic",
+              "isDone": true
+            },
+            {
+              "id": "31a7282f6b7a47d5a742b4820be0716e",
+              "index": 6,
+              "text": "signature dialog filters by date, agent, and exact task id",
+              "isDone": true
+            },
+            {
+              "id": "fab1a186589240428f394bb67fd90739",
+              "index": 7,
+              "text": "scroll-to-top and scroll-to-bottom buttons appear only when useful",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "5518e16662d841b58d934371ec60ed20",
+              "text": "Implemented project signature persistence, operator list/add commands, canonical sign-off guidance, and the filterable project Signatures dialog. Debug and self-contained Release builds passed; commit bfd4812."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T10:49:53.819564+00:00",
+          "updatedAt": "2026-09-23T11:01:28.6194242+00:00"
+        },
+        {
+          "id": "248eb6ce7e2b4b79a810c071573c7b21",
+          "index": 195,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Lazy agent launcher",
+          "task": "Add a separate Lazy agent dropdown beside the main project agent launcher. It primes a selected agent by reading canonical instructions and project tasks but explicitly forbids starting or performing any task, and it must not appear in right-click menus.",
+          "tags": [
+            "feature",
             "agents",
             "ui"
           ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "a0be366a933a4719bba2364fb3edcd24",
+              "index": 1,
+              "text": "main project page has a separate Lazy agent dropdown beside the normal agent launcher",
+              "isDone": true
+            },
+            {
+              "id": "e0bd3628f5f042faafeaaf50a73716a6",
+              "index": 2,
+              "text": "Lazy mode tells the selected agent to read canonical instructions and tasks without performing any task",
+              "isDone": true
+            },
+            {
+              "id": "5d0bbd0c56c740629bc7aefba689e634",
+              "index": 3,
+              "text": "Lazy launch is absent from branch, cluster, and task right-click menus",
+              "isDone": true
+            },
+            {
+              "id": "a6473f41e2e34a98a0820662ff016eb9",
+              "index": 4,
+              "text": "Lazy launches use the common PowerShell launch path",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "6b2bf093148f4757bee4504cea08c802",
+              "text": "Added a separate project-only Lazy agent dropdown. Its prompt loads canonical/project task context, forbids task execution and all project mutation, and shares the PowerShell launch path. Debug and self-contained Release builds passed; commit 8d310af."
+            }
+          ],
           "flags": {
             "commit": true,
             "build": true,
@@ -2197,104 +2338,100 @@
           },
           "isDone": true,
           "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:56:22.1664935+00:00",
-          "updatedAt": "2026-09-11T05:01:34.8925925+00:00"
-        },
-        {
-          "id": "566848531914457ba7ee1de3ca6c2a48",
-          "index": 92,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "Add download agents option",
-          "task": "Add the option (in settings) to check for and dowload all 3 agents (or a specific one) Only installed agents show up in the launch agent menu, this check happens when you launch the program",
-          "tags": [
-            "agents",
-            "ui",
-            "settings"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:57:14.7771124+00:00",
-          "updatedAt": "2026-09-11T05:01:35.2606187+00:00"
-        },
-        {
-          "id": "aa39394578a04843a563566e2020decb",
-          "index": 93,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "add merge task",
-          "task": "add a dedicated \u0022merge\u0022 task to the add menu that adds a task that just tells the agent to merge to origin",
-          "tags": [
-            "ui",
-            "add",
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": true,
-          "createdAt": "2026-09-11T01:58:27.7759276+00:00",
-          "updatedAt": "2026-09-11T05:17:49.8251819+00:00"
-        },
-        {
-          "id": "fb27d14f8b304ff99263e09a5cf8abff",
-          "index": 94,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "update instructions",
-          "task": "update the instructions with information on how the merge card works.",
-          "tags": [
-            "instructions"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-11T01:59:12.1573429+00:00",
-          "updatedAt": "2026-09-11T05:17:50.0899401+00:00"
+          "createdAt": "2026-09-23T10:49:54.1515368+00:00",
+          "updatedAt": "2026-09-23T11:04:37.7563054+00:00"
         },
         {
-          "id": "e85478b883e04934a1153da74f56b6ea",
-          "index": 105,
-          "kind": "cleanup",
+          "id": "d400d2fdeb1e47b7b4e8f22d91ebf4fb",
+          "index": 197,
+          "kind": "task",
           "dueDate": null,
           "startedDate": null,
           "priority": null,
-          "title": "",
-          "task": "",
-          "tags": [],
+          "title": "Read signatures at agent startup",
+          "task": "Update the shipped default prompt and existing canonical prompt migration so agents read the project signature history when they start, before selecting or executing work.",
+          "tags": [
+            "instructions",
+            "operator"
+          ],
           "files": [],
-          "requirements": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "44b662ccf3644fcb947c45a3932a78cc",
+              "index": 1,
+              "text": "default instructions tell agents to run zen-operator signatures and read the history when starting",
+              "isDone": true
+            },
+            {
+              "id": "5d5346b8b3064bcfa6f4b45513c02d2c",
+              "index": 2,
+              "text": "existing canonical prompts are upgraded without duplicating the SIGNATURES section",
+              "isDone": true
+            },
+            {
+              "id": "cd1d1d17928f47f4b40fe3bed4451819",
+              "index": 3,
+              "text": "the live canonical prompt contains the startup instruction exactly once",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "542de82b90f74599a8600de6b6b3cf91",
+              "text": "Updated both embedded default prompts and the existing-prompt migration so agents read zen-operator signatures before selecting or executing work. Verified the migration twice with exactly one instruction and one SIGNATURES heading. Built and smoke-tested the self-contained bundle; commit 5599615."
+            }
+          ],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T23:57:36.7888737+00:00",
+          "updatedAt": "2026-09-24T00:03:40.7819739+00:00"
+        },
+        {
+          "id": "efb98d3338ad4de3a898bfd2e086a876",
+          "index": 198,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Sync signature prompt update to GitHub",
+          "task": "Push the completed agent-startup signature prompt update so origin/main matches the verified local main commit.",
+          "tags": [
+            "instructions",
+            "release"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [
+            {
+              "id": "245513d5edcb46579c04579167972c94",
+              "index": 1,
+              "text": "origin/main resolves to the verified local main commit",
+              "isDone": true
+            }
+          ],
+          "notes": [
+            {
+              "id": "6f9e184fd6604c11b4a0597240670164",
+              "text": "Fetched origin/main with no incoming divergence and pushed commit 5599615. Verified local HEAD and refs/heads/main both resolve to 55996150066d421f25fb56a04cf9040394521bfd."
+            }
+          ],
           "flags": {
             "commit": false,
             "build": false,
@@ -2303,9 +2440,43 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
-          "createdAt": "2026-09-11T06:22:16.544938+00:00",
-          "updatedAt": "2026-09-11T06:46:07.1666378+00:00"
+          "createdAt": "2026-09-24T00:12:32.89271+00:00",
+          "updatedAt": "2026-09-24T00:12:56.9813171+00:00"
+        },
+        {
+          "id": "869f6932dd234c9bbc5e53766c06e930",
+          "index": 191,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "Delete",
+          "task": "Deleting/Archiving a cluser should do the same to all its children, this is not currently the case",
+          "tags": [
+            "task",
+            "in progress"
+          ],
+          "files": [],
+          "blockedByTaskIds": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": false,
+            "build": false,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-23T05:50:32.9000308+00:00",
+          "updatedAt": "2026-09-30T07:39:56.7080585+00:00"
         }
       ]
     }
