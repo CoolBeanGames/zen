@@ -139,6 +139,9 @@
       "color": "#2F7A68"
     }
   ],
+  "customCardTypes": [],
+  "clusters": [],
+  "signatures": [],
   "branches": [
     {
       "id": "main",
@@ -157,29 +160,36 @@
           "startedDate": null,
           "priority": null,
           "title": "stale global prompt never re-syncs to updated embedded default",
-          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json's globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever — prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json — the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user's deliberately customized prompt.",
+          "task": "PromptEnvironment/SettingsStore only fall back to the embedded default prompt.txt when settings.json\u0027s globalPrompt is empty. When a new release ships an improved embedded prompt (as 0.2.8 did), every existing installation keeps serving its old stored globalPrompt forever \u2014 prompt.txt on disk gets re-materialized from the stale settings value every launch, so agents on already-onboarded machines never see documentation fixes shipped in later versions. Repro: edit prompt.txt in the repo, ship a build, run it on a machine with a pre-existing settings.json \u2014 the on-disk prompt.txt and launched agents still see the old text. Add a way to detect that the stored prompt is an unmodified older version of a previous embedded default and refresh it (e.g. store which embedded-prompt version last matched, or diff against known prior embedded text) without clobbering a user\u0027s deliberately customized prompt.",
           "tags": [
             "bug",
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "a1c2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+              "index": 1,
               "text": "detect when the stored globalPrompt matches a known older embedded default rather than a user customization",
               "isDone": false
             },
             {
               "id": "b2c3e4f5a6b7c8d9e0f1a2b3c4d5e6f7",
+              "index": 2,
               "text": "refresh settings.json and prompt.txt to the current embedded default in that case",
               "isDone": false
             },
             {
               "id": "c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+              "index": 3,
               "text": "leave a genuinely user-edited prompt untouched",
               "isDone": false
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -188,63 +198,10 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:30:00+00:00",
           "updatedAt": "2026-09-11T02:30:00+00:00"
-        },
-        {
-          "id": "ec6fa1b602b24b7bb4a152477743cd47",
-          "index": 85,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "reuquirements display",
-          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
-          "tags": [
-            "ui",
-            "cards",
-            "subtasks"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": false,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
-          "updatedAt": "2026-09-11T02:25:00+00:00"
-        },
-        {
-          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
-          "index": 86,
-          "kind": "task",
-          "dueDate": null,
-          "startedDate": null,
-          "priority": null,
-          "title": "better in progress indicator",
-          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
-          "tags": [
-            "cards"
-          ],
-          "files": [],
-          "requirements": [],
-          "flags": {
-            "commit": true,
-            "build": true,
-            "release": true,
-            "merge": false
-          },
-          "isDone": true,
-          "isLocked": false,
-          "isCollapsed": false,
-          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
-          "updatedAt": "2026-09-11T02:35:00+00:00"
         }
       ]
     },
@@ -271,7 +228,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -280,6 +241,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:04:52.66057+00:00",
           "updatedAt": "2026-09-11T02:05:48.4921326+00:00"
@@ -298,7 +260,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -307,6 +273,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:05:57.2503268+00:00",
           "updatedAt": "2026-09-11T02:06:25.5819964+00:00"
@@ -322,7 +289,11 @@
           "task": "",
           "tags": [],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -331,6 +302,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T01:48:47.6752282+00:00",
           "updatedAt": "2026-09-11T01:48:47.6752285+00:00"
@@ -350,43 +322,54 @@
             "projects"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "08edbbf3dfcf477ca92d04155ce8a202",
+              "index": 1,
               "text": "get the prompt",
               "isDone": false
             },
             {
               "id": "9b383607ab21499b9b3a9465788c0da8",
+              "index": 2,
               "text": "get all tasks",
               "isDone": false
             },
             {
               "id": "4d96ce3adce44340b006a561cbe23550",
+              "index": 3,
               "text": "get a specific task",
               "isDone": false
             },
             {
               "id": "22e6e580f2f646bd9c57b2ced7fc52ce",
+              "index": 4,
               "text": "write 1 tag",
               "isDone": false
             },
             {
               "id": "a99044165322430fbca62565ec894e19",
+              "index": 5,
               "text": "write many tags",
               "isDone": false
             },
             {
               "id": "4d23e7d70cd14985b89acca8b9ed3d4d",
+              "index": 6,
               "text": "archive tasks",
               "isDone": false
             },
             {
               "id": "dc6667f12cd84db6aa325c96ceaef841",
+              "index": 7,
               "text": "read notes",
               "isDone": false
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -395,6 +378,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:48:34.7198243+00:00",
           "updatedAt": "2026-09-11T01:53:24.2364235+00:00"
@@ -412,7 +396,11 @@
             "tasks"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -421,6 +409,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:48:45.3001752+00:00",
           "updatedAt": "2026-09-11T01:53:11.3407164+00:00"
@@ -439,7 +428,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -448,6 +441,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:56:22.1664935+00:00",
           "updatedAt": "2026-09-11T01:59:54.4445429+00:00"
@@ -467,7 +461,11 @@
             "settings"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -476,6 +474,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:57:14.7771124+00:00",
           "updatedAt": "2026-09-11T01:59:55.5825792+00:00"
@@ -495,7 +494,11 @@
             "cards"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -504,6 +507,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:58:27.7759276+00:00",
           "updatedAt": "2026-09-11T01:59:57.4225776+00:00"
@@ -521,7 +525,11 @@
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -530,6 +538,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:59:12.1573429+00:00",
           "updatedAt": "2026-09-11T01:59:58.8294389+00:00"
@@ -556,7 +565,11 @@
           "task": "",
           "tags": [],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -565,6 +578,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:00:23.5184922+00:00",
           "updatedAt": "2026-09-11T02:00:23.5184925+00:00"
@@ -582,33 +596,42 @@
             "cards"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "4c6d0ae25ed547f89016e3c38fa06248",
+              "index": 1,
               "text": "create card studio ui",
               "isDone": false
             },
             {
               "id": "bc28200f80d84999b18f9aa83535d3ed",
+              "index": 2,
               "text": "create custom card coding",
               "isDone": false
             },
             {
               "id": "4be6cbe9a8984a9cb1a37dcbe9e5b144",
+              "index": 3,
               "text": "add to add card menu",
               "isDone": false
             },
             {
               "id": "aa89b745daae4132ae77c20f046afc8f",
+              "index": 4,
               "text": "add custom card instructions",
               "isDone": false
             },
             {
               "id": "cacdc8a5521747c991eed7015737e1cd",
+              "index": 5,
               "text": "adjust operator so when asked for prompt it appends ALL custom card instructions before sending",
               "isDone": false
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -617,6 +640,7 @@
           },
           "isDone": false,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T02:00:27.3927513+00:00",
           "updatedAt": "2026-09-11T02:02:24.410768+00:00"
@@ -645,13 +669,18 @@
             "bug"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "77a099ab4784473d879da5bd7252cebf",
+              "index": 1,
               "text": "Each card identity is normalized only once per pass",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -660,6 +689,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:05:03.5856565+00:00",
           "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
@@ -678,7 +708,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -687,6 +721,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:35:02.5029216+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -705,7 +740,11 @@
             "cards"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -714,6 +753,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T21:47:01.0686315+00:00",
           "updatedAt": "2026-09-09T23:10:00+00:00"
@@ -732,7 +772,11 @@
             "files"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -741,6 +785,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T21:47:07.4452504+00:00",
           "updatedAt": "2026-09-09T23:10:00+00:00"
@@ -759,7 +804,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -768,6 +817,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T21:48:09.3534278+00:00",
           "updatedAt": "2026-09-09T23:10:00+00:00"
@@ -792,13 +842,18 @@
               "size": 6274
             }
           ],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "2f472f5b8fe7469f96bdbe794a025490",
+              "index": 1,
               "text": "fix the bug",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -807,6 +862,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:17:04.4903021+00:00",
           "updatedAt": "2026-09-10T03:30:00+00:00"
@@ -825,7 +881,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -834,6 +894,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:29:09.1251675+00:00",
           "updatedAt": "2026-09-10T20:29:54.5630116+00:00"
@@ -852,7 +913,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -861,6 +926,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:52:28.3471112+00:00",
           "updatedAt": "2026-09-10T20:53:06.7297203+00:00"
@@ -879,7 +945,11 @@
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -888,6 +958,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-11T01:43:09.3734793+00:00",
           "updatedAt": "2026-09-11T02:15:00+00:00"
@@ -906,7 +977,11 @@
             "agents"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -915,6 +990,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-11T01:55:14.3013644+00:00",
           "updatedAt": "2026-09-11T02:15:00+00:00"
@@ -932,7 +1008,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -941,6 +1021,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:01:52.7713852+00:00",
           "updatedAt": "2026-09-09T09:05:03.5856565+00:00"
@@ -958,7 +1039,11 @@
             "managment"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -967,6 +1052,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:22.5420964+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -984,23 +1070,30 @@
             "managment"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "2806dcf574b642619372773e7110ac2b",
+              "index": 1,
               "text": "add task",
               "isDone": true
             },
             {
               "id": "296556b177014d7c9d307f5c2fa64534",
+              "index": 2,
               "text": "add note - adds info only",
               "isDone": true
             },
             {
               "id": "ced0525abdab47c4a0fa922030204c01",
+              "index": 3,
               "text": "add break - tells the agent to stop when they hit it",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1009,6 +1102,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:09:58.6690451+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1026,7 +1120,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1035,6 +1133,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:11:16.3379834+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1052,43 +1151,54 @@
             "input"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "d8ea7257386043e0ac0be6e6b978f23e",
+              "index": 1,
               "text": "new card",
               "isDone": true
             },
             {
               "id": "94deb9aeedcf4f35883e79331c0f8062",
+              "index": 2,
               "text": "edit",
               "isDone": true
             },
             {
               "id": "4510331e2dfc4aa88c9560a31a49d775",
+              "index": 3,
               "text": "delete",
               "isDone": true
             },
             {
               "id": "a0726c3d56cf48039717ba08e6969a39",
+              "index": 4,
               "text": "move to (opens a sub drop down for all the branches)",
               "isDone": true
             },
             {
               "id": "4244dd6aa2584efa9eefad348bab892a",
+              "index": 5,
               "text": "collapse/expand",
               "isDone": true
             },
             {
               "id": "890f69b949e842e9961aa70ce3b669c6",
+              "index": 6,
               "text": "lock",
               "isDone": true
             },
             {
               "id": "b18e1bd18e3240848df2b617f22eaa9b",
+              "index": 7,
               "text": "bug",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1097,6 +1207,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:31.1493332+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1114,7 +1225,11 @@
             "input"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1123,6 +1238,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:07:37.5925903+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1140,7 +1256,11 @@
             "managment"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -1149,6 +1269,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:12:08.4797455+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1166,7 +1287,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -1175,6 +1300,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T09:12:47.9766117+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1192,13 +1318,18 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "bf5b8d3806d64a49b743e3f93b9c0af3",
+              "index": 1,
               "text": "text file updated",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1207,6 +1338,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T09:13:42.0540381+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1224,23 +1356,30 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "db72187ef50a469fa0ee12ea371e38f4",
+              "index": 1,
               "text": "can launch on specific task only via rightclick on a task",
               "isDone": true
             },
             {
               "id": "15fd5236391840f09970eb44ff3648fe",
+              "index": 2,
               "text": "can launch on a branch by right click on branch",
               "isDone": true
             },
             {
               "id": "d7a907cf5c6647f78b4690cdd60869a2",
+              "index": 3,
               "text": "add button to launch the agent on the project",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1249,6 +1388,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T09:14:23.6302878+00:00",
           "updatedAt": "2026-09-09T09:28:45.260784+00:00"
@@ -1267,7 +1407,11 @@
             "theme"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1276,6 +1420,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:33:55.2092574+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1293,18 +1438,24 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "28cb31f690a84bf89df3c79261fbe208",
+              "index": 1,
               "text": "notes should literally just have the task prompt and a title. we dont need files, actions, or requirements",
               "isDone": true
             },
             {
               "id": "b4e09277e9164354aef5d27054599ff3",
+              "index": 2,
               "text": "change the background of the card so they stand out",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1313,6 +1464,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:34:50.2776338+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1331,13 +1483,18 @@
             "data"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "f83a2ed696624604b2d09788f45571de",
+              "index": 1,
               "text": "breaks literally just need the info that its a break. nothing else,",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1346,6 +1503,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:38:53.6233253+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1363,28 +1521,36 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "8aed155876744877b115e05ab02d080c",
+              "index": 1,
               "text": "date due (with calendar date picker)",
               "isDone": true
             },
             {
               "id": "ad9646d4c65a41b8b02aa8174b8328e2",
+              "index": 2,
               "text": "date started (with calendar date picker)",
               "isDone": true
             },
             {
               "id": "d8e9d4afdc8e45fe9dcb1f4b849714e5",
+              "index": 3,
               "text": "priority (shows on collapsed card)",
               "isDone": true
             },
             {
               "id": "1808bdb14bd84079b157540dedefbb68",
+              "index": 4,
               "text": "these fields are only visible if they are used",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1393,6 +1559,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:42:24.1628704+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1410,13 +1577,18 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "d4f40019b117455a9db4c26a461db6cb",
+              "index": 1,
               "text": "apply, cancel, or similar buttons are always visible",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1425,6 +1597,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:44:35.4812521+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1442,28 +1615,36 @@
             "menus"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "33447f86d21241a09bca848ec3866226",
+              "index": 1,
               "text": "can edit global prompt with an inline text editor",
               "isDone": true
             },
             {
               "id": "1aff929a6ae24685ac04a08f4bfa69f6",
+              "index": 2,
               "text": "can set the reload frequency",
               "isDone": true
             },
             {
               "id": "36cab61f0cbb4cc99ed1b74d40815a94",
+              "index": 3,
               "text": "and see a list of projects and remove one (doing so deletes prompt.txt and tasks gets copied to local directory in case its later restored)",
               "isDone": true
             },
             {
               "id": "442574f435074f4ebe426696cc6cc6ab",
+              "index": 4,
               "text": "and see version number",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1472,6 +1653,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:45:00.8631759+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1489,7 +1671,11 @@
             "branches"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1498,6 +1684,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:40:30.4625126+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1515,7 +1702,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1524,6 +1715,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:34:06.3202028+00:00",
           "updatedAt": "2026-09-09T15:00:40.9641852+00:00"
@@ -1541,18 +1733,24 @@
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "cb87b2548ce44b4f913cef2bac4c6dec",
+              "index": 1,
               "text": "update the instructions to include the new stuff",
               "isDone": true
             },
             {
               "id": "5581d51bbab7432e92b25f69af0c443e",
+              "index": 2,
               "text": "add a design section so apps made will look similar to this one",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1561,6 +1759,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T14:41:20.8968286+00:00",
           "updatedAt": "2026-09-09T15:30:46.7005735+00:00"
@@ -1578,23 +1777,30 @@
             "release"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "7e62cdd326a9453c9a99c965e9b90c39",
+              "index": 1,
               "text": "merge version_1_branch into main",
               "isDone": true
             },
             {
               "id": "8b828a9fa5b24b9f8f7759f78924788f",
+              "index": 2,
               "text": "commit and push the merged main branch",
               "isDone": true
             },
             {
               "id": "64caf9cdc9004a029d1d4d6f70e99400",
+              "index": 3,
               "text": "build and publish GitHub release v0.2.1",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1603,6 +1809,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T19:02:52.4424755+00:00",
           "updatedAt": "2026-09-09T19:07:16.2476923+00:00"
@@ -1618,7 +1825,11 @@
           "task": "",
           "tags": [],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1627,6 +1838,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-09T22:02:09.7263077+00:00",
           "updatedAt": "2026-09-09T22:02:34.8868098+00:00"
@@ -1644,23 +1856,30 @@
             "branches"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "f240156f60dd411699c905c31f601cfe",
+              "index": 1,
               "text": "right click to lock",
               "isDone": true
             },
             {
               "id": "77843a5aaaaf4ac2b82417b759c50227",
+              "index": 2,
               "text": "locking blocks agents from entering the branch",
               "isDone": true
             },
             {
               "id": "3111e2c0d29b4c12ab671b3b28e2010f",
+              "index": 3,
               "text": "update instructions with blocked branch stuff",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1669,6 +1888,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T22:03:30.2353031+00:00",
           "updatedAt": "2026-09-09T23:10:00+00:00"
@@ -1686,7 +1906,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -1695,6 +1919,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T00:10:18.3471055+00:00",
           "updatedAt": "2026-09-10T00:10:18.3474241+00:00"
@@ -1714,7 +1939,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1723,6 +1952,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T21:47:15.0214349+00:00",
           "updatedAt": "2026-09-10T00:30:00+00:00"
@@ -1740,28 +1970,36 @@
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "b90c43ef7fd4490cb6156cd711806a8a",
+              "index": 1,
               "text": "prompt made globally stored",
               "isDone": true
             },
             {
               "id": "c54fd8ab7c08444b96a8089e8b65af11",
+              "index": 2,
               "text": "prompt path added to path",
               "isDone": true
             },
             {
               "id": "96f9eb3dd5c44404878abb2909752d97",
+              "index": 3,
               "text": "path updated it local path changed",
               "isDone": true
             },
             {
               "id": "5d8001bf4fed439bb798fd7da330603b",
+              "index": 4,
               "text": "agent prompts updated",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1770,6 +2008,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-09T22:04:44.5704739+00:00",
           "updatedAt": "2026-09-10T00:30:00+00:00"
@@ -1788,13 +2027,18 @@
             "attachments"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "478c2caca12f47e697e5971b33d429c0",
+              "index": 1,
               "text": "can now drag files form explorer",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1803,6 +2047,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-10T03:18:12.0157858+00:00",
           "updatedAt": "2026-09-10T03:23:09.1833058+00:00"
@@ -1821,7 +2066,11 @@
             "attachments"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1830,6 +2079,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-10T03:18:17.7733816+00:00",
           "updatedAt": "2026-09-10T03:26:50.2565868+00:00"
@@ -1848,23 +2098,30 @@
             "tags"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "ab547ba3f16541e89ac16f6f3a7e55c5",
+              "index": 1,
               "text": "in progress tag available",
               "isDone": true
             },
             {
               "id": "aa223372b0634a2b820b1b4410a3c1a2",
+              "index": 2,
               "text": "in progress visible from collapsed or expanded card",
               "isDone": true
             },
             {
               "id": "7a833bccf001433ca9b1a1587b4bf880",
+              "index": 3,
               "text": "prompt updated to instruct that when beginning a card the agent should set it to true, when finishing they should remove it",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1873,6 +2130,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": true,
           "createdAt": "2026-09-10T03:20:04.8695351+00:00",
           "updatedAt": "2026-09-10T03:28:30.9747402+00:00"
@@ -1892,18 +2150,24 @@
             "application"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "c7697634c7594853b964542106b42fb7",
+              "index": 1,
               "text": "image generated",
               "isDone": true
             },
             {
               "id": "d7fbac564b524e3ab703b2e126f3cff5",
+              "index": 2,
               "text": "icon updated on exe, taskbar, and title bar",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1912,6 +2176,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:22:19.0706512+00:00",
           "updatedAt": "2026-09-10T03:32:46.3288031+00:00"
@@ -1930,23 +2195,30 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "5e20834ee87342c6b8ba76c90fb7e7bc",
+              "index": 1,
               "text": "latest release button added",
               "isDone": true
             },
             {
               "id": "b880bbdbf0b847a5a20cdbfbc3ce2679",
+              "index": 2,
               "text": "latest exe button added",
               "isDone": true
             },
             {
               "id": "7877f856270345818c5c24070f0a3154",
+              "index": 3,
               "text": "instructions updated so agents know to set these",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1955,6 +2227,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T03:36:05.4475532+00:00",
           "updatedAt": "2026-09-10T03:48:00+00:00"
@@ -1973,7 +2246,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -1982,6 +2259,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:25:07.2464703+00:00",
           "updatedAt": "2026-09-10T20:25:44.6495693+00:00"
@@ -1999,7 +2277,11 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -2008,6 +2290,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:25:59.1926674+00:00",
           "updatedAt": "2026-09-10T20:27:52.1957645+00:00"
@@ -2025,18 +2308,24 @@
             "task"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [
             {
               "id": "47bb9d61e8964ceabd9e129e4e0bf295",
+              "index": 1,
               "text": "cleanup task made",
               "isDone": true
             },
             {
               "id": "f1c804b994b748a3b6c651ca285a1994",
+              "index": 2,
               "text": "instructions updated",
               "isDone": true
             }
           ],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -2045,6 +2334,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:53:23.5909818+00:00",
           "updatedAt": "2026-09-10T20:54:56.4832664+00:00"
@@ -2063,7 +2353,11 @@
             "buttons"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -2072,6 +2366,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:53:41.9451618+00:00",
           "updatedAt": "2026-09-10T20:55:15.9013868+00:00"
@@ -2090,7 +2385,11 @@
             "ui"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": false,
@@ -2099,6 +2398,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:55:23.3525128+00:00",
           "updatedAt": "2026-09-10T20:57:15.1827123+00:00"
@@ -2116,7 +2416,11 @@
             "buttons"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -2125,6 +2429,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T20:55:36.3177954+00:00",
           "updatedAt": "2026-09-10T20:56:22.1691253+00:00"
@@ -2142,7 +2447,11 @@
             "instructions"
           ],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": true,
             "build": true,
@@ -2151,6 +2460,7 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T21:38:17.6716909+00:00",
           "updatedAt": "2026-09-10T22:12:00+00:00"
@@ -2166,7 +2476,11 @@
           "task": "",
           "tags": [],
           "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
           "requirements": [],
+          "notes": [],
           "flags": {
             "commit": false,
             "build": false,
@@ -2175,9 +2489,74 @@
           },
           "isDone": true,
           "isLocked": false,
+          "isAwaitingFeedback": false,
           "isCollapsed": false,
           "createdAt": "2026-09-10T21:37:18.1832015+00:00",
           "updatedAt": "2026-09-10T22:18:00+00:00"
+        },
+        {
+          "id": "ec6fa1b602b24b7bb4a152477743cd47",
+          "index": 85,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "reuquirements display",
+          "task": "rather than just saying \u0022x requirements\u0022 lets make the display a progress bar that fills up across the very bottom of the task card.",
+          "tags": [
+            "ui",
+            "cards",
+            "subtasks"
+          ],
+          "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": false,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:44:58.5954288+00:00",
+          "updatedAt": "2026-09-11T02:25:00+00:00"
+        },
+        {
+          "id": "c06901f9f98d40f0a70bbf1d9ca4b02e",
+          "index": 86,
+          "kind": "task",
+          "dueDate": null,
+          "startedDate": null,
+          "priority": null,
+          "title": "better in progress indicator",
+          "task": "rather than a tag that says \u0022in progress\u0022 lets make the whole card background slightly lighter, and give it a blue outline, (similar to how the locked cards havea  yellow outline)",
+          "tags": [
+            "cards"
+          ],
+          "files": [],
+          "clusterId": null,
+          "customTypeId": null,
+          "customValues": {},
+          "requirements": [],
+          "notes": [],
+          "flags": {
+            "commit": true,
+            "build": true,
+            "release": true,
+            "merge": false
+          },
+          "isDone": true,
+          "isLocked": false,
+          "isAwaitingFeedback": false,
+          "isCollapsed": false,
+          "createdAt": "2026-09-11T01:45:11.7516827+00:00",
+          "updatedAt": "2026-09-11T02:35:00+00:00"
         }
       ]
     }

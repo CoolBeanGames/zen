@@ -393,7 +393,7 @@ public partial class MainWindow : Window
 
     private void LaunchLazy_Click(object sender, RoutedEventArgs e)
     {
-        const string lazyInstruction = "Prime yourself for future work in this project. Read the project state and task queue through zen-operator (project, branches, tasks, and eligible). Do not start, claim, edit, execute, or otherwise perform any task, and do not mutate project data. After reading, wait for explicit user direction.";
+        const string lazyInstruction = "Prime yourself for future work in this project. After reading the canonical instructions, read the project state and task queue through zen-operator (project, branches, tasks, and eligible). Do not start, claim, edit, execute, or otherwise perform any task, and do not mutate project data. After reading, wait for explicit user direction.";
         var menu = new ContextMenu { PlacementTarget = LaunchLazyButton, Placement = PlacementMode.Bottom };
         menu.Items.Add(CreateLaunchMenu(lazyInstruction));
         menu.IsOpen = true;
