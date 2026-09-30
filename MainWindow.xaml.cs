@@ -673,9 +673,12 @@ public partial class MainWindow : Window
     private void DeleteCluster(ClusterDefinition cluster)
     {
         if (_document is null || MessageBox.Show(this,
-                $"Delete cluster '{cluster.Name}'? Its tasks will remain and become unclustered.",
+                $"Delete cluster '{cluster.Name}'? All its member tasks will also be deleted.",
                 "Delete cluster", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
-        foreach (var card in Columns.SelectMany(column => column.Tasks).Where(card => card.ClusterId == cluster.Id)) card.ClusterId = null;
+        var tasksToDelete = Columns.SelectMany(column => column.Tasks).Where(card => card.ClusterId == cluster.Id).ToList();
+        foreach (var task in tasksToDelete)
+            foreach (var column in Columns)
+                column.Tasks.Remove(task);
         _document.Clusters.Remove(cluster);
         SaveProject();
     }

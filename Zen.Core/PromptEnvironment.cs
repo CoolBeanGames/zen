@@ -205,7 +205,7 @@ public static class PromptEnvironment
             "- Create and edit clusters with `cluster create` and `cluster edit`. Use `cluster task add <cluster> <task>` or `cluster task remove <task>` for membership. A custom card field of type `cluster` reads and writes the same built-in membership.\r\n" +
             "- Cluster requirements and notes use `cluster requirement ...` and `cluster note ...`. Mark each cluster requirement done as soon as it is satisfied, just like a task requirement.\r\n" +
             "- A locked or awaiting-feedback cluster makes every member task ineligible. When cluster feedback is needed, add a cluster note first, set `--awaiting`, and stop work in that cluster until it is cleared.\r\n" +
-            "- `cluster move` and `cluster archive` act on the entire group. Never archive a cluster whose `doNotArchive` value is true. Deleting a cluster keeps its tasks and only removes their grouping.\r\n" +
+            "- `cluster move` and `cluster archive` act on the entire group. Never archive a cluster whose `doNotArchive` value is true. Deleting a cluster also deletes all of its member tasks.\r\n" +
             "- A launch scoped to a cluster authorizes only that cluster's member tasks. Respect its order, requirements, notes, locks, feedback state, and commit/build/release flags.\r\n\r\n";
         const string nextHeading = "DATA SHAPE AND OWNERSHIP";
         var insertionPoint = prompt.IndexOf(nextHeading, StringComparison.Ordinal);

@@ -429,7 +429,10 @@ public static class OperationApplier
     private static void DeleteCluster(ProjectDocument document, QueuedWrite operation)
     {
         var cluster = RequireCluster(document, Require(operation, "clusterId"));
-        foreach (var card in document.Branches.SelectMany(branch => branch.Tasks).Where(card => card.ClusterId == cluster.Id)) card.ClusterId = null;
+        if (cluster.IsLocked) throw new InvalidOperationException($"Cluster '{cluster.Name}' is locked.");
+        var tasksToDelete = document.Branches.SelectMany(branch => branch.Tasks).Where(card => card.ClusterId == cluster.Id).ToList();
+        foreach (var task in tasksToDelete)
+            foreach (var branch in document.Branches) branch.Tasks.Remove(task);
         document.Clusters.Remove(cluster);
     }
 

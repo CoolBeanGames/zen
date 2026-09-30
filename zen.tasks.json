@@ -3,8 +3,8 @@
   "projectId": "48c74f6dace14c5696f9661900c22c60",
   "name": "zen",
   "nextCardIndex": 100,
-  "latestExePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
-  "latestReleasePath": "builds/Zen-0.2.9-win-x64/Zen.exe",
+  "latestExePath": "bin/Release/net10.0-windows/Zen.exe",
+  "latestReleasePath": "bin/Release/net10.0-windows/Zen.exe",
   "tagCatalog": [
     {
       "name": "bug",
@@ -142,6 +142,9 @@
   "customCardTypes": [],
   "clusters": [],
   "signatures": [],
+  "appliedOperatorRequestIds": [
+    "923c2a3fcdea44c7bafc4a3eec6291fa"
+  ],
   "branches": [
     {
       "id": "main",
@@ -166,6 +169,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -228,6 +232,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -260,6 +265,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -289,6 +295,7 @@
           "task": "",
           "tags": [],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -322,6 +329,7 @@
             "projects"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -396,6 +404,7 @@
             "tasks"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -428,6 +437,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -461,6 +471,7 @@
             "settings"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -494,6 +505,7 @@
             "cards"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -525,6 +537,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -565,6 +578,7 @@
           "task": "",
           "tags": [],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -596,6 +610,7 @@
             "cards"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -669,6 +684,7 @@
             "bug"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -708,6 +724,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -740,6 +757,7 @@
             "cards"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -772,6 +790,7 @@
             "files"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -804,6 +823,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -842,6 +862,7 @@
               "size": 6274
             }
           ],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -881,6 +902,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -913,6 +935,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -945,6 +968,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -977,6 +1001,7 @@
             "agents"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1008,6 +1033,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1039,6 +1065,7 @@
             "managment"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1070,6 +1097,7 @@
             "managment"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1120,6 +1148,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1151,6 +1180,7 @@
             "input"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1225,6 +1255,7 @@
             "input"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1256,6 +1287,7 @@
             "managment"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1287,6 +1319,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1318,6 +1351,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1356,6 +1390,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1407,6 +1442,7 @@
             "theme"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1438,6 +1474,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1483,6 +1520,7 @@
             "data"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1521,6 +1559,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1577,6 +1616,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1615,6 +1655,7 @@
             "menus"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1671,6 +1712,7 @@
             "branches"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1702,6 +1744,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1733,6 +1776,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1777,6 +1821,7 @@
             "release"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1825,6 +1870,7 @@
           "task": "",
           "tags": [],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1856,6 +1902,7 @@
             "branches"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1906,6 +1953,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1939,6 +1987,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -1970,6 +2019,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2027,6 +2077,7 @@
             "attachments"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2066,6 +2117,7 @@
             "attachments"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2098,6 +2150,7 @@
             "tags"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2150,6 +2203,7 @@
             "application"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2195,6 +2249,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2246,6 +2301,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2277,6 +2333,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2308,6 +2365,7 @@
             "task"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2353,6 +2411,7 @@
             "buttons"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2385,6 +2444,7 @@
             "ui"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2416,6 +2476,7 @@
             "buttons"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2447,6 +2508,7 @@
             "instructions"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2476,6 +2538,7 @@
           "task": "",
           "tags": [],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2509,6 +2572,7 @@
             "subtasks"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
@@ -2540,6 +2604,7 @@
             "cards"
           ],
           "files": [],
+          "blockedByTaskIds": [],
           "clusterId": null,
           "customTypeId": null,
           "customValues": {},
